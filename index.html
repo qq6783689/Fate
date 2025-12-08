@@ -6,472 +6,95 @@
     <title>命运黑盒 Pro Max (自适应版)</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.2.37/lunar.min.js"></script>
     <style>
-        /* --- 核心配色 --- */
+        /* --- 全局变量与配色 --- */
         :root {
-            --primary-color: #8E44AD;
-            --secondary-color: #27AE60;
-            --warm-color: #D35400;
-            --cold-color: #2980B9;
+            --primary-color: #8E44AD; /* 神秘紫 */
+            --secondary-color: #27AE60; /* 生机绿 */
+            --warm-color: #D35400; /* 暖火 */
+            --cold-color: #2980B9; /* 寒水 */
             --bg-color: #F5F7FA;
             --text-color: #2C3E50;
             --card-bg: #FFFFFF;
-            --border-radius: 12px;
         }
 
+        /* 基础重置 */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        
         body {
             background-color: var(--bg-color);
             font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "KaiTi", "楷体", serif;
             color: var(--text-color);
             margin: 0;
-            padding: 15px; /* 减小外边距 */
+            padding: 0;
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* 移动端改为顶部对齐，防止长内容截断 */
+            align-items: flex-start; /* 顶部对齐 */
         }
 
+        /* 主容器：电脑端限宽，移动端通栏 */
         .container {
             width: 100%;
-            max-width: 650px; /* 电脑端最大宽度 */
+            max-width: 600px;
             background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            overflow: hidden;
-            margin-top: 10px;
-            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            min-height: 100vh;
+            padding-bottom: 40px;
         }
 
+        /* 顶部 Header */
         .header {
             background: linear-gradient(135deg, #2c3e50, #000000);
             padding: 30px 20px;
             text-align: center;
             color: #d4af37;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin-bottom: 20px;
         }
-        
-        .header h1 { margin: 0; font-size: 22px; letter-spacing: 2px; }
-        .header p { margin: 5px 0 0; font-size: 12px; opacity: 0.8; color: #fff; }
+        .header h1 { margin: 0; font-size: 24px; letter-spacing: 2px; font-weight: 700; }
+        .header p { margin: 8px 0 0; font-size: 12px; opacity: 0.8; color: #fff; }
 
-        .input-section { padding: 20px; border-bottom: 1px solid #eee; }
+        /* 输入区域 */
+        .input-section { padding: 0 20px; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
-        .label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; }
+        .label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 14px; color: #555; }
 
-        /* 性别选择 */
-        .gender-switch { display: flex; background: #f1f2f6; border-radius: 8px; padding: 4px; }
+        /* 性别选择器 (美化版) */
+        .gender-switch { display: flex; background: #f1f2f6; border-radius: 10px; padding: 4px; }
         .gender-switch input { display: none; }
         .gender-switch label {
-            flex: 1; text-align: center; padding: 10px; border-radius: 6px;
-            cursor: pointer; transition: all 0.3s ease; font-weight: bold; font-size: 14px;
+            flex: 1; text-align: center; padding: 12px; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease; font-weight: bold; font-size: 15px; color: #7f8c8d;
         }
         .gender-switch input:checked + label {
-            background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--primary-color);
+            background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); color: var(--primary-color);
         }
 
-        /* 输入框优化 */
+        /* 日期输入框 (加大触控区域) */
         input[type="datetime-local"] {
-            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
-            font-size: 16px; /* 防止iOS自动放大 */
-            background: #fff; outline: none; -webkit-appearance: none;
+            width: 100%; padding: 14px; border: 1px solid #e0e0e0; border-radius: 10px;
+            font-size: 16px; background: #fff; outline: none; -webkit-appearance: none;
         }
+        input[type="datetime-local"]:focus { border-color: var(--primary-color); }
 
+        /* 推演按钮 */
         .btn-calculate {
-            width: 100%; padding: 14px;
-            background: linear-gradient(to right, #2c3e50, #34495e);
-            color: white; border: none; border-radius: 8px;
-            font-size: 16px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); transition: transform 0.1s;
-            margin-top: 10px;
+            width: 100%; padding: 16px; margin-top: 10px;
+            background: linear-gradient(to right, #2c3e50, #4ca1af);
+            color: white; border: none; border-radius: 10px;
+            font-size: 17px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 6px 15px rgba(44, 62, 80, 0.3);
+            transition: transform 0.1s;
         }
-        .btn-calculate:active { transform: scale(0.96); }
+        .btn-calculate:active { transform: scale(0.97); }
 
-        #result-area { display: none; padding: 20px; animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* 结果区域动画 */
+        #result-area { display: none; padding: 0 15px; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 四柱排盘网格 (移动端核心优化) --- */
+        /* --- 四柱排盘 (关键适配) --- */
         .bazi-grid {
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
-            gap: 4px; /* 极窄间距 */
-            margin-bottom: 20px; 
-            background: #fffcf5; 
-            padding: 10px 5px; /* 减小内边距 */
-            border-radius: 8px; 
-            border: 1px solid #eee;
-        }
-        .pillar { display: flex; flex-direction: column; align-items: center; }
-        .pillar-head { font-size: 11px; color: #999; margin-bottom: 4px; transform: scale(0.9); }
-        
-        .gan, .zhi {
-            font-size: 20px; font-weight: bold; 
-            width: 34px; height: 34px; /* 稍微缩小圆圈 */
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 50%; /* 圆形背景可能 */
-        }
-        .cang-gan { 
-            font-size: 10px; color: #7f8c8d; margin-top: 2px; 
-            transform: scale(0.85); white-space: nowrap; /* 防止换行 */
-        }
-        .shishen-tag { 
-            font-size: 10px; color: #e67e22; margin-bottom: 2px; 
-            font-weight: bold; transform: scale(0.9); white-space: nowrap;
-        }
-
-        /* 模块卡片 */
-        .module-card { margin-bottom: 15px; border-left: 3px solid var(--primary-color); padding-left: 12px; }
-        .module-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; color: #2c3e50; display: flex; align-items: center;}
-        .content-text { font-size: 14px; line-height: 1.6; color: #444; text-align: justify; }
-        
-        .highlight { font-weight: bold; color: var(--primary-color); }
-        .highlight-fire { color: var(--warm-color); font-weight: bold; }
-        .highlight-water { color: var(--cold-color); font-weight: bold; }
-        
-        .badge {
-            display: inline-block; background: #f0f0f0; color: #333; padding: 1px 5px; 
-            border-radius: 3px; font-size: 10px; margin-right: 3px; border: 1px solid #ddd;
-            vertical-align: middle;
-        }
-        .badge-siling { background: #fff3cd; color: #856404; border-color: #ffeeba; }
-
-        /* 大运横向滚动条 */
-        .dayun-scroll {
-            display: flex; overflow-x: auto; gap: 8px; padding-bottom: 5px; margin-top: 10px;
-            -webkit-overflow-scrolling: touch; /* iOS顺滑滚动 */
-        }
-        .dayun-item {
-            flex: 0 0 auto; /* 防止压缩 */
-            min-width: 55px; text-align: center; font-size: 11px; padding: 6px 4px;
-            background: #f8f9fa; border-radius: 6px; border: 1px solid #eee;
-        }
-        .dayun-item strong { font-size: 13px; display: block; margin-bottom: 2px; }
-        .dayun-item.active {
-            background: var(--primary-color); color: #fff; border-color: var(--primary-color);
-            box-shadow: 0 2px 6px rgba(142, 68, 173, 0.3);
-        }
-
-        /* --- 针对小屏幕手机的额外适配 --- */
-        @media screen and (max-width: 360px) {
-            .container { margin: 0; border-radius: 0; box-shadow: none; }
-            .header { padding: 20px 15px; }
-            .input-section { padding: 15px; }
-            .gan, .zhi { font-size: 18px; width: 30px; height: 30px; }
-            .dayun-item { min-width: 50px; }
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="header">
-        <h1>🔮 命运黑盒·真诠版</h1>
-        <p>真神司令 · 格局高低 · 调候病药</p>
-    </div>
-
-    <div id="error-msg" style="display:none; background:#e74c3c; color:#fff; padding:10px; text-align:center; font-size:14px;">
-        ⚠️ 核心库未加载，请刷新页面
-    </div>
-
-    <div class="input-section">
-        <div class="form-group">
-            <label class="label">命造性别</label>
-            <div class="gender-switch">
-                <input type="radio" name="gender" id="gender-male" value="1" checked>
-                <label for="gender-male">乾造 (男)</label>
-                <input type="radio" name="gender" id="gender-female" value="0">
-                <label for="gender-female">坤造 (女)</label>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="label">出生时间 (阳历)</label>
-            <input type="datetime-local" id="solar-date">
-        </div>
-
-        <button class="btn-calculate" onclick="calculate()">🔍 开始排盘推演</button>
-    </div>
-
-    <div id="result-area">
-        <div class="bazi-grid">
-            <div class="pillar">
-                <div class="pillar-head">年柱</div>
-                <div class="shishen-tag" id="year-shishen"></div>
-                <div class="gan" id="year-gan"></div>
-                <div class="zhi" id="year-zhi"></div>
-                <div class="cang-gan" id="year-cang"></div>
-            </div>
-            <div class="pillar">
-                <div class="pillar-head">月柱</div>
-                <div class="shishen-tag" id="month-shishen"></div>
-                <div class="gan" id="month-gan"></div>
-                <div class="zhi" id="month-zhi"></div>
-                <div class="cang-gan" id="month-cang"></div>
-            </div>
-            <div class="pillar">
-                <div class="pillar-head">日柱</div>
-                <div class="shishen-tag" style="background:var(--primary-color); color:#fff; padding:0 3px; border-radius:2px;">日元</div>
-                <div class="gan" id="day-gan"></div>
-                <div class="zhi" id="day-zhi"></div>
-                <div class="cang-gan" id="day-cang"></div>
-            </div>
-            <div class="pillar">
-                <div class="pillar-head">时柱</div>
-                <div class="shishen-tag" id="hour-shishen"></div>
-                <div class="gan" id="hour-gan"></div>
-                <div class="zhi" id="hour-zhi"></div>
-                <div class="cang-gan" id="hour-cang"></div>
-            </div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-title">⚖️ 司令与强弱</div>
-            <div class="content-text" id="strength-analysis"></div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-title">🧬 格局与意象</div>
-            <div class="content-text" id="pattern-analysis"></div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-title">🌡️ 调候与喜忌</div>
-            <div class="content-text" id="climate-analysis"></div>
-        </div>
-
-        <div class="module-card">
-            <div class="module-title">💡 维度深度建议</div>
-            <div class="content-text">
-                <p><strong>💼 事业：</strong><span id="career-text"></span></p>
-                <div style="height:8px"></div>
-                <p><strong>💰 财富：</strong><span id="wealth-text"></span></p>
-                <div style="height:8px"></div>
-                <p><strong>❤️ 情感：</strong><span id="love-text"></span></p>
-                <div style="height:8px"></div>
-                <p><strong>👶 子女：</strong><span id="kids-text"></span></p>
-            </div>
-        </div>
-
-        <div class="module-card" style="border-left-color: #2c3e50;">
-            <div class="module-title">🚀 大运趋势</div>
-            <div class="content-text">
-                <div id="current-dayun-info" style="font-weight:bold; margin-bottom:5px; color:var(--primary-color); font-size:15px;"></div>
-                <div id="dayun-analysis" style="margin-bottom:10px;"></div>
-                <div style="font-size:11px; color:#999; margin-bottom:5px;">(左右滑动查看更多)</div>
-                <div class="dayun-scroll" id="dayun-list"></div>
-            </div>
-        </div>
-        
-        <div style="text-align:center; font-size:11px; color:#ccc; margin-top:20px; padding-bottom:10px;">
-            Based on Traditional Bazi Logic
-        </div>
-    </div>
-</div>
-
-<script>
-    // --- 数据字典 ---
-    const GAN_WUXING = { '甲':'木', '乙':'木', '丙':'火', '丁':'火', '戊':'土', '己':'土', '庚':'金', '辛':'金', '壬':'水', '癸':'水' };
-    const ZHI_WUXING = { '子':'水', '亥':'水', '寅':'木', '卯':'木', '巳':'火', '午':'火', '申':'金', '酉':'金', '辰':'土', '戌':'土', '丑':'土', '未':'土' };
-    const GAN_YINYANG = { '甲':1, '乙':0, '丙':1, '丁':0, '戊':1, '己':0, '庚':1, '辛':0, '壬':1, '癸':0 };
-    
-    // 生克关系
-    const WUXING_REL = {
-        '木': { sheng:'火', ke:'土', be_sheng:'水', be_ke:'金' },
-        '火': { sheng:'土', ke:'金', be_sheng:'木', be_ke:'水' },
-        '土': { sheng:'金', ke:'水', be_sheng:'火', be_ke:'木' },
-        '金': { sheng:'水', ke:'木', be_sheng:'土', be_ke:'火' },
-        '水': { sheng:'木', ke:'火', be_sheng:'金', be_ke:'土' }
-    };
-
-    // 司令分野表
-    const SI_LING_DATA = {
-        '寅': [['戊',7], ['丙',7], ['甲',16]],
-        '卯': [['甲',10], ['乙',20]],
-        '辰': [['乙',9], ['癸',3], ['戊',18]],
-        '巳': [['戊',5], ['庚',9], ['丙',16]],
-        '午': [['丙',10], ['己',9], ['丁',11]],
-        '未': [['丁',9], ['乙',3], ['己',18]],
-        '申': [['戊',7], ['壬',7], ['庚',16]],
-        '酉': [['庚',10], ['辛',20]],
-        '戌': [['辛',9], ['丁',3], ['戊',18]],
-        '亥': [['戊',7], ['甲',7], ['壬',16]],
-        '子': [['壬',10], ['癸',20]],
-        '丑': [['癸',9], ['辛',3], ['己',18]]
-    };
-
-    // 初始化
-    window.onload = function() {
-        if(typeof Solar === 'undefined') {
-            document.getElementById('error-msg').style.display = 'block';
-            document.querySelector('.btn-calculate').disabled = true;
-            document.querySelector('.btn-calculate').innerText = "加载失败";
-        } else {
-            let now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('solar-date').value = now.toISOString().slice(0,16);
-        }
-    };
-
-    // --- 十神计算 ---
-    function getTenGod(dm, target) {
-        if(!dm || !target) return "";
-        const dmWx = GAN_WUXING[dm];
-        const targetWx = GAN_WUXING[target];
-        const samePol = GAN_YINYANG[dm] === GAN_YINYANG[target];
-
-        if (dmWx === targetWx) return samePol ? '比肩' : '劫财';
-        if (WUXING_REL[dmWx].be_sheng === targetWx) return samePol ? '食神' : '伤官';
-        if (WUXING_REL[dmWx].be_ke === targetWx) return samePol ? '偏财' : '正财';
-        if (WUXING_REL[dmWx].ke === targetWx) return samePol ? '七杀' : '正官';
-        if (WUXING_REL[dmWx].sheng === targetWx) return samePol ? '偏印' : '正印';
-        return '';
-    }
-
-    // --- 核心计算 ---
-    function calculate() {
-        try {
-            const dateStr = document.getElementById('solar-date').value;
-            if(!dateStr) { alert("请输入出生时间"); return; }
-            const gender = parseInt(document.querySelector('input[name="gender"]:checked').value);
-            
-            const d = new Date(dateStr);
-            const solar = Solar.fromYmdHms(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), 0);
-            const lunar = solar.getLunar();
-            const eightChar = lunar.getEightChar();
-            
-            // 四柱数据 (强制转字符)
-            const p = {
-                y: { g: String(eightChar.getYearGan()), z: String(eightChar.getYearZhi()) },
-                m: { g: String(eightChar.getMonthGan()), z: String(eightChar.getMonthZhi()) },
-                d: { g: String(eightChar.getDayGan()), z: String(eightChar.getDayZhi()) },
-                h: { g: String(eightChar.getTimeGan()), z: String(eightChar.getTimeZhi()) }
-            };
-            
-            const dm = p.d.g;
-            const mz = p.m.z;
-            
-            // 1. 计算人元司令
-            const siLingInfo = calcSiLing(solar, lunar, mz);
-            
-            // 2. 渲染UI
-            renderPillars(p, dm, eightChar);
-            
-            // 3. 分析强弱
-            const strengthObj = analyzeStrength(dm, mz, siLingInfo, p);
-            
-            // 4. 分析格局与调候
-            const patternObj = analyzePattern(p, dm, mz, strengthObj);
-            
-            // 5. 维度建议
-            analyzeDimensions(p, dm, gender, patternObj, strengthObj);
-            
-            // 6. 大运
-            renderDaYun(eightChar, gender, p, patternObj);
-
-            document.getElementById('result-area').style.display = 'block';
-            
-            // 滚动到结果区域
-            setTimeout(() => {
-                document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
-            }, 100);
-
-        } catch(e) {
-            console.error(e);
-            alert("推演发生错误：" + e.message);
-        }
-    }
-
-    // 计算真神司令
-    function calcSiLing(solar, lunar, mz) {
-        const prevJie = lunar.getPrevJie();
-        const daysOffset = Math.floor((solar.getJulianDay() - prevJie.getSolar().getJulianDay()));
-        const config = SI_LING_DATA[mz];
-        let daysCount = 0;
-        let commander = "";
-        
-        for(let item of config) {
-            daysCount += item[1];
-            if(daysOffset < daysCount) {
-                commander = item[0];
-                break;
-            }
-        }
-        if(!commander) commander = config[config.length-1][0];
-        return { gan: commander, days: daysOffset, jieName: prevJie.getName() };
-    }
-
-    // 分析强弱
-    function analyzeStrength(dm, mz, siLing, p) {
-        const dmWx = GAN_WUXING[dm];
-        const mzWx = ZHI_WUXING[mz]; 
-        const siLingWx = GAN_WUXING[siLing.gan]; 
-        
-        let html = `<p><span class="badge badge-siling">真神</span> 出生于${siLing.jieName}后第 <strong>${siLing.days}</strong> 天，<strong>${siLing.gan}</strong> (${siLingWx}) 掌权。</p>`;
-        
-        let menStatus = (mzWx === dmWx || WUXING_REL[dmWx].sheng === mzWx) ? "旺" : "衰";
-        let diStatus = (siLingWx === dmWx || WUXING_REL[dmWx].sheng === siLingWx) ? "旺" : "衰";
-        
-        let isStrong = false;
-        if (dm === '己' && mz === '辰' && siLing.gan === '戊') {
-            html += `<p><strong>得权得势：</strong>己土生于辰月，戊土劫财当令。土气厚重，身强。</p>`;
-            isStrong = true;
-        } else if (menStatus === "旺" && diStatus === "旺") {
-            html += `<p><strong>得令得权：</strong>月令和司令皆助身，身强无疑，能量充沛。</p>`;
-            isStrong = true;
-        } else if (menStatus === "旺" && diStatus === "衰") {
-            html += `<p><strong>门旺地衰：</strong>月令表面助身，但司令之神不助身，属于“虚旺”，身旺有折扣。</p>`;
-            isStrong = false; 
-        } else {
-            html += `<p><strong>失令失权：</strong>月令不助身，司令亦不助，身偏弱，喜生扶。</p>`;
-            isStrong = false;
-        }
-        
-        document.getElementById('strength-analysis').innerHTML = html;
-        return { isStrong, siLingWx };
-    }
-
-    // 分析格局与调候
-    function analyzePattern(p, dm, mz, strength) {
-        let html = "";
-        let patterns = [];
-        
-        const yGan = p.y.g; const mGan = p.m.g; const hGan = p.h.g;
-        const gods = [getTenGod(dm, yGan), getTenGod(dm, mGan), getTenGod(dm, hGan)];
-        
-        // 特殊组合扫描
-        if ((yGan === '乙' && mGan === '庚') || (yGan === '庚' && mGan === '乙')) {
-            patterns.push("伤官合杀");
-            html += `<p><span class="badge">格局</span> <strong>伤官合杀：</strong>天干乙庚合。善用智慧（庚/伤）化解压力（乙/杀），化敌为友的高级配置。</p>`;
-        }
-        if (yGan === '甲' || mGan === '甲' || hGan === '甲') {
-            if(dm === '己') {
-                patterns.push<think>vising Mobile Layout**
-
-I've been wrestling with the existing Bazi code, specifically its mobile responsiveness. The goal is to make it display correctly on smaller screens. I'm currently exploring CSS media queries as a potential solution to dynamically adjust the layout based on screen size, ensuring a seamless user experience across devices. I'm considering using percentage-based widths and flexible grids to achieve the desired adaptability.
-
-
-**Analyzing Mobile Constraints**
-
-I'm now focusing on the specific constraints of mobile displays, like the user's issue with horizontal scrolling. My mental walkthrough of the existing code highlights the fixed maximum width and the 4-column grid as potential culprits. I'm thinking of reducing margins, tweaking font sizes, and adjusting the grid layout for smaller screens. I also need to ensure the main container adapts to the viewport width, particularly for elements with horizontal scrolling, to provide an optimal user experience.
-
-
-**Optimizing Mobile Display**
-
-I'm now prioritizing the container's width, aiming for 100% with zero margins on mobile. Also, I'm removing the body's hard-coded padding. The grid layout needs to stay horizontal to maintain the "Four Pillars" structure, but I plan to minimize gaps and padding for a more compact appearance. I'll switch to `rem` or smaller `px` for font sizes on smaller screens. Finally, I'm expanding date pickers and buttons to be full width, boosting their touch-friendliness.
-
-
-**Tweaking Mobile Visuals**
-
-\n\n
-
-I'm now focusing on aesthetic adjustments for mobile, aiming for a cleaner, more compact look. I've reduced border radii, tightened grid gaps, and shrunk character and header font sizes. I'm also thinking of expanding the module cards within the `@media` query for better visual balance on smaller displays. I'm prioritizing minimal `body` padding and full-width `.container` on small screens to optimize space.
-
-
-**Finalizing Mobile Tweaks**
-
-I'm now implementing the fine-tuning steps. I've reduced font sizes for the "Gan/Zhi" circles to prevent line breaks and improved tap-friendliness for the "Gender Switch" and "Date Input" elements. I'm focusing on the code now, decreasing grid and flex gaps on smaller screens to 2px, and adjusting padding and font sizes for a more compact design. I will use `@media` queries to ensure the changes are applied effectively.  I'm also removing padding on smaller screens, and I'll generate the full HTML, highlighting the CSS for mobile.
-
-
-**Completing Mobile Implementation**
-
-I'm now fully immersed in the final code review. I've ensured all essential elements are present and functional, including the `viewport` tag, media queries, and flexible flex/grid layouts. The JavaScript logic remains intact. I'm focusing on providing the user with a clean, functional `.html` file, highlighting the CSS techniques used, and suggesting it to save it as `.html`. I’ve kept readability in mind!
-
-
+            gap: 5px; /*
