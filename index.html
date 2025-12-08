@@ -12,9 +12,11 @@
             --secondary-color: #27AE60; /* 生机绿 */
             --warm-color: #D35400; /* 暖火 */
             --cold-color: #2980B9; /* 寒水 */
+            --earth-color: #8D6E63; /* 厚土 */
             --bg-color: #F5F7FA;
             --text-color: #2C3E50;
             --card-bg: #FFFFFF;
+            --border-radius: 12px;
         }
 
         /* 基础重置 */
@@ -29,10 +31,10 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* 顶部对齐 */
+            align-items: flex-start;
         }
 
-        /* 主容器：电脑端限宽，移动端通栏 */
+        /* 主容器 */
         .container {
             width: 100%;
             max-width: 600px;
@@ -45,23 +47,24 @@
         /* 顶部 Header */
         .header {
             background: linear-gradient(135deg, #2c3e50, #000000);
-            padding: 30px 20px;
+            padding: 40px 20px;
             text-align: center;
             color: #d4af37;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .header h1 { margin: 0; font-size: 24px; letter-spacing: 2px; font-weight: 700; }
-        .header p { margin: 8px 0 0; font-size: 12px; opacity: 0.8; color: #fff; }
+        .header h1 { margin: 0; font-size: 26px; letter-spacing: 2px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .header p { margin: 8px 0 0; font-size: 13px; opacity: 0.8; color: #eee; font-weight: 300; }
 
         /* 输入区域 */
-        .input-section { padding: 0 20px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        .label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 14px; color: #555; }
+        .input-section { padding: 0 25px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 15px; color: #34495e; }
 
-        /* 性别选择器 (美化版) */
-        .gender-switch { display: flex; background: #f1f2f6; border-radius: 10px; padding: 4px; }
+        /* 性别选择器 */
+        .gender-switch { display: flex; background: #f1f2f6; border-radius: var(--border-radius); padding: 4px; }
         .gender-switch input { display: none; }
         .gender-switch label {
             flex: 1; text-align: center; padding: 12px; border-radius: 8px;
@@ -71,30 +74,294 @@
             background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); color: var(--primary-color);
         }
 
-        /* 日期输入框 (加大触控区域) */
+        /* 日期输入框 */
         input[type="datetime-local"] {
-            width: 100%; padding: 14px; border: 1px solid #e0e0e0; border-radius: 10px;
-            font-size: 16px; background: #fff; outline: none; -webkit-appearance: none;
+            width: 100%; padding: 14px; border: 1px solid #e0e0e0; border-radius: var(--border-radius);
+            font-size: 16px; background: #fff; outline: none; -webkit-appearance: none; color: #2c3e50;
         }
-        input[type="datetime-local"]:focus { border-color: var(--primary-color); }
+        input[type="datetime-local"]:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.1); }
 
         /* 推演按钮 */
         .btn-calculate {
-            width: 100%; padding: 16px; margin-top: 10px;
-            background: linear-gradient(to right, #2c3e50, #4ca1af);
-            color: white; border: none; border-radius: 10px;
-            font-size: 17px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 6px 15px rgba(44, 62, 80, 0.3);
-            transition: transform 0.1s;
+            width: 100%; padding: 16px; margin-top: 15px;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white; border: none; border-radius: var(--border-radius);
+            font-size: 18px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 8px 20px rgba(44, 62, 80, 0.25);
+            transition: all 0.2s;
         }
-        .btn-calculate:active { transform: scale(0.97); }
+        .btn-calculate:active { transform: scale(0.98); box-shadow: 0 4px 10px rgba(44, 62, 80, 0.2); }
 
-        /* 结果区域动画 */
-        #result-area { display: none; padding: 0 15px; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* 结果区域 */
+        #result-area { display: none; padding: 10px 20px; animation: slideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 四柱排盘 (关键适配) --- */
+        /* --- 四柱排盘网格系统 --- */
+        .section-title {
+            text-align: center; font-size: 18px; font-weight: bold; margin: 30px 0 15px;
+            color: #2c3e50; position: relative;
+        }
+        .section-title::after {
+            content: ""; display: block; width: 40px; height: 3px; background: var(--primary-color);
+            margin: 8px auto 0; border-radius: 2px;
+        }
+
         .bazi-grid {
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 5px; /*
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: #fff;
+            padding: 10px 0;
+        }
+        
+        .pillar-col {
+            display: flex; flex-direction: column; align-items: center;
+            background: #f8f9fa; border-radius: 10px; padding: 15px 5px;
+            position: relative; overflow: hidden;
+        }
+
+        /* 柱头 (年/月/日/时) */
+        .pillar-head {
+            font-size: 12px; color: #95a5a6; margin-bottom: 10px; font-weight: bold;
+        }
+
+        /* 十神 (小字) */
+        .god-text { font-size: 11px; color: #7f8c8d; height: 16px; margin-bottom: 4px; }
+
+        /* 天干地支 (大字) */
+        .char-text {
+            font-size: 26px; font-weight: bold; font-family: "KaiTi", "楷体", serif;
+            line-height: 1.2; z-index: 1;
+        }
+        
+        /* 藏干 */
+        .hidden-stems {
+            margin-top: 10px; display: flex; flex-direction: column; gap: 2px;
+            font-size: 11px; color: #999; text-align: center;
+        }
+
+        /* 五行颜色装饰 */
+        .wuxing-金 { color: #E6B33D; }
+        .wuxing-木 { color: #27AE60; }
+        .wuxing-水 { color: #2980B9; }
+        .wuxing-火 { color: #C0392B; }
+        .wuxing-土 { color: #8D6E63; }
+
+        /* 信息卡片 */
+        .info-card {
+            background: #fff; border: 1px solid #eee; border-radius: 10px;
+            padding: 15px; margin-top: 15px; font-size: 14px; line-height: 1.6;
+        }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed #f0f0f0; padding-bottom: 8px; }
+        .info-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .info-label { color: #7f8c8d; }
+        .info-val { font-weight: bold; color: #2c3e50; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>命运黑盒 Pro Max</h1>
+        <p>乾坤未定 · 你我皆是黑马</p>
+    </div>
+
+    <div class="input-section">
+        <div class="form-group">
+            <span class="label">选择性别 (Gender)</span>
+            <div class="gender-switch">
+                <input type="radio" id="male" name="gender" value="1" checked>
+                <label for="male">男命 (乾造)</label>
+                
+                <input type="radio" id="female" name="gender" value="0">
+                <label for="female">女命 (坤造)</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <span class="label">出生时间 (公历)</span>
+            <input type="datetime-local" id="birth-date">
+        </div>
+
+        <button class="btn-calculate" onclick="calculateFate()">开始推演</button>
+    </div>
+
+    <div id="result-area">
+        <div class="section-title">八字排盘</div>
+        
+        <div class="bazi-grid" id="bazi-output">
+            </div>
+
+        <div class="section-title">基础信息</div>
+        <div class="info-card" id="basic-info">
+            </div>
+
+        <div class="section-title">五行能量</div>
+        <div class="info-card" id="wuxing-info" style="font-size: 13px;">
+             </div>
+        
+        <div style="height: 30px;"></div>
+    </div>
+</div>
+
+<script>
+    // 初始化默认时间为当前时间
+    window.onload = function() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('birth-date').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    function calculateFate() {
+        const dateInput = document.getElementById('birth-date').value;
+        if (!dateInput) {
+            alert("请选择出生时间");
+            return;
+        }
+
+        const gender = document.querySelector('input[name="gender"]:checked').value; // 1男 0女
+        const date = new Date(dateInput);
+
+        // 使用 Solar 初始化 (公历)
+        const solar = Solar.fromYmdHms(
+            date.getFullYear(),
+            date.getMonth() + 1,
+            date.getDate(),
+            date.getHours(),
+            date.getMinutes(),
+            date.getSeconds()
+        );
+
+        // 转农历
+        const lunar = solar.getLunar();
+        
+        // 获取八字对象
+        const bazi = lunar.getEightChar();
+        bazi.setSect(2); // 设置流派，2为默认晚子时处理
+
+        // 获取四柱
+        const yearGan = bazi.getYearGan();
+        const yearZhi = bazi.getYearZhi();
+        const monthGan = bazi.getMonthGan();
+        const monthZhi = bazi.getMonthZhi();
+        const dayGan = bazi.getDayGan();
+        const dayZhi = bazi.getDayZhi();
+        const timeGan = bazi.getTimeGan();
+        const timeZhi = bazi.getTimeZhi();
+
+        // 渲染UI
+        renderPillars(bazi, dayGan); // 传入八字对象和日主（用于计算十神）
+        renderBasicInfo(lunar, bazi, gender);
+        renderWuxing(bazi);
+
+        // 显示并滚动结果
+        const resultArea = document.getElementById('result-area');
+        resultArea.style.display = 'block';
+        setTimeout(() => {
+            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+
+    // 辅助函数：根据日主获取十神
+    function getGod(dayMaster, targetStem) {
+        // 简单映射，lunar库有更复杂的方法，这里演示直接获取十神名称
+        // 注意：lunar.js 的 十神获取通常在 EightChar 或相关类中
+        // 这里为了简化代码，我们假设直接展示文字或用库自带方法
+        // 实际上 Lunar 库可以直接获取十神：
+        return targetStem.getShiShenGan(dayMaster); 
+    }
+
+    function renderPillars(bazi, dayMaster) {
+        // 定义四柱数据结构
+        const pillars = [
+            { head: "年柱", gan: bazi.getYearGan(), zhi: bazi.getYearZhi() },
+            { head: "月柱", gan: bazi.getMonthGan(), zhi: bazi.getMonthZhi() },
+            { head: "日柱", gan: bazi.getDayGan(), zhi: bazi.getDayZhi() },
+            { head: "时柱", gan: bazi.getTimeGan(), zhi: bazi.getTimeZhi() }
+        ];
+
+        let html = '';
+        pillars.forEach(p => {
+            // 计算天干十神 (日柱天干无十神，显示日主)
+            let godName = "";
+            if (p.head === "日柱") {
+                godName = "日主";
+            } else {
+                godName = p.gan.getShiShenGan(dayMaster).getName();
+            }
+
+            // 地支藏干
+            const hiddenStems = p.zhi.getHiddenGan();
+            let hiddenHtml = hiddenStems.map(h => `<div>${h.getName()}${h.getShiShenGan(dayMaster).getName()}</div>`).join('');
+
+            html += `
+                <div class="pillar-col">
+                    <div class="pillar-head">${p.head}</div>
+                    <div class="god-text">${godName}</div>
+                    <div class="char-text wuxing-${p.gan.getWuXing()}">${p.gan.getName()}</div>
+                    <div class="char-text wuxing-${p.zhi.getWuXing()}">${p.zhi.getName()}</div>
+                    <div class="hidden-stems">${hiddenHtml}</div>
+                </div>
+            `;
+        });
+
+        document.getElementById('bazi-output').innerHTML = html;
+    }
+
+    function renderBasicInfo(lunar, bazi, gender) {
+        // 计算起运
+        const yun = bazi.getYun(parseInt(gender));
+        const startYun = yun.getStartYun();
+        const startInfo = `${startYun.getYear()}岁起运 (${startYun.getSolar().getYear()}年)`;
+
+        const html = `
+            <div class="info-row"><span class="info-label">农历日期</span><span class="info-val">${lunar.toString()}</span></div>
+            <div class="info-row"><span class="info-label">八字纳音</span><span class="info-val">${bazi.getYearNaYin()} ${bazi.getMonthNaYin()} ${bazi.getDayNaYin()} ${bazi.getTimeNaYin()}</span></div>
+            <div class="info-row"><span class="info-label">生肖</span><span class="info-val">${lunar.getYearShengXiao()}</span></div>
+            <div class="info-row"><span class="info-label">节气</span><span class="info-val">${lunar.getPrevJieQi().getName()} / ${lunar.getNextJieQi().getName()}</span></div>
+            <div class="info-row"><span class="info-label">起运时间</span><span class="info-val">${startInfo}</span></div>
+        `;
+        document.getElementById('basic-info').innerHTML = html;
+    }
+
+    function renderWuxing(bazi) {
+        // 简单统计五行个数 (包含藏干权重会有所不同，这里仅统计明天干地支)
+        // 注意：严谨计算需要分析藏干和月令旺衰，这里做简单展示
+        const wuxingList = [
+            bazi.getYearGan(), bazi.getYearZhi(),
+            bazi.getMonthGan(), bazi.getMonthZhi(),
+            bazi.getDayGan(), bazi.getDayZhi(),
+            bazi.getTimeGan(), bazi.getTimeZhi()
+        ].map(item => item.getWuXing());
+
+        const counts = { "金":0, "木":0, "水":0, "火":0, "土":0 };
+        wuxingList.forEach(w => counts[w]++);
+
+        let html = "";
+        for (let [wx, count] of Object.entries(counts)) {
+            let barWidth = (count / 8) * 100;
+            html += `
+                <div style="display:flex; align-items:center; margin-bottom:6px;">
+                    <span style="width:20px; font-weight:bold;" class="wuxing-${wx}">${wx}</span>
+                    <div style="flex:1; background:#eee; height:8px; border-radius:4px; margin:0 10px; overflow:hidden;">
+                        <div style="width:${barWidth}%; background:var(--primary-color); height:100%; opacity:0.7;"></div>
+                    </div>
+                    <span>${count}个</span>
+                </div>
+            `;
+        }
+        
+        // 加上身强身弱提示（娱乐性质）
+        html += `<div style="margin-top:10px; font-size:12px; color:#999; text-align:center;">* 此统计仅包含主气，未计算藏干深浅与月令旺衰。</div>`;
+        
+        document.getElementById('wuxing-info').innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
