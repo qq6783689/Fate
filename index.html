@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 天命指南</title>
+    <title>命运黑盒 Pro Max · 终极修复版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
-            /* 赛博玄学配色系统 */
-            --primary: #ff4757;      /* 核心能量/杀气 */
-            --success: #2ed573;      /* 生机/调候 */
-            --dark: #2f3542;         /* 主视觉黑 */
-            --gray: #747d8c;         /* 辅助灰 */
-            --bg: #f1f2f6;           /* 背景色 */
-            --purple: #5352ed;       /* 神秘感 */
-            --gold: #ffa502;         /* 贵气 */
+            /* 赛博玄学配色 */
+            --primary: #ff4757;      
+            --success: #2ed573;     
+            --dark: #2f3542;         
+            --gray: #747d8c;         
+            --bg: #f1f2f6;          
+            --purple: #5352ed;
+            --gold: #ffa502;
             --card-bg: #ffffff;
             --shadow: 0 10px 30px rgba(0,0,0,0.08);
             --radius: 16px;
@@ -38,15 +38,12 @@
         }
 
         /* 标题区 */
-        .header { text-align: center; margin-bottom: 30px; position: relative; }
+        .header { text-align: center; margin-bottom: 30px; }
         .header h1 { 
             font-size: 28px; font-weight: 900; margin: 0; letter-spacing: 2px;
             background: linear-gradient(135deg, var(--dark), var(--primary));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .header p { font-size: 12px; color: var(--gray); margin-top: 5px; opacity: 0.8; }
-        
-        /* 能量条装饰 */
         .energy-bar {
             height: 4px; width: 60px; margin: 10px auto 0; border-radius: 2px;
             background: linear-gradient(90deg, var(--purple), var(--primary), var(--gold));
@@ -116,19 +113,20 @@
         }
         .p-head { font-size: 11px; color: #b2bec3; margin-bottom: 5px; }
         .god-tag { font-size: 10px; color: #636e72; height: 14px; margin-bottom: 2px; }
-        .char { font-family: "KaiTi", serif; font-size: 24px; font-weight: bold; line-height: 1.1; }
+        .char { font-family: "KaiTi", "楷体", serif; font-size: 24px; font-weight: bold; line-height: 1.1; }
+        .hidden-gan { font-size: 10px; color: #95a5a6; margin-top: 4px; transform: scale(0.9); white-space: nowrap; }
         
         /* 自坐长生标签 */
         .cs-tag {
             font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 6px;
-            background: #f1f2f6; color: #a4b0be; transform: scale(0.9);
+            background: #f1f2f6; color: #a4b0be; transform: scale(0.9); white-space: nowrap;
         }
         .cs-strong { background: #fff3e0; color: #d35400; font-weight: bold; }
 
         /* 五行色 */
         .wx-金 { color: #E6B33D; } .wx-木 { color: #27AE60; } .wx-水 { color: #2980B9; } .wx-火 { color: #C0392B; } .wx-土 { color: #8D6E63; }
 
-        /* 深度分析盒子 (司令/门旺) */
+        /* 深度分析盒子 */
         .deep-analysis {
             background: #fffbf0; border: 1px solid #fae3c4; padding: 15px; border-radius: 12px;
             font-size: 13px; line-height: 1.6; margin-bottom: 20px; color: #574b35;
@@ -138,7 +136,6 @@
         .tag-shuai { background: #ffebee; color: #c0392b; padding: 1px 4px; border-radius: 3px; font-weight: bold; }
 
         /* 五维卡片 */
-        .fate-detail { padding: 10px 0; }
         .dim-row { display: flex; margin-bottom: 20px; align-items: flex-start; }
         .dim-icon { 
             width: 36px; height: 36px; background: #f1f2f6; border-radius: 50%; 
@@ -148,7 +145,6 @@
         .dim-title { font-weight: bold; font-size: 15px; margin-bottom: 6px; color: var(--dark); }
         .dim-text { font-size: 13px; color: #636e72; line-height: 1.6; text-align: justify; }
 
-        /* 错误提示 */
         #error-msg { display:none; background:#ff7675; color:#fff; padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:12px; }
     </style>
 </head>
@@ -186,7 +182,7 @@
         </div>
 
         <div class="card">
-            <div class="section-title">四柱排盘 · 自坐长生</div>
+            <div class="section-title">四柱排盘 · 藏干 · 长生</div>
             <div class="pillars-grid" id="pillars-box"></div>
         </div>
 
@@ -201,8 +197,7 @@
 
         <div class="card">
             <div class="section-title">五维天命指南</div>
-            <div class="fate-detail" id="five-dim-box">
-                </div>
+            <div id="five-dim-box"></div>
         </div>
 
         <div style="text-align:center; color:#ccc; font-size:12px; margin-top:20px;">
@@ -214,9 +209,8 @@
 <script>
     let currentGender = 1; // 1男 0女
 
-    // --- 核心数据常量 ---
+    // === 静态数据配置 ===
     
-    // 五行配色
     const WX_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
     
     // 自坐长生表 (天干对本柱地支)
@@ -232,7 +226,7 @@
         "壬": { "申":"长生", "酉":"沐浴", "戌":"冠带", "亥":"临官", "子":"帝旺", "丑":"衰", "寅":"病", "卯":"死", "辰":"墓", "巳":"绝", "午":"胎", "未":"养" },
         "癸": { "卯":"长生", "寅":"沐浴", "丑":"冠带", "子":"临官", "亥":"帝旺", "戌":"衰", "酉":"病", "申":"死", "未":"墓", "午":"绝", "巳":"胎", "辰":"养" }
     };
-    const STRONG_CS = ["长生", "帝旺", "临官", "冠带"]; // 强能量状态
+    const STRONG_CS = ["长生", "帝旺", "临官", "冠带"]; 
 
     // 人元司令规则 (盲派 9-3-18)
     const SILING_RULES = {
@@ -290,14 +284,14 @@
         }
     };
 
-    // --- 页面逻辑 ---
+    // --- 初始化 ---
 
     window.onload = function() {
         try {
             const now = new Date();
             const str = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
             document.getElementById('birth-input').value = str;
-        } catch(e) { console.log("Time init failed"); }
+        } catch(e) {}
         
         if (typeof Solar === 'undefined') {
             document.getElementById('error-msg').style.display = 'block';
@@ -310,7 +304,8 @@
         el.classList.add('active');
     }
 
-    // 主计算逻辑
+    // --- 主逻辑 ---
+    
     function calculateDestiny() {
         const timeStr = document.getElementById('birth-input').value;
         if (!timeStr) return alert("请选择出生时间");
@@ -320,9 +315,9 @@
             const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
             const lunar = solar.getLunar();
             const bazi = lunar.getEightChar();
-            bazi.setSect(2); // 晚子时
+            bazi.setSect(2); // 2=晚子时
 
-            // 1. 渲染四柱 + 自坐长生
+            // 1. 渲染四柱 + 藏干 + 自坐长生
             renderPillars(bazi);
 
             // 2. 人元司令 + 门旺地衰
@@ -335,7 +330,6 @@
             // 4. 五维文案
             renderFateDetail(bazi);
 
-            // 显示
             const resArea = document.getElementById('result-area');
             resArea.style.display = 'block';
             resArea.scrollIntoView({ behavior: 'smooth' });
@@ -346,9 +340,11 @@
         }
     }
 
-    // 渲染四柱
+    // 修复点：在数组中保留原始对象 (g, z)，以便调用 getHiddenGan
     function renderPillars(bazi) {
         const dayGan = bazi.getDayGan();
+        
+        // 关键：这里直接存 Lunar 对象，不要 .getName() 转字符串
         const pillars = [
             { t: '年柱', g: bazi.getYearGan(), z: bazi.getYearZhi() },
             { t: '月柱', g: bazi.getMonthGan(), z: bazi.getMonthZhi() },
@@ -359,16 +355,25 @@
         let html = '';
         pillars.forEach(p => {
             const god = p.t === '日柱' ? '日主' : p.g.getShiShenGan(dayGan).getName();
-            // 自坐长生：查表
-            const cs = CHANGSHENG_TABLE[p.g.getName()][p.z.getName()];
+            
+            // 获取天干和地支的名称字符串用于查表
+            const gName = p.g.getName();
+            const zName = p.z.getName();
+            
+            // 查表获取自坐长生
+            const cs = CHANGSHENG_TABLE[gName][zName];
             const csClass = STRONG_CS.includes(cs) ? 'cs-tag cs-strong' : 'cs-tag';
             
+            // 修复点：调用 getHiddenGan() 需确保 p.z 是对象
+            const hiddens = p.z.getHiddenGan().map(h => h.getName()).join('');
+
             html += `
                 <div class="pillar">
                     <div class="p-head">${p.t}</div>
                     <div class="god-tag">${god}</div>
-                    <div class="char ${WX_COLOR[p.g.getWuXing()]}">${p.g.getName()}</div>
-                    <div class="char ${WX_COLOR[p.z.getWuXing()]}">${p.z.getName()}</div>
+                    <div class="char ${WX_COLOR[p.g.getWuXing()]}">${gName}</div>
+                    <div class="char ${WX_COLOR[p.z.getWuXing()]}">${zName}</div>
+                    <div class="hidden-gan">藏${hiddens}</div>
                     <div class="${csClass}">${cs}</div>
                 </div>
             `;
@@ -376,9 +381,9 @@
         document.getElementById('pillars-box').innerHTML = html;
     }
 
-    // 计算司令与门旺地衰
     function calcCommander(lunar, bazi) {
         const prevJie = lunar.getPrevJie();
+        // 计算天数差：使用 getCalendar() 获取原生 Date
         const birthTime = lunar.getSolar().getCalendar().getTime();
         const jieTime = prevJie.getSolar().getCalendar().getTime();
         const diffDays = Math.floor((birthTime - jieTime) / (1000 * 60 * 60 * 24));
@@ -406,7 +411,7 @@
         const mZ = bazi.getMonthZhi();
         const mZWx = mZ.getWuXing();
         
-        // 司令五行
+        // 映射司令五行
         const cmdWx = "甲乙".includes(info.commander)?"木":"丙丁".includes(info.commander)?"火":"戊己".includes(info.commander)?"土":"庚辛".includes(info.commander)?"金":"壬癸".includes(info.commander)?"水":"";
 
         // 判定帮扶 (同我、生我)
@@ -429,7 +434,6 @@
         document.getElementById('commander-box').innerHTML = html;
     }
 
-    // 绘制意象画
     function drawArt(bazi) {
         const canvas = document.getElementById('fate-canvas');
         const ctx = canvas.getContext('2d');
@@ -438,7 +442,6 @@
         canvas.width = w;
         canvas.height = h;
 
-        // 统计五行
         const chars = [
             bazi.getYearGan(), bazi.getYearZhi(),
             bazi.getMonthGan(), bazi.getMonthZhi(),
@@ -448,60 +451,56 @@
         const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
         chars.forEach(c => counts[c.getWuXing()]++);
         
-        // 背景梯度 (按月令)
         const mZ = bazi.getMonthZhi().getName();
         const grad = ctx.createLinearGradient(0,0,0,h);
-        if(["亥","子","丑"].includes(mZ)) { grad.addColorStop(0,"#34495e"); grad.addColorStop(1,"#bdc3c7"); } // 冬
-        else if(["巳","午","未"].includes(mZ)) { grad.addColorStop(0,"#ff7675"); grad.addColorStop(1,"#fab1a0"); } // 夏
-        else if(["寅","卯","辰"].includes(mZ)) { grad.addColorStop(0,"#55efc4"); grad.addColorStop(1,"#00b894"); } // 春
-        else { grad.addColorStop(0,"#ffeaa7"); grad.addColorStop(1,"#fab1a0"); } // 秋
+        if(["亥","子","丑"].includes(mZ)) { grad.addColorStop(0,"#2c3e50"); grad.addColorStop(1,"#bdc3c7"); }
+        else if(["巳","午","未"].includes(mZ)) { grad.addColorStop(0,"#ff7675"); grad.addColorStop(1,"#fab1a0"); }
+        else if(["寅","卯","辰"].includes(mZ)) { grad.addColorStop(0,"#55efc4"); grad.addColorStop(1,"#00b894"); }
+        else { grad.addColorStop(0,"#ffeaa7"); grad.addColorStop(1,"#fab1a0"); }
         ctx.fillStyle = grad;
         ctx.fillRect(0,0,w,h);
 
-        // 简易元素绘制
+        // 简易动态意象
         if(counts['水']>0) {
             ctx.fillStyle = "rgba(52, 152, 219, 0.3)";
             ctx.beginPath(); ctx.moveTo(0,h); 
-            for(let i=0; i<=w; i+=10) ctx.lineTo(i, h - 30*counts['水'] + Math.sin(i*0.05)*10);
+            for(let i=0; i<=w; i+=10) ctx.lineTo(i, h - 25*counts['水'] + Math.sin(i*0.05)*10);
             ctx.lineTo(w,h); ctx.fill();
         }
         if(counts['火']>0) {
             ctx.fillStyle = "rgba(231, 76, 60, 0.5)";
-            ctx.beginPath(); ctx.arc(w*0.8, h*0.2, 10*counts['火'], 0, Math.PI*2); ctx.fill();
+            ctx.beginPath(); ctx.arc(w*0.8, h*0.2, 12*counts['火'], 0, Math.PI*2); ctx.fill();
         }
         if(counts['木']>0) {
-            ctx.strokeStyle = "rgba(46, 204, 113, 0.6)"; ctx.lineWidth=3;
-            for(let i=0; i<counts['木']*5; i++) {
-                let x = Math.random()*w; let ht = 20 + Math.random()*50;
+            ctx.strokeStyle = "rgba(46, 204, 113, 0.5)"; ctx.lineWidth=2;
+            for(let i=0; i<counts['木']*6; i++) {
+                let x = Math.random()*w; let ht = 20 + Math.random()*60;
                 ctx.beginPath(); ctx.moveTo(x,h); ctx.lineTo(x, h-ht); ctx.stroke();
             }
         }
         
-        // 标签
         const maxWx = Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);
         document.getElementById('art-tag').innerText = `意象：${maxWx}气充盈`;
     }
 
-    // 匹配五维文案
     function renderFateDetail(bazi) {
         const dm = bazi.getDayGan();
-        // 简单格局判定：找最强十神
         const gods = [];
-        const pillars = [bazi.getYearGan(), bazi.getMonthGan(), bazi.getTimeGan()]; // 天干透出
-        pillars.forEach(g => gods.push(g.getShiShenGan(dm).getName()));
+        // 检查透干十神 (年干、月干、时干)
+        [bazi.getYearGan(), bazi.getMonthGan(), bazi.getTimeGan()].forEach(g => gods.push(g.getShiShenGan(dm).getName()));
         
         let key = "五行流通";
+        // 简单定格逻辑
         if(gods.includes("七杀")) {
             if(gods.includes("食神")) key = "食神制杀";
             else if(gods.includes("伤官")) key = "伤官合杀";
-            else key = "七杀格"; // 此处可优化为七杀有制无制，这里简化
+            else key = "七杀格"; 
         } else if(gods.includes("伤官")) {
             if(gods.includes("正财")||gods.includes("偏财")) key = "伤官生财";
             else key = "伤官格";
         } else if(gods.includes("比肩")||gods.includes("劫财")) key = "建禄格";
         else if(gods.includes("正官")) key = "正官格";
         
-        // 兜底
         if(!WITTY_DB[key]) key = "五行流通";
 
         const data = WITTY_DB[key];
