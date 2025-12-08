@@ -3,131 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max (修复版)</title>
+    <title>命运黑盒 Pro Max · 天命指南</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.2.37/lunar.min.js"></script>
     <style>
-        /* --- 全局变量与配色 --- */
         :root {
-            --primary-color: #8E44AD;
-            --secondary-color: #27AE60;
-            --bg-color: #F5F7FA;
-            --text-color: #2C3E50;
-            --card-bg: #FFFFFF;
+            --primary: #2c3e50;
+            --accent: #d4af37; /* 鎏金色 */
+            --bg: #f4f6f9;
+            --card-bg: #ffffff;
+            --text: #333;
             --border-radius: 12px;
+            --wuxing-jin: #E6B33D;
+            --wuxing-mu: #27AE60;
+            --wuxing-shui: #2980B9;
+            --wuxing-huo: #C0392B;
+            --wuxing-tu: #8D6E63;
         }
 
-        /* 基础重置 */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        
+
         body {
-            background-color: var(--bg-color);
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
-            color: var(--text-color);
+            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", serif;
+            color: var(--text);
             margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            padding: 20px 10px;
+            line-height: 1.6;
         }
 
-        /* 主容器 */
         .container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            box-shadow: 0 0 20px rgba(0,0,0,0.05);
-            min-height: 100vh;
-            padding-bottom: 50px;
+            max-width: 700px;
+            margin: 0 auto;
         }
 
-        /* Header */
+        /* 头部 */
         .header {
-            background: linear-gradient(135deg, #2c3e50, #000000);
-            padding: 40px 20px;
             text-align: center;
-            color: #d4af37;
-            border-bottom-left-radius: 20px;
-            border-bottom-right-radius: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
         }
-        .header h1 { margin: 0; font-size: 24px; letter-spacing: 2px; }
-        .header p { margin: 8px 0 0; font-size: 12px; opacity: 0.8; color: #fff; }
-
-        /* 输入区域 */
-        .input-section { padding: 0 25px; }
-        .form-group { margin-bottom: 20px; }
-        .label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 15px; color: #34495e; }
-
-        /* 性别选择器 */
-        .gender-switch { display: flex; background: #f1f2f6; border-radius: var(--border-radius); padding: 4px; }
-        .gender-switch input { display: none; }
-        .gender-switch label {
-            flex: 1; text-align: center; padding: 12px; border-radius: 8px;
-            cursor: pointer; transition: all 0.2s ease; font-weight: bold; font-size: 15px; color: #7f8c8d;
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            color: var(--primary);
+            letter-spacing: 2px;
         }
-        .gender-switch input:checked + label {
-            background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.1); color: var(--primary-color);
+        .header p {
+            margin: 5px 0 0;
+            font-size: 13px;
+            color: #7f8c8d;
+            font-weight: 300;
         }
 
-        /* 日期输入框 */
-        input[type="datetime-local"] {
-            width: 100%; padding: 14px; border: 1px solid #e0e0e0; border-radius: var(--border-radius);
-            font-size: 16px; background: #fff; outline: none; -webkit-appearance: none;
+        /* 卡片通用 */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
-        input[type="datetime-local"]:focus { border-color: var(--primary-color); }
 
-        /* 核心按钮 */
-        .btn-calculate {
-            width: 100%; padding: 16px; margin-top: 10px;
-            background: linear-gradient(135deg, #8E44AD, #9B59B6);
-            color: white; border: none; border-radius: var(--border-radius);
-            font-size: 18px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 8px 20px rgba(142, 68, 173, 0.3);
-            transition: transform 0.1s;
+        /* 输入表单 */
+        .input-group { margin-bottom: 15px; }
+        .label { display: block; font-weight: bold; margin-bottom: 8px; color: var(--primary); }
+        input[type="datetime-local"], select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #fafafa;
         }
-        .btn-calculate:active { transform: scale(0.98); }
+        
+        .radio-group { display: flex; gap: 10px; }
+        .radio-label {
+            flex: 1; text-align: center; padding: 10px;
+            background: #f0f0f0; border-radius: 8px; cursor: pointer;
+            transition: 0.3s; color: #666; font-weight: 600;
+        }
+        input[type="radio"]:checked + .radio-label {
+            background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(44,62,80,0.3);
+        }
+        input[type="radio"] { display: none; }
 
-        /* 结果区域 */
-        #result-area { display: none; padding: 20px 25px; animation: slideUp 0.5s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-submit {
+            width: 100%; padding: 15px;
+            background: linear-gradient(135deg, #2c3e50, #434343);
+            color: var(--accent);
+            border: none; border-radius: 8px;
+            font-size: 18px; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-submit:active { transform: scale(0.98); }
 
+        /* 结果区域动画 */
+        #result-area { display: none; animation: fadeIn 0.6s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 标题栏 */
         .section-title {
-            text-align: center; font-size: 18px; font-weight: bold; margin: 30px 0 15px;
-            color: #2c3e50; position: relative;
-        }
-        .section-title::after {
-            content: ""; display: block; width: 40px; height: 3px; background: var(--primary-color);
-            margin: 8px auto 0; border-radius: 2px;
+            font-size: 16px; font-weight: 700; color: var(--primary);
+            border-left: 4px solid var(--accent); padding-left: 10px;
+            margin: 20px 0 15px; display: flex; align-items: center; justify-content: space-between;
         }
 
-        /* 四柱网格 */
+        /* 四柱排盘网格 */
         .bazi-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 5px;
         }
-        .pillar-col {
-            display: flex; flex-direction: column; align-items: center;
-            background: #f8f9fa; border-radius: 10px; padding: 15px 5px;
+        .pillar {
+            background: #f8f9fa; border: 1px solid #eee; border-radius: 8px;
+            padding: 15px 5px; text-align: center;
         }
-        .pillar-head { font-size: 12px; color: #95a5a6; margin-bottom: 8px; }
-        .char-text { font-size: 24px; font-weight: bold; font-family: "KaiTi", "楷体", serif; margin: 2px 0; }
+        .pillar-head { font-size: 12px; color: #999; margin-bottom: 5px; }
+        .god-text { font-size: 11px; color: #666; height: 16px; }
+        .gan-zhi {
+            font-size: 24px; font-weight: bold; font-family: "KaiTi", serif;
+            margin: 5px 0; line-height: 1.2;
+        }
+        /* 自坐长生样式 */
+        .zhangsheng-tag {
+            font-size: 11px; display: inline-block; padding: 2px 6px;
+            background: rgba(0,0,0,0.05); border-radius: 4px; color: #555;
+            margin-top: 5px; transform: scale(0.9);
+        }
         
-        /* 五行着色 */
-        .wx-金 { color: #E6B33D; }
-        .wx-木 { color: #27AE60; }
-        .wx-水 { color: #2980B9; }
-        .wx-火 { color: #C0392B; }
-        .wx-土 { color: #8D6E63; }
+        /* 深度分析盒子 */
+        .deep-box {
+            background: #fffbf0; border: 1px solid #f7ebd0;
+            padding: 15px; border-radius: 8px; font-size: 14px;
+        }
+        .highlight { color: #d35400; font-weight: bold; }
+        .tag-wang { background: #e8f5e9; color: #27ae60; padding: 2px 5px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .tag-shuai { background: #ffebee; color: #c0392b; padding: 2px 5px; border-radius: 4px; font-size: 12px; font-weight: bold; }
 
-        /* 信息列表 */
-        .info-list { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 15px; }
-        .info-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #f0f0f0; font-size: 14px; }
-        .info-item:last-child { border-bottom: none; }
-        .info-label { color: #7f8c8d; }
-        .info-val { font-weight: bold; color: #2c3e50; }
+        /* 五维分析列表 */
+        .dimension-item {
+            margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dashed #eee;
+        }
+        .dimension-item:last-child { border-bottom: none; margin-bottom: 0; }
+        .dim-title { font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .dim-content { margin-top: 6px; font-size: 14px; color: #444; text-align: justify; }
+        
+        /* 五行配色 */
+        .wx-金 { color: var(--wuxing-jin); }
+        .wx-木 { color: var(--wuxing-mu); }
+        .wx-水 { color: var(--wuxing-shui); }
+        .wx-火 { color: var(--wuxing-huo); }
+        .wx-土 { color: var(--wuxing-tu); }
+
     </style>
 </head>
 <body>
@@ -135,149 +161,351 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒 Pro Max</h1>
-        <p>乾坤未定 · 你我皆是黑马</p>
+        <p>50年经验 · 人元司令 · 五维解密</p>
     </div>
 
-    <div class="input-section">
-        <div class="form-group">
+    <div class="card">
+        <div class="input-group">
             <span class="label">性别 (Gender)</span>
-            <div class="gender-switch">
-                <input type="radio" id="male" name="gender" value="1" checked>
-                <label for="male">男命</label>
+            <div class="radio-group">
+                <input type="radio" name="gender" id="g1" value="1" checked>
+                <label for="g1" class="radio-label">男命 (乾造)</label>
                 
-                <input type="radio" id="female" name="gender" value="0">
-                <label for="female">女命</label>
+                <input type="radio" name="gender" id="g0" value="0">
+                <label for="g0" class="radio-label">女命 (坤造)</label>
             </div>
         </div>
-
-        <div class="form-group">
+        
+        <div class="input-group">
             <span class="label">出生时间 (公历)</span>
-            <input type="datetime-local" id="birth-date">
+            <input type="datetime-local" id="birthTime">
         </div>
 
-        <button class="btn-calculate" onclick="startCalculate()">开始推演</button>
+        <button class="btn-submit" onclick="calculate()">揭开天命</button>
     </div>
 
     <div id="result-area">
-        <div class="section-title">八字排盘</div>
-        <div class="bazi-grid" id="bazi-grid">
-            </div>
-
-        <div class="section-title">基础信息</div>
-        <div class="info-list" id="basic-info">
-            </div>
         
-        <div class="section-title">五行简析</div>
-        <div class="info-list" id="wuxing-info" style="display:block;">
+        <div class="section-title">八字排盘 · 自坐长生</div>
+        <div class="card">
+            <div class="bazi-grid" id="bazi-grid">
+                </div>
+            <div style="margin-top:15px; text-align:center; font-size:12px; color:#999;">
+                * 长生状态为该柱天干对该柱地支的状态（自坐），体现单柱能量场。
             </div>
+        </div>
+
+        <div class="section-title">真神司令 · 门旺地衰辩证</div>
+        <div class="card">
+            <div class="deep-box" id="siling-box">
+                </div>
+        </div>
+
+        <div class="section-title">五维人生指南</div>
+        <div class="card">
+            <div id="five-dimensions">
+                </div>
+        </div>
+        
+        <div style="height:50px; text-align:center; color:#ccc; font-size:12px;">Destiny Algorithm © 2025</div>
     </div>
 </div>
 
 <script>
     // 页面加载时设置默认时间
-    window.addEventListener('load', () => {
+    window.onload = function() {
         const now = new Date();
-        const toLocalISO = (date) => {
-            const pad = num => (num < 10 ? '0' : '') + num;
-            return date.getFullYear() +
-                '-' + pad(date.getMonth() + 1) +
-                '-' + pad(date.getDate()) +
-                'T' + pad(date.getHours()) +
-                ':' + pad(date.getMinutes());
-        };
-        document.getElementById('birth-date').value = toLocalISO(now);
-    });
-
-    function startCalculate() {
-        // 1. 获取输入
-        const dateStr = document.getElementById('birth-date').value;
-        const gender = document.querySelector('input[name="gender"]:checked').value;
-
-        if (!dateStr) {
-            alert("请先选择出生时间");
-            return;
-        }
-
-        try {
-            // 2. 初始化 Lunar 对象
-            const d = new Date(dateStr);
-            const solar = Solar.fromYmdHms(d.getFullYear(), d.getMonth()+1, d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
-            const lunar = solar.getLunar();
-            const bazi = lunar.getEightChar();
-            bazi.setSect(2); // 设置子时流派
-
-            // 3. 渲染八字网格
-            renderBazi(bazi);
-
-            // 4. 渲染基础信息
-            renderInfo(lunar, bazi, gender);
-
-            // 5. 渲染五行
-            renderWuxing(bazi);
-
-            // 6. 显示结果并滚动
-            const resultArea = document.getElementById('result-area');
-            resultArea.style.display = 'block';
-            resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-        } catch (e) {
-            console.error(e);
-            alert("排盘出错，请检查输入时间是否正确");
-        }
+        const str = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        document.getElementById('birthTime').value = str;
     }
 
-    function renderBazi(bazi) {
+    // 核心数据结构
+    const WUXING_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
+    
+    // 人元司令口诀表 (地支 -> [[藏干, 天数], ...])
+    const SILING_RULES = {
+        '寅': [['戊',7], ['丙',7], ['甲',16]],
+        '卯': [['甲',10], ['乙',20]],
+        '辰': [['乙',9], ['癸',3], ['戊',18]],
+        '巳': [['戊',5], ['庚',9], ['丙',16]],
+        '午': [['丙',10], ['己',9], ['丁',11]],
+        '未': [['丁',9], ['乙',3], ['己',18]],
+        '申': [['戊',7], ['壬',7], ['庚',16]],
+        '酉': [['庚',10], ['辛',20]],
+        '戌': [['辛',9], ['丁',3], ['戊',18]],
+        '亥': [['戊',7], ['甲',5], ['壬',18]],
+        '子': [['壬',10], ['癸',20]],
+        '丑': [['癸',9], ['辛',3], ['己',18]]
+    };
+
+    // 十二长生查找表 (天干 -> 对应地支的长生状态)
+    // 顺序：长生,沐浴,冠带,临官,帝旺,衰,病,死,墓,绝,胎,养
+    // 地支序：子0, 丑1, 寅2, 卯3, 辰4, 巳5, 午6, 未7, 申8, 酉9, 戌10, 亥11
+    const ZHANGSHENG_MAP = {
+        '甲': {11:'长生',0:'沐浴',1:'冠带',2:'临官',3:'帝旺',4:'衰',5:'病',6:'死',7:'墓',8:'绝',9:'胎',10:'养'},
+        '乙': {6:'长生',5:'沐浴',4:'冠带',3:'临官',2:'帝旺',1:'衰',0:'病',11:'死',10:'墓',9:'绝',8:'胎',7:'养'},
+        '丙': {2:'长生',3:'沐浴',4:'冠带',5:'临官',6:'帝旺',7:'衰',8:'病',9:'死',10:'墓',11:'绝',0:'胎',1:'养'},
+        '丁': {9:'长生',8:'沐浴',7:'冠带',6:'临官',5:'帝旺',4:'衰',3:'病',2:'死',1:'墓',0:'绝',11:'胎',10:'养'},
+        '戊': {2:'长生',3:'沐浴',4:'冠带',5:'临官',6:'帝旺',7:'衰',8:'病',9:'死',10:'墓',11:'绝',0:'胎',1:'养'}, // 火土同宫
+        '己': {9:'长生',8:'沐浴',7:'冠带',6:'临官',5:'帝旺',4:'衰',3:'病',2:'死',1:'墓',0:'绝',11:'胎',10:'养'},
+        '庚': {5:'长生',6:'沐浴',7:'冠带',8:'临官',9:'帝旺',10:'衰',11:'病',0:'死',1:'墓',2:'绝',3:'胎',4:'养'},
+        '辛': {0:'长生',11:'沐浴',10:'冠带',9:'临官',8:'帝旺',7:'衰',6:'病',5:'死',4:'墓',3:'绝',2:'胎',1:'养'},
+        '壬': {8:'长生',9:'沐浴',10:'冠带',11:'临官',0:'帝旺',1:'衰',2:'病',3:'死',4:'墓',5:'绝',6:'胎',7:'养'},
+        '癸': {3:'长生',2:'沐浴',1:'冠带',0:'临官',11:'帝旺',10:'衰',9:'病',8:'死',7:'墓',6:'绝',5:'胎',4:'养'}
+    };
+    
+    // 地支索引辅助
+    const ZHI_INDEX = {'子':0,'丑':1,'寅':2,'卯':3,'辰':4,'巳':5,'午':6,'未':7,'申':8,'酉':9,'戌':10,'亥':11};
+
+    function calculate() {
+        const timeStr = document.getElementById('birthTime').value;
+        if (!timeStr) return alert("请输入出生时间");
+        
+        const date = new Date(timeStr);
+        const gender = document.querySelector('input[name="gender"]:checked').value; // 1男 0女
+
+        // 1. 排盘初始化
+        const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+        const lunar = solar.getLunar();
+        const bazi = lunar.getEightChar();
+        bazi.setSect(2); // 设置流派：晚子时算明天
+
+        // 2. 渲染四柱
+        renderPillars(bazi, gender);
+
+        // 3. 计算司令与门旺地衰
+        const silingInfo = calcCommander(lunar, bazi);
+        renderDeepAnalysis(bazi, silingInfo);
+
+        // 4. 五维分析
+        renderFiveDimensions(bazi, silingInfo);
+
+        // 显示结果
+        const resultArea = document.getElementById('result-area');
+        resultArea.style.display = 'block';
+        resultArea.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- 功能函数 ---
+
+    function getSelfZhangSheng(ganName, zhiName) {
+        if (!ZHANGSHENG_MAP[ganName]) return '';
+        const idx = ZHI_INDEX[zhiName];
+        return ZHANGSHENG_MAP[ganName][idx];
+    }
+
+    function renderPillars(bazi, gender) {
         const pillars = [
-            { name: '年柱', gan: bazi.getYearGan(), zhi: bazi.getYearZhi() },
-            { name: '月柱', gan: bazi.getMonthGan(), zhi: bazi.getMonthZhi() },
-            { name: '日柱', gan: bazi.getDayGan(), zhi: bazi.getDayZhi() },
-            { name: '时柱', gan: bazi.getTimeGan(), zhi: bazi.getTimeZhi() }
+            { t: '年柱', g: bazi.getYearGan(), z: bazi.getYearZhi() },
+            { t: '月柱', g: bazi.getMonthGan(), z: bazi.getMonthZhi() },
+            { t: '日柱', g: bazi.getDayGan(), z: bazi.getDayZhi() },
+            { t: '时柱', g: bazi.getTimeGan(), z: bazi.getTimeZhi() }
         ];
 
         let html = '';
+        const dayMaster = bazi.getDayGan(); // 日主
+
         pillars.forEach(p => {
+            // 十神（针对日主）
+            let god = '';
+            if (p.t === '日柱') god = '日主';
+            else god = p.g.getShiShenGan(dayMaster).getName();
+
+            // 自坐长生
+            const zhangsheng = getSelfZhangSheng(p.g.getName(), p.z.getName());
+
             html += `
-                <div class="pillar-col">
-                    <div class="pillar-head">${p.name}</div>
-                    <div class="char-text wx-${p.gan.getWuXing()}">${p.gan.getName()}</div>
-                    <div class="char-text wx-${p.zhi.getWuXing()}">${p.zhi.getName()}</div>
-                    <div style="font-size:12px; color:#999; margin-top:5px;">${p.zhi.getHiddenGan()[0].getName()}</div>
+                <div class="pillar">
+                    <div class="pillar-head">${p.t}</div>
+                    <div class="god-text">${god}</div>
+                    <div class="gan-zhi ${WUXING_COLOR[p.g.getWuXing()]}">${p.g.getName()}</div>
+                    <div class="gan-zhi ${WUXING_COLOR[p.z.getWuXing()]}">${p.z.getName()}</div>
+                    <div class="zhangsheng-tag">${zhangsheng}</div>
                 </div>
             `;
         });
         document.getElementById('bazi-grid').innerHTML = html;
     }
 
-    function renderInfo(lunar, bazi, gender) {
-        const yun = bazi.getYun(parseInt(gender));
-        const html = `
-            <div class="info-item"><span class="info-label">农历</span><span class="info-val">${lunar.toString()}</span></div>
-            <div class="info-item"><span class="info-label">生肖</span><span class="info-val">${lunar.getYearShengXiao()}</span></div>
-            <div class="info-item"><span class="info-label">纳音</span><span class="info-val">${bazi.getYearNaYin()}命</span></div>
-            <div class="info-item"><span class="info-label">起运</span><span class="info-val">${yun.getStartYun().getYear()}岁 (${yun.getStartYun().getSolar().getYear()}年)</span></div>
-        `;
-        document.getElementById('basic-info').innerHTML = html;
-    }
-
-    function renderWuxing(bazi) {
-        const wuxing = [
-            bazi.getYearGan().getWuXing(), bazi.getYearZhi().getWuXing(),
-            bazi.getMonthGan().getWuXing(), bazi.getMonthZhi().getWuXing(),
-            bazi.getDayGan().getWuXing(), bazi.getDayZhi().getWuXing(),
-            bazi.getTimeGan().getWuXing(), bazi.getTimeZhi().getWuXing()
-        ];
+    function calcCommander(lunar, bazi) {
+        // 计算距离上一个节气的天数
+        const prevJie = lunar.getPrevJie();
+        const jieSolar = prevJie.getSolar(); // 节气时刻
+        const birthSolar = lunar.getSolar(); // 出生时刻
         
-        const counts = { '金':0, '木':0, '水':0, '火':0, '土':0 };
-        wuxing.forEach(w => counts[w]++);
-
-        let html = '';
-        for (let w in counts) {
-            if (counts[w] > 0) {
-                html += `<div class="info-item"><span class="info-label">五行 · ${w}</span><span class="info-val wx-${w}">${counts[w]} 个</span></div>`;
+        // 简单计算天数差（忽略分秒，取整天数）
+        const diffTime = Math.abs(birthSolar.getCalendar().getTime() - jieSolar.getCalendar().getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        
+        const monthZhi = bazi.getMonthZhi().getName();
+        const rules = SILING_RULES[monthZhi] || [];
+        
+        let commander = '未知';
+        let currentDay = 0;
+        
+        // 遍历查找当令真神
+        for (let rule of rules) {
+            currentDay += rule[1];
+            if (diffDays <= currentDay) {
+                commander = rule[0];
+                break;
             }
         }
-        document.getElementById('wuxing-info').innerHTML = html || '<div style="text-align:center;padding:10px;">五行平衡</div>';
+        // 如果超过最后一天，取最后一个
+        if (commander === '未知' && rules.length > 0) commander = rules[rules.length-1][0];
+
+        return {
+            diffDays: diffDays,
+            commander: commander,
+            prevJieName: prevJie.getName()
+        };
     }
+
+    function renderDeepAnalysis(bazi, info) {
+        const dm = bazi.getDayGan();
+        const dmWx = dm.getWuXing();
+        
+        const monthZhi = bazi.getMonthZhi();
+        const monthWx = monthZhi.getWuXing();
+        
+        // 司令五行（简单转换）
+        const ganWxMap = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
+        const cmdWx = ganWxMap[info.commander];
+
+        // 判定帮扶（同我者、生我者为旺）
+        const isHelp = (targetWx, selfWx) => {
+            if (targetWx === selfWx) return true;
+            if (targetWx === '木' && selfWx === '火') return true;
+            if (targetWx === '火' && selfWx === '土') return true;
+            if (targetWx === '土' && selfWx === '金') return true;
+            if (targetWx === '金' && selfWx === '水') return true;
+            if (targetWx === '水' && selfWx === '木') return true;
+            return false;
+        };
+
+        const menWang = isHelp(monthWx, dmWx); // 门旺？
+        const diWang = isHelp(cmdWx, dmWx);   // 地旺？
+
+        let statusText = '';
+        if (menWang && diWang) statusText = '<span class="tag-wang">门地双旺</span> <span class="highlight">身极强</span>，底气十足，可担大财大官。';
+        else if (menWang && !diWang) statusText = '<span class="tag-wang">门旺</span> <span class="tag-shuai">地衰</span> <span class="highlight">外强中干</span>，表面风光，内里需补气。';
+        else if (!menWang && diWang) statusText = '<span class="tag-shuai">门衰</span> <span class="tag-wang">地旺</span> <span class="highlight">绝处逢生</span>，平时低调，关键时刻有靠山。';
+        else statusText = '<span class="tag-shuai">门地俱衰</span> <span class="highlight">真身弱</span>，需印比生扶，不可硬抗。';
+
+        let html = `
+            <div>📅 <b>节气定位</b>：${info.prevJieName}后第 ${info.diffDays} 天</div>
+            <div style="margin-top:5px;">🦁 <b>人元司令</b>：当前由 <span class="highlight">${info.commander}${cmdWx}</span> 执政掌权。</div>
+            <div style="margin-top:10px; border-top:1px dashed #ddd; padding-top:10px;">
+                ${statusText}
+            </div>
+        `;
+        document.getElementById('siling-box').innerHTML = html;
+        
+        // 返回给五维分析使用
+        info.dmWx = dmWx;
+        info.cmdWx = cmdWx;
+        info.isStrong = (menWang && diWang) || (menWang && !diWang); // 简单强弱判定
+    }
+
+    function renderFiveDimensions(bazi, info) {
+        const dm = bazi.getDayGan();
+        const dmWx = dm.getWuXing();
+        
+        // 简单统计五行
+        const wxCounts = {'金':0,'木':0,'水':0,'火':0,'土':0};
+        const allChars = [
+            bazi.getYearGan(), bazi.getYearZhi(),
+            bazi.getMonthGan(), bazi.getMonthZhi(),
+            bazi.getDayGan(), bazi.getDayZhi(),
+            bazi.getTimeGan(), bazi.getTimeZhi()
+        ];
+        allChars.forEach(c => wxCounts[c.getWuXing()]++);
+
+        // 找最强和最弱
+        let maxWx = Object.keys(wxCounts).reduce((a, b) => wxCounts[a] > wxCounts[b] ? a : b);
+        let minWx = Object.keys(wxCounts).reduce((a, b) => wxCounts[a] < wxCounts[b] ? a : b);
+
+        // 1. 事业 (官杀 + 食伤)
+        let careerText = "";
+        if (info.isStrong) {
+            careerText = "身强喜克泄。你的事业适合<b>技术、表达、销售</b>（食伤生财）或<b>管理、公职</b>（官杀护身）。核心竞争力在于你的个人才华（食伤）能否从司令真神中透出。若伤官配印，更是行业权威。";
+        } else {
+            careerText = "身弱喜印比。事业上宜<b>寻求合作、依靠平台</b>。不宜独自承担过大风险。适合从事文化、教育、服务或稳定性高的后台支持工作。你的贵人通常是长辈或上司。";
+        }
+
+        // 2. 财运 (财星 + 食伤)
+        let wealthText = "";
+        const wealthWxMap = {'木':'土', '火':'金', '土':'水', '金':'木', '水':'火'}; // 我克者为财
+        const wealthElement = wealthWxMap[dmWx];
+        if (wxCounts[wealthElement] > 0) {
+            wealthText = `命局自带财星（${wealthElement}）。若身强，财气通门户，可经商致富；若身弱，需防“财多压身”，赚得多花得多，建议<b>储蓄置业</b>，用不动产守财。`;
+        } else {
+            wealthText = `原局财星不显，多为<b>技术求财或名声求财</b>。你的财富往往来自“食伤”的转化，即靠一技之长换取回报。切忌投机，正财得位方为长久之计。`;
+        }
+
+        // 3. 婚姻 (日支 + 财官)
+        const dayZhi = bazi.getDayZhi();
+        const zhangsheng = getSelfZhangSheng(dm.getName(), dayZhi.getName());
+        let marryText = `日支坐${dayZhi.getName()}（${zhangsheng}）。`;
+        if (['长生','帝旺','建禄'].includes(zhangsheng)) {
+            marryText += "配偶能力较强，对你有实质性帮助。";
+        } else if (['墓','绝','病'].includes(zhangsheng)) {
+            marryText += "配偶身体或运势可能稍弱，婚姻中你需要多付出包容。";
+        }
+        // 简单冲合判断（以月支日支为例）
+        if (bazi.getMonthZhi().getName() === dayZhi.getName()) marryText += " 注意：月日伏吟，感情容易有纠结拖延之象。";
+
+        // 4. 子女 (时柱)
+        const timeZhi = bazi.getTimeZhi();
+        const timeGan = bazi.getTimeGan();
+        let childText = `时柱为${timeGan.getName()}${timeZhi.getName()}。时支为子女宫，`;
+        if (info.cmdWx === timeZhi.getWuXing()) {
+            childText += "时支得令，子女身体健康，生命力旺盛。晚年可享子女之福。";
+        } else {
+            childText += "子女宫较为平稳。晚运主要看时柱纳音与调候是否得宜。";
+        }
+
+        // 5. 健康 (最弱五行 + 调候)
+        let healthText = `重点关注五行<b>${minWx}</b>对应的系统。`;
+        if (minWx === '水') healthText += " 需注意肾脏、泌尿系统及血液循环。";
+        else if (minWx === '火') healthText += " 需注意心脏、视力及小肠消化。";
+        else if (minWx === '木') healthText += " 需注意肝胆、筋骨及神经系统。";
+        else if (minWx === '金') healthText += " 需注意肺部、呼吸道及大肠。";
+        else if (minWx === '土') healthText += " 需注意脾胃消化及皮肤问题。";
+        
+        // 调候提示
+        if (['亥','子','丑'].includes(bazi.getMonthZhi().getName()) && wxCounts['火'] === 0) {
+            healthText += " <br>⚠️ <b>命局偏寒</b>：生于冬月且缺火，务必多晒太阳，运动升阳，防寒湿之症。";
+        }
+        if (['巳','午','未'].includes(bazi.getMonthZhi().getName()) && wxCounts['水'] === 0) {
+            healthText += " <br>⚠️ <b>命局偏燥</b>：生于夏月且缺水，需补水润局，防上火炎症，注意情绪调节。";
+        }
+
+        const html = `
+            <div class="dimension-item">
+                <div class="dim-title">🚀 事业格局</div>
+                <div class="dim-content">${careerText}</div>
+            </div>
+            <div class="dimension-item">
+                <div class="dim-title">💰 财富运势</div>
+                <div class="dim-content">${wealthText}</div>
+            </div>
+            <div class="dimension-item">
+                <div class="dim-title">💞 婚姻情感</div>
+                <div class="dim-content">${marryText}</div>
+            </div>
+            <div class="dimension-item">
+                <div class="dim-title">👶 子女晚运</div>
+                <div class="dim-content">${childText}</div>
+            </div>
+            <div class="dimension-item">
+                <div class="dim-title">💪 健康调候</div>
+                <div class="dim-content">${healthText}</div>
+            </div>
+        `;
+        document.getElementById('five-dimensions').innerHTML = html;
+    }
+
 </script>
 
 </body>
