@@ -154,7 +154,7 @@
     <div class="header">
         <h1>命运黑盒 Pro Max</h1>
         <div class="energy-bar"></div>
-        <p>找到自己的天命</p>
+        <p>50年经验 · 人元司令 · 五维解密</p>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -206,25 +206,27 @@
 </div>
 
 <script>
-    let currentGender = 1;
+    let currentGender = 1; // 1男 0女
 
-    // === 核心数据字典 (完全内置，不依赖库函数) ===
+    // ==========================================================
+    // 静态数据字典 (核心：所有查询均基于此，不依赖库函数)
+    // ==========================================================
     
-    // 五行映射
+    // 五行映射表
     const WUXING_MAP = {
         '甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水',
         '子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'
     };
     const WX_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
 
-    // 藏干字典 (简化版)
+    // 藏干查询表
     const HIDDEN_GAN_MAP = {
         '子':['癸'], '丑':['己','癸','辛'], '寅':['甲','丙','戊'], '卯':['乙'], 
         '辰':['戊','乙','癸'], '巳':['丙','戊','庚'], '午':['丁','己'], '未':['己','丁','乙'], 
         '申':['庚','壬','戊'], '酉':['辛'], '戌':['戊','辛','丁'], '亥':['壬','甲']
     };
 
-    // 长生字典
+    // 自坐长生表
     const CHANGSHENG_TABLE = {
         "甲": { "亥":"长生", "子":"沐浴", "丑":"冠带", "寅":"临官", "卯":"帝旺", "辰":"衰", "巳":"病", "午":"死", "未":"墓", "申":"绝", "酉":"胎", "戌":"养" },
         "乙": { "午":"长生", "巳":"沐浴", "辰":"冠带", "卯":"临官", "寅":"帝旺", "丑":"衰", "子":"病", "亥":"死", "戌":"墓", "酉":"绝", "申":"胎", "未":"养" },
@@ -239,7 +241,7 @@
     };
     const STRONG_CS = ["长生", "帝旺", "临官", "冠带"]; 
 
-    // 十神字典
+    // 十神查询表
     const SHISHEN_MAP = {
         "甲": { "甲":"比肩", "乙":"劫财", "丙":"食神", "丁":"伤官", "戊":"偏财", "己":"正财", "庚":"七杀", "辛":"正官", "壬":"偏印", "癸":"正印" },
         "乙": { "乙":"比肩", "甲":"劫财", "丁":"食神", "丙":"伤官", "己":"偏财", "戊":"正财", "辛":"七杀", "庚":"正官", "癸":"偏印", "壬":"正印" },
@@ -253,7 +255,7 @@
         "癸": { "癸":"比肩", "壬":"劫财", "乙":"食神", "甲":"伤官", "丁":"偏财", "丙":"正财", "己":"七杀", "戊":"正官", "辛":"偏印", "庚":"正印" }
     };
 
-    // 司令规则
+    // 人元司令规则
     const SILING_RULES = {
         '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
         '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
@@ -335,14 +337,14 @@
             const bazi = lunar.getEightChar();
             bazi.setSect(2); // 2为晚子时
 
-            // === 核心修复：只取字符，不操作对象 ===
+            // === 核心修正：强制转字符串，不调用任何可能报错的对象方法 ===
             // 获取八字字符串 (如 "甲", "子")
-            const yg = bazi.getYearGan().getName();  const yz = bazi.getYearZhi().getName();
-            const mg = bazi.getMonthGan().getName(); const mz = bazi.getMonthZhi().getName();
-            const dg = bazi.getDayGan().getName();   const dz = bazi.getDayZhi().getName();
-            const hg = bazi.getTimeGan().getName();  const hz = bazi.getTimeZhi().getName();
+            const yg = String(bazi.getYearGan());  const yz = String(bazi.getYearZhi());
+            const mg = String(bazi.getMonthGan()); const mz = String(bazi.getMonthZhi());
+            const dg = String(bazi.getDayGan());   const dz = String(bazi.getDayZhi());
+            const hg = String(bazi.getTimeGan());  const hz = String(bazi.getTimeZhi());
 
-            // 构造简单的纯数据对象，彻底杜绝 function 调用错误
+            // 构造纯字符串数据结构
             const pillars = [
                 { t:'年柱', g:yg, z:yz },
                 { t:'月柱', g:mg, z:mz },
@@ -350,17 +352,14 @@
                 { t:'时柱', g:hg, z:hz }
             ];
 
-            // 传递纯数据
+            // 传递纯字符串进行查表，不进行任何库函数调用
             renderPillars(pillars, dg);
             
-            // 计算司令
+            // 司令逻辑只依赖 Lunar 日期计算和字符串查表
             const cmdInfo = calcCommander(lunar, mz);
             renderCommander(cmdInfo, dg, mz);
 
-            // 绘图
             drawArt(pillars, mz);
-
-            // 匹配文案
             renderFateDetail(pillars, dg);
 
             const resArea = document.getElementById('result-area');
@@ -376,17 +375,17 @@
     function renderPillars(pillars, dayMaster) {
         let html = '';
         pillars.forEach(p => {
-            // 查十神字典
+            // 1. 查十神字典
             const god = p.t === '日柱' ? '日主' : (SHISHEN_MAP[dayMaster][p.g] || "");
             
-            // 查长生字典
+            // 2. 查长生字典
             const cs = CHANGSHENG_TABLE[p.g][p.z] || "";
             const csClass = STRONG_CS.includes(cs) ? 'cs-tag cs-strong' : 'cs-tag';
             
-            // 查藏干字典
+            // 3. 查藏干字典
             const hiddens = HIDDEN_GAN_MAP[p.z] ? HIDDEN_GAN_MAP[p.z].join('') : "";
 
-            // 查五行颜色
+            // 4. 查五行颜色
             const gWx = WUXING_MAP[p.g];
             const zWx = WUXING_MAP[p.z];
 
