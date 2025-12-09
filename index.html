@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 终极修复版</title>
+    <title>命运黑盒 Pro Max · 稳如泰山版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -209,7 +209,7 @@
     let currentGender = 1; // 1男 0女
 
     // ==========================================================
-    // 静态数据字典 (核心：所有查询均基于此，不依赖库函数)
+    // 静态数据字典 (核心：所有查询均基于此，不依赖库函数方法)
     // ==========================================================
     
     // 五行映射表
@@ -255,7 +255,7 @@
         "癸": { "癸":"比肩", "壬":"劫财", "乙":"食神", "甲":"伤官", "丁":"偏财", "丙":"正财", "己":"七杀", "戊":"正官", "辛":"偏印", "庚":"正印" }
     };
 
-    // 人元司令规则
+    // 司令规则
     const SILING_RULES = {
         '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
         '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
@@ -335,10 +335,12 @@
             const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
             const lunar = solar.getLunar();
             const bazi = lunar.getEightChar();
-            bazi.setSect(2); // 2为晚子时
+            bazi.setSect(2); 
 
-            // === 核心修复：强制转字符串，不调用任何可能报错的对象方法 ===
-            // 这里使用 toString() 而不是 getName()，确保绝对安全
+            // =======================================================
+            // 核心修复：强制转字符串，不调用任何可能报错的对象方法
+            // =======================================================
+            // 获取八字字符串 (如 "甲", "子") - toString() 是最安全的
             const yg = bazi.getYearGan().toString();  const yz = bazi.getYearZhi().toString();
             const mg = bazi.getMonthGan().toString(); const mz = bazi.getMonthZhi().toString();
             const dg = bazi.getDayGan().toString();   const dz = bazi.getDayZhi().toString();
@@ -355,7 +357,7 @@
             // 传递纯字符串进行查表，不进行任何库函数调用
             renderPillars(pillars, dg);
             
-            // 司令逻辑
+            // 司令逻辑只依赖 Lunar 日期计算和字符串查表
             const cmdInfo = calcCommander(lunar, mz);
             renderCommander(cmdInfo, dg, mz);
 
@@ -403,18 +405,19 @@
         document.getElementById('pillars-box').innerHTML = html;
     }
 
+    // 核心修复：手动计算时间戳，替代 solar.getCalendar()
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
-        // 计算差值：手动转为JS Date对象
-        // 注意：Solar对象本身没有 .toDate() 方法，需要手动构造
+        
+        // 手动转换 Previous JieQi Time
+        const pjSolar = prevJie.getSolar();
+        const jieTime = new Date(pjSolar.getYear(), pjSolar.getMonth()-1, pjSolar.getDay(), pjSolar.getHour(), pjSolar.getMinute(), pjSolar.getSecond()).getTime();
+        
+        // 手动转换 Birth Time
         const bSolar = lunar.getSolar();
-        const birthDate = new Date(bSolar.getYear(), bSolar.getMonth()-1, bSolar.getDay(), bSolar.getHour(), bSolar.getMinute(), bSolar.getSecond());
-        
-        const jSolar = prevJie.getSolar();
-        const jieDate = new Date(jSolar.getYear(), jSolar.getMonth()-1, jSolar.getDay(), jSolar.getHour(), jSolar.getMinute(), jSolar.getSecond());
-        
-        const diffMs = birthDate.getTime() - jieDate.getTime();
-        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const birthTime = new Date(bSolar.getYear(), bSolar.getMonth()-1, bSolar.getDay(), bSolar.getHour(), bSolar.getMinute(), bSolar.getSecond()).getTime();
+
+        const diffDays = Math.floor((birthTime - jieTime) / (1000 * 60 * 60 * 24));
         
         const rules = SILING_RULES[monthZhi] || [];
         
@@ -437,7 +440,6 @@
         const mZWx = WUXING_MAP[mZ];
         const cmdWx = WUXING_MAP[info.commander];
 
-        // 同我、生我为旺
         const isHelp = (tWx, sWx) => tWx===sWx || (tWx==="木"&&sWx==="火") || (tWx==="火"&&sWx==="土") || (tWx==="土"&&sWx==="金") || (tWx==="金"&&sWx==="水") || (tWx==="水"&&sWx==="木");
 
         const menWang = isHelp(mZWx, dmWx);
