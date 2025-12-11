@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 天命指南 (高阶实战版)</title>
+    <title>命运黑盒 Pro Max · 严谨格局版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
-            /* 赛博玄学配色 - 保持原有风格 */
             --primary: #ff4757;      
             --success: #2ed573;     
             --dark: #2f3542;         
@@ -37,7 +36,6 @@
             padding-bottom: 60px;
         }
 
-        /* 标题区 */
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { 
             font-size: 28px; font-weight: 900; margin: 0; letter-spacing: 2px;
@@ -50,7 +48,6 @@
         }
         .subtitle { font-size: 12px; color: var(--gray); margin-top: 8px; opacity: 0.8; }
 
-        /* 卡片通用 */
         .card {
             background: var(--card-bg); border-radius: var(--radius);
             padding: 20px; margin-bottom: 20px;
@@ -58,7 +55,6 @@
             position: relative; overflow: hidden;
         }
 
-        /* 输入区 */
         .input-group { margin-bottom: 15px; }
         .label { display: block; font-weight: bold; font-size: 14px; margin-bottom: 8px; color: var(--gray); }
         
@@ -87,11 +83,9 @@
         }
         .btn-calc:active { transform: scale(0.98); }
 
-        /* 结果展示区 */
         #result-area { display: none; animation: slideUp 0.5s ease; }
         @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
 
-        /* 意象画 Canvas */
         .art-box {
             height: 200px; border-radius: var(--radius); overflow: hidden; margin-bottom: 20px;
             position: relative; box-shadow: var(--shadow); border: 1px solid #fff;
@@ -103,7 +97,6 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1); color: var(--dark);
         }
 
-        /* 四柱排盘 */
         .section-title { font-size: 16px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .section-title::before { content:''; width:4px; height:16px; background:var(--primary); border-radius:2px; }
 
@@ -117,31 +110,20 @@
         .char { font-family: "KaiTi", "楷体", serif; font-size: 24px; font-weight: bold; line-height: 1.1; }
         .hidden-gan { font-size: 10px; color: #95a5a6; margin-top: 4px; transform: scale(0.9); white-space: nowrap; }
         
-        /* 自坐长生标签 */
         .cs-tag {
             font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 6px;
             background: #f1f2f6; color: #a4b0be; transform: scale(0.9); white-space: nowrap;
         }
         .cs-strong { background: #fff3e0; color: #d35400; font-weight: bold; }
 
-        /* 五行色 */
         .wx-金 { color: #E6B33D; } .wx-木 { color: #27AE60; } .wx-水 { color: #2980B9; } .wx-火 { color: #C0392B; } .wx-土 { color: #8D6E63; }
 
-        /* 深度分析盒子 */
         .deep-analysis {
             background: #fffbf0; border: 1px solid #fae3c4; padding: 15px; border-radius: 12px;
             font-size: 13px; line-height: 1.6; margin-bottom: 20px; color: #574b35;
         }
         .highlight { color: #d35400; font-weight: bold; }
         
-        /* 五行喜忌标签 */
-        .joy-taboo-box {
-            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee;
-        }
-        .jt-tag { font-size: 12px; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
-        .jt-joy { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
-        .jt-taboo { background: #ffebee; color: #c0392b; border: 1px solid #ffcdd2; }
-
         /* 五维卡片 */
         .dim-row { display: flex; margin-bottom: 20px; align-items: flex-start; }
         .dim-icon { 
@@ -154,10 +136,9 @@
 
         #error-msg { display:none; background:#ff7675; color:#fff; padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:12px; }
         
-        /* 核心气数高亮 */
-        .core-qishu {
-            background: #fdfdfd; padding: 10px; border-radius: 8px; border-left: 3px solid var(--gold);
-            font-size: 13px; margin-bottom: 10px; color: #555;
+        .logic-tag {
+            display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px;
+            background: #eee; color: #666; font-weight: normal;
         }
     </style>
 </head>
@@ -167,7 +148,7 @@
     <div class="header">
         <h1>命运黑盒 Pro Max</h1>
         <div class="energy-bar"></div>
-        <p class="subtitle">高阶实战修正版 · 真神司令 · 深度批断</p>
+        <p class="subtitle">严谨格局判定 · 位置权重 · 司令提纲</p>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -196,19 +177,18 @@
         <div class="card">
             <div class="section-title">八字排盘 · 气数画像</div>
             <div class="pillars-grid" id="pillars-box"></div>
-            <div style="margin-top:15px; font-size:12px; color:#999; text-align:center;">* 自坐长生：单柱能量强弱的关键参考</div>
         </div>
 
         <div class="card">
-            <div class="section-title">核心格局 · 真神定性</div>
+            <div class="section-title">真神司令 · 高阶格局</div>
             <div id="commander-box" class="deep-analysis"></div>
             
-            <div class="core-qishu" id="core-qishu-box">
-                </div>
-
             <div style="margin-top:15px;">
-                <div style="font-size:18px; font-weight:900; color:var(--dark);" id="pattern-name">...</div>
-                <div style="font-size:12px; color:var(--gray); font-style:italic;" id="pattern-slogan">...</div>
+                <div style="display:flex; align-items:center;">
+                    <div style="font-size:18px; font-weight:900; color:var(--dark);" id="pattern-name">...</div>
+                    <div id="pattern-explain" class="logic-tag"></div>
+                </div>
+                <div style="font-size:12px; color:var(--gray); font-style:italic; margin-top:5px;" id="pattern-slogan">...</div>
             </div>
         </div>
 
@@ -218,7 +198,7 @@
         </div>
 
         <div style="text-align:center; color:#ccc; font-size:12px; margin-top:20px;">
-            Destiny Algorithm © 2025 (Combined with Expert Knowledge)
+            Destiny Algorithm © 2025 (Strict Logic Ver.)
         </div>
     </div>
 </div>
@@ -227,7 +207,7 @@
     let currentGender = 1; // 1男 0女
 
     // ==========================================================
-    // 静态数据字典 (核心逻辑库)
+    // 静态数据字典 (Built-in Data)
     // ==========================================================
     
     const WX_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
@@ -242,10 +222,9 @@
         '申':['庚','壬','戊'], '酉':['辛'], '戌':['戊','辛','丁'], '亥':['壬','甲']
     };
 
-    // 扩展了长生象义，吸收文档中的“身强自旺”、“守财”等概念
     const CS_MEANING = {
-        "长生": "根基稳固/萌芽", "沐浴": "桃花/波折", "冠带": "进取/独立", "临官": "身强自旺/禄位", 
-        "帝旺": "唯我独尊/巅峰", "衰": "稳重/保守", "病": "操劳/敏感", "死": "宁静/无气", 
+        "长生": "根基稳/萌芽", "沐浴": "桃花/波折", "冠带": "进取/独立", "临官": "身强/禄位", 
+        "帝旺": "巅峰/太过", "衰": "稳重/保守", "病": "敏感/操劳", "死": "宁静/无气", 
         "墓": "收藏/守财", "绝": "受制/重生", "胎": "酝酿/希望", "养": "安稳/培育"
     };
 
@@ -283,7 +262,7 @@
         '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]
     };
 
-    // 优化后的文案库，融入了“角色化”和“实战修正”的语言风格
+    // 文案库
     const WITTY_DB = {
         "伤官合杀": { 
             name: "😎 危机终结者 (伤官合杀)", 
@@ -357,7 +336,7 @@
             const bazi = lunar.getEightChar();
             bazi.setSect(2); 
 
-            // 1. 获取基础字符串
+            // 1. 获取八字字符串
             const yg = bazi.getYearGan().toString();  const yz = bazi.getYearZhi().toString();
             const mg = bazi.getMonthGan().toString(); const mz = bazi.getMonthZhi().toString();
             const dg = bazi.getDayGan().toString();   const dz = bazi.getDayZhi().toString();
@@ -370,19 +349,18 @@
                 { t:'时柱', g:hg, z:hz }
             ];
 
-            // 2. 渲染四柱与长生
+            // 2. 渲染四柱
             renderPillars(pillars, dg);
             
-            // 3. 计算司令与门旺地衰
+            // 3. 计算司令
             const cmdInfo = calcCommander(lunar, mz);
             const status = renderCommander(cmdInfo, dg, mz);
 
-            // 4. 动态生成核心气数与喜忌 (新增模块)
-            renderCoreQishu(status, cmdInfo, dg, mz, pillars);
-
-            // 5. 绘图与文案
+            // 4. 绘图
             drawArt(pillars, mz);
-            renderFateDetail(pillars, dg);
+
+            // 5. 核心优化：高阶格局判定
+            renderHighLevelPattern(pillars, dg, mz, cmdInfo);
 
             const resArea = document.getElementById('result-area');
             resArea.style.display = 'block';
@@ -400,7 +378,7 @@
             const god = p.t === '日柱' ? '日主' : (SHISHEN_MAP[dayMaster][p.g] || "");
             const cs = CHANGSHENG_TABLE[p.g][p.z] || "";
             const csClass = STRONG_CS.includes(cs) ? 'cs-tag cs-strong' : 'cs-tag';
-            const csMeaning = CS_MEANING[cs] || ""; // 获取长生象义
+            const csMeaning = CS_MEANING[cs] || "";
             const hiddens = HIDDEN_GAN_MAP[p.z] ? HIDDEN_GAN_MAP[p.z].join('') : "";
             const gWx = WUXING_MAP[p.g];
             const zWx = WUXING_MAP[p.z];
@@ -419,7 +397,6 @@
         document.getElementById('pillars-box').innerHTML = html;
     }
 
-    // 手动计算司令
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
@@ -442,7 +419,6 @@
         return { commander, diffDays, prevJieName: prevJie.getName() };
     }
 
-    // 渲染高阶格局 + 返回强弱状态对象
     function renderCommander(info, dm, mZ) {
         const dmWx = WUXING_MAP[dm];
         const mZWx = WUXING_MAP[mZ];
@@ -466,15 +442,14 @@
         }
         else if(!menWang && diWang) { 
             statusText = "<span class='tag-shuai'>门衰</span> <span class='tag-wang'>地旺</span> 绝处逢生，关键时刻有靠山。"; 
-            isStrong = true; // 真神得用视作强
+            isStrong = true;
         }
         else { 
             statusText = "<span class='tag-shuai'>门地俱衰</span> 真身弱，适合稳健发展，忌硬抗。"; 
             isStrong = false; 
         }
 
-        // 真神得用逻辑
-        const cmdGod = SHISHEN_MAP[dm][info.commander];
+        const cmdGod = SHISHEN_MAP[dm][info.commander] || "";
         const cmdDesc = `真神得用：月令中藏 <b style="color:var(--primary)">${info.commander}(${cmdGod})</b> 为司令。此为命格之灵魂，虽不一定透干，但暗中主导全局。`;
 
         const html = `
@@ -486,59 +461,6 @@
         document.getElementById('commander-box').innerHTML = html;
 
         return { isStrong, dmWx };
-    }
-
-    // 新增：核心气数与喜忌分析 (模仿文档的实战修正版)
-    function renderCoreQishu(status, cmdInfo, dm, mZ, pillars) {
-        // 1. 推导喜忌
-        let joys = [];
-        let taboos = [];
-        const dmWx = status.dmWx;
-        
-        // 简单逻辑：身强喜克泄（财官食伤），身弱喜生扶（印比）
-        // 调候修正：生于亥子丑(冬)喜火，生于巳午未(夏)喜水
-        const season = ["亥","子","丑"].includes(mZ) ? "冬" : ["巳","午","未"].includes(mZ) ? "夏" : "平";
-        
-        if (status.isStrong) {
-            joys.push("食伤 (泄秀生财)");
-            joys.push("官杀 (护财守业)");
-            joys.push("财星 (养命之源)");
-            taboos.push("印星 (过旺易折)");
-            taboos.push("比劫 (夺财)");
-        } else {
-            joys.push("印星 (贵人扶持)");
-            joys.push("比劫 (朋友帮身)");
-            taboos.push("官杀 (克身压力)");
-            taboos.push("食伤 (泄气太过)");
-        }
-
-        // 调候特别修正
-        if (season === "冬") { joys.unshift("🔥 火 (调候暖局)"); taboos.push("💧 水 (湿寒)"); }
-        if (season === "夏") { joys.unshift("💧 水 (调候润局)"); taboos.push("🔥 火 (焦燥)"); }
-
-        // 2. 生成HTML
-        let html = `<div style="font-weight:bold; margin-bottom:5px;">💡 五行喜忌实战批断：</div>`;
-        html += `<div class="joy-taboo-box">`;
-        joys.forEach(j => html += `<span class="jt-tag jt-joy">喜：${j}</span>`);
-        taboos.forEach(t => html += `<span class="jt-tag jt-taboo">忌：${t}</span>`);
-        html += `</div>`;
-        
-        // 3. 核心象义 (模仿文档)
-        // 检查日柱
-        const dayPillar = dm + pillars[2].z;
-        let dayMeaning = "";
-        if (CHANGSHENG_TABLE[dm][pillars[2].z] === "临官") dayMeaning = "日坐临官：身强自旺，不愿从势，内心刚毅。";
-        else if (CHANGSHENG_TABLE[dm][pillars[2].z] === "帝旺") dayMeaning = "日坐帝旺：个性极强，唯我独尊。";
-        else if (CHANGSHENG_TABLE[dm][pillars[2].z] === "墓") dayMeaning = "日坐财库/官库：精明收敛，善于积累。";
-        
-        html += `<div style="margin-top:10px; font-size:13px; line-height:1.5;">
-            <b>🗝️ 命造核心画像：</b><br>
-            1. ${dayMeaning || "日主根气决定了你的抗压能力。"}<br>
-            2. 司令真神 <b>${cmdInfo.commander}</b> 暗中发力，决定了你的社会功能和潜在性格。<br>
-            3. 结合喜忌，建议职业方向：${status.isStrong ? "技术、专才、管理、独立经营" : "依托平台、合作、文教、后勤"}。
-        </div>`;
-
-        document.getElementById('core-qishu-box').innerHTML = html;
     }
 
     function drawArt(pillars, mZ) {
@@ -585,38 +507,94 @@
         document.getElementById('art-tag').innerText = `意象：${maxWx}气充盈`;
     }
 
-    function renderFateDetail(pillars, dm) {
-        const gods = [];
-        [pillars[0].g, pillars[1].g, pillars[3].g].forEach(gan => {
-            gods.push(SHISHEN_MAP[dm][gan]);
+    // === 核心优化：高阶格局判定逻辑 (Adjacency + Power) ===
+    function renderHighLevelPattern(pillars, dm, mz, cmdInfo) {
+        const godMap = {}; // {年干:'伤官', 月干:'正财', ...}
+        
+        // 1. 获取所有天干十神
+        const positions = ['年干', '月干', '日干', '时干'];
+        const gans = [pillars[0].g, pillars[1].g, pillars[2].g, pillars[3].g];
+        
+        gans.forEach((g, i) => {
+            if(i === 2) return; // 跳过日主
+            const god = SHISHEN_MAP[dm][g];
+            godMap[positions[i]] = god;
         });
-        
+
+        // 2. 判定逻辑：优先找七杀，次找伤官
         let key = "五行流通";
-        if(gods.includes("七杀")) {
-            if(gods.includes("食神")) key = "食神制杀";
-            else if(gods.includes("伤官")) key = "伤官合杀";
-            else key = "七杀格"; 
-        } else if(gods.includes("伤官")) {
-            if(gods.includes("正财")||gods.includes("偏财")) key = "伤官生财";
-            else key = "伤官格";
-        } else if(gods.includes("比肩")||gods.includes("劫财")) key = "建禄格";
-        else if(gods.includes("正官")) key = "正官格";
-        
+        let reason = "五行流通，气势较为平衡";
+
+        // --- 逻辑A: 七杀格判定 ---
+        const hasSha = Object.values(godMap).includes("七杀");
+        if (hasSha) {
+            // 检查是否有食神/伤官紧贴制杀
+            const mGod = godMap['月干'];
+            const yGod = godMap['年干'];
+            const hGod = godMap['时干'];
+            
+            // 贴身制杀：月干是七杀，年/时有食神
+            let isControlled = false;
+            if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
+            if (yGod === "七杀" && mGod === "食神") isControlled = true;
+            if (hGod === "七杀" && mGod === "食神") isControlled = true;
+
+            if (isControlled) { key = "食神制杀"; reason = "食神紧贴七杀，制杀有力"; }
+            else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; reason = "伤官与七杀并见，以柔克刚"; }
+            else { key = "七杀格"; reason = "七杀透出，且无强力制化，需注重身强抗杀"; }
+        }
+        // --- 逻辑B: 伤官格判定 (重点优化：位置相邻) ---
+        else if (Object.values(godMap).includes("伤官")) {
+            const mGod = godMap['月干'];
+            const yGod = godMap['年干'];
+            const hGod = godMap['时干'];
+            
+            // 伤官生财条件：伤官与财星相邻 (年-月 或 月-时)
+            let isShengCai = false;
+            if (mGod === "伤官" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
+            if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
+
+            // 遥隔检测 (如年干伤官，时干财星，月干阻隔)
+            if (yGod === "伤官" && ["正财","偏财"].includes(hGod) && !isShengCai) {
+                // 如果月干是比劫/印星，则为破格
+                if(["比肩","劫财","正印","偏印"].includes(mGod)) {
+                    isShengCai = false;
+                    reason = "年时遥隔，中间受阻，伤官生财力度减弱";
+                } else {
+                    isShengCai = true; // 月干通关（如食神）
+                }
+            }
+
+            if (isShengCai) { key = "伤官生财"; reason = reason === "五行流通，气势较为平衡" ? "伤官与财星紧贴相生，气势顺畅" : reason; }
+            else { key = "伤官格"; reason = "伤官透出，但财星未紧贴或力量不足"; }
+        }
+        // --- 逻辑C: 建禄/月劫 ---
+        else if (["比肩","劫财"].includes(SHISHEN_MAP[dm][pillars[1].z])) {
+            // 建禄格看月支
+            key = "建禄格"; reason = "月令建禄，身强财官有气";
+        }
+        // --- 逻辑D: 官印 ---
+        else if (Object.values(godMap).includes("正官")) {
+            key = "正官格"; reason = "正官透出，气象纯正";
+        }
+
         if(!WITTY_DB[key]) key = "五行流通";
 
+        // 渲染UI
         const data = WITTY_DB[key];
         const genderKey = currentGender === 1 ? 'male' : 'female';
         const detail = data[genderKey];
 
         document.getElementById('pattern-name').innerText = data.name;
+        document.getElementById('pattern-explain').innerText = `[${reason}]`;
         document.getElementById('pattern-slogan').innerText = data.slogan;
 
         const html = `
-            <div class="dim-row"><div class="dim-icon">💼</div><div class="dim-content"><div class="dim-title">事业格局</div><div class="dim-text">${detail.c}</div></div></div>
-            <div class="dim-row"><div class="dim-icon">💰</div><div class="dim-content"><div class="dim-title">财富层级</div><div class="dim-text">${detail.w}</div></div></div>
-            <div class="dim-row"><div class="dim-icon">💞</div><div class="dim-content"><div class="dim-title">情感羁绊</div><div class="dim-text">${detail.l}</div></div></div>
-            <div class="dim-row"><div class="dim-icon">🍼</div><div class="dim-content"><div class="dim-title">后代传承</div><div class="dim-text">${detail.k}</div></div></div>
-            <div class="dim-row"><div class="dim-icon">🔋</div><div class="dim-content"><div class="dim-title">身心能量</div><div class="dim-text">${detail.h}</div></div></div>
+            <div class="dim-row"><div class="dim-icon">💼</div><div class="dim-content"><div class="dim-title">事业</div><div class="dim-text">${detail.c}</div></div></div>
+            <div class="dim-row"><div class="dim-icon">💰</div><div class="dim-content"><div class="dim-title">财富</div><div class="dim-text">${detail.w}</div></div></div>
+            <div class="dim-row"><div class="dim-icon">💞</div><div class="dim-content"><div class="dim-title">情感</div><div class="dim-text">${detail.l}</div></div></div>
+            <div class="dim-row"><div class="dim-icon">🍼</div><div class="dim-content"><div class="dim-title">后代</div><div class="dim-text">${detail.k}</div></div></div>
+            <div class="dim-row"><div class="dim-icon">🔋</div><div class="dim-content"><div class="dim-title">能量</div><div class="dim-text">${detail.h}</div></div></div>
         `;
         document.getElementById('five-dim-box').innerHTML = html;
     }
