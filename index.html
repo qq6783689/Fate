@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 严谨格局版</title>
+    <title>命运黑盒 Pro Max · 宗师逻辑版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -124,6 +124,20 @@
         }
         .highlight { color: #d35400; font-weight: bold; }
         
+        .strength-badge {
+            display: inline-block; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; margin-top: 5px;
+        }
+        .sb-strong { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
+        .sb-weak { background: #ffebee; color: #c0392b; border: 1px solid #ffcdd2; }
+
+        /* 五行喜忌标签 */
+        .joy-taboo-box {
+            display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #eee;
+        }
+        .jt-tag { font-size: 12px; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+        .jt-joy { background: #e8f5e9; color: #27ae60; border: 1px solid #c8e6c9; }
+        .jt-taboo { background: #ffebee; color: #c0392b; border: 1px solid #ffcdd2; }
+
         /* 五维卡片 */
         .dim-row { display: flex; margin-bottom: 20px; align-items: flex-start; }
         .dim-icon { 
@@ -138,7 +152,7 @@
         
         .logic-tag {
             display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; margin-left: 5px;
-            background: #eee; color: #666; font-weight: normal;
+            background: #eee; color: #666; font-weight: normal; vertical-align: middle;
         }
     </style>
 </head>
@@ -148,7 +162,7 @@
     <div class="header">
         <h1>命运黑盒 Pro Max</h1>
         <div class="energy-bar"></div>
-        <p class="subtitle">严谨格局判定 · 位置权重 · 司令提纲</p>
+        <p class="subtitle">宗师级逻辑 · 严谨格局 · 能量画像</p>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -175,18 +189,20 @@
         </div>
 
         <div class="card">
-            <div class="section-title">八字排盘 · 气数画像</div>
+            <div class="section-title">八字排盘 · 能量底座</div>
             <div class="pillars-grid" id="pillars-box"></div>
         </div>
 
         <div class="card">
-            <div class="section-title">真神司令 · 高阶格局</div>
+            <div class="section-title">强弱定性 · 真神格局</div>
             <div id="commander-box" class="deep-analysis"></div>
             
+            <div id="core-qishu-box" style="margin-top:15px; font-size:13px; color:#555; background:#f9f9f9; padding:10px; border-radius:8px;"></div>
+
             <div style="margin-top:15px;">
-                <div style="display:flex; align-items:center;">
-                    <div style="font-size:18px; font-weight:900; color:var(--dark);" id="pattern-name">...</div>
-                    <div id="pattern-explain" class="logic-tag"></div>
+                <div style="display:flex; align-items:center; flex-wrap:wrap;">
+                    <span style="font-size:18px; font-weight:900; color:var(--dark);" id="pattern-name">...</span>
+                    <span id="pattern-explain" class="logic-tag"></span>
                 </div>
                 <div style="font-size:12px; color:var(--gray); font-style:italic; margin-top:5px;" id="pattern-slogan">...</div>
             </div>
@@ -198,7 +214,7 @@
         </div>
 
         <div style="text-align:center; color:#ccc; font-size:12px; margin-top:20px;">
-            Destiny Algorithm © 2025 (Strict Logic Ver.)
+            Destiny Algorithm © 2025 (Master Edition)
         </div>
     </div>
 </div>
@@ -207,7 +223,7 @@
     let currentGender = 1; // 1男 0女
 
     // ==========================================================
-    // 静态数据字典 (Built-in Data)
+    // 静态数据字典 (内置逻辑库)
     // ==========================================================
     
     const WX_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
@@ -223,9 +239,9 @@
     };
 
     const CS_MEANING = {
-        "长生": "根基稳/萌芽", "沐浴": "桃花/波折", "冠带": "进取/独立", "临官": "身强/禄位", 
-        "帝旺": "巅峰/太过", "衰": "稳重/保守", "病": "敏感/操劳", "死": "宁静/无气", 
-        "墓": "收藏/守财", "绝": "受制/重生", "胎": "酝酿/希望", "养": "安稳/培育"
+        "长生": "根基/萌芽", "沐浴": "桃花/洗礼", "冠带": "进取/独立", "临官": "身强/禄位", 
+        "帝旺": "巅峰/极致", "衰": "稳重/退守", "病": "操劳/敏感", "死": "宁静/无气", 
+        "墓": "收藏/库藏", "绝": "受制/重启", "胎": "酝酿/希望", "养": "安稳/培育"
     };
 
     const CHANGSHENG_TABLE = {
@@ -267,26 +283,26 @@
         "伤官合杀": { 
             name: "😎 危机终结者 (伤官合杀)", 
             slogan: "外表随和，内心刚毅。专治各种不服，乱世中的一把利刃。", 
-            male: { c:"天生反骨，不适合呆板体制。最擅长在混乱中建立秩序，或解决棘手难题（如律师、特种顾问）。", w:"险中求财，靠信息差和胆识掠夺。不仅要会赚，更要会做资产规划，否则财来财去。", l:"欣赏聪明、带点刺的女人。骨子里互相崇拜，粘性极高，但控制欲较强。", k:"孩子聪明叛逆，遗传高智商。不要用传统孝道压制，引导搞科研或艺术。", h:"大脑高速运转，易神经衰弱。注意运动伤害。" }, 
-            female: { c:"职场大姐大，手段高明。适合公关、危机处理。气场强大，能让男人们敬畏三分。", w:"吸金能力强，名气就是资产。适合经营个人品牌。像'守财奴'一样积累家底是最佳策略。", l:"眼光极高，欣赏霸气硬汉（爹系丈夫）。感情是欢喜冤家，床头吵架床尾和。", k:"投入极大精力，孩子有特殊才华。记得对自己好一点。", h:"注意生殖系统及内分泌。适度医美，保持身心平衡。" } 
+            male: { c:"天生反骨，不适合呆板体制。擅长在混乱中建立秩序，或解决棘手难题。", w:"险中求财，靠信息差和胆识掠夺。爆发力极强，但需注意守财。", l:"欣赏聪明、带点刺的女人。骨子里互相崇拜，粘性极高。", k:"孩子聪明叛逆，遗传高智商。引导搞科研或艺术，不可死压。", h:"大脑高速运转，易神经衰弱。注意运动伤害。" }, 
+            female: { c:"职场大姐大，手段高明。适合公关、危机处理。气场强大，男人敬畏。", w:"名气越大财越多。经营个人品牌，资源置换变现。", l:"眼光高，欣赏霸气硬汉。感情欢喜冤家，床头吵架床尾和。", k:"投入极大，孩子有特殊才华。注意不要给太大压力。", h:"注意内分泌及情绪管理。适度医美。" } 
         },
         "食神制杀": { 
             name: "🦁 铁腕驯兽师 (食神制杀)", 
             slogan: "内方外圆，以理服人。手里有艺，心中有威。", 
-            male: { c:"专家型领导，靠专业能力服众。适合公检法、医疗或技术总监。", w:"靠手艺和威望赚钱，资历越老越值钱。收入稳固，是家庭的定海神针。", l:"家庭地位高，一言九鼎。妻子敬重你，但也需要你多点温情。", k:"孩子规矩懂事，未来栋梁之材。", h:"身体底子好，但防富贵病。注意饮食节制。" }, 
-            female: { c:"技术流女强人，不屑宫斗，靠实力说话。财务、审计、学术带头人。", w:"理财有道，不仅能赚还能存。是家庭的CFO，从不乱花冤枉钱。", l:"管老公像管孩子，虽然啰嗦但为家好。丈夫通常温和听话。", k:"子女缘好，贴心小棉袄。母慈子孝。", h:"消化系统敏感，胃痛往往是情绪的映射。" } 
+            male: { c:"专家型领导，靠专业能力服众。适合公检法、医疗或技术总监。", w:"靠手艺和威望赚钱，资历越老越值钱。收入稳固。", l:"家庭地位高，一言九鼎。妻子敬重。", k:"孩子规矩懂事，未来栋梁之材。", h:"身体底子好，防富贵病。" }, 
+            female: { c:"技术流女强人，靠实力说话。财务、审计、学术带头人。", w:"理财有道，家庭的CFO。不乱花冤枉钱。", l:"管老公像管孩子，为家好。丈夫通常温和听话。", k:"子女缘好，贴心小棉袄。母慈子孝。", h:"消化系统敏感，胃痛往往是情绪映射。" } 
         },
         "伤官生财": { 
             name: "💸 搞钱机器 (伤官生财)", 
             slogan: "技术立身，拒绝借贷。脑子就是印钞机。", 
-            male: { c:"科技创业、创意营销。点子多路子野，别打死工。", w:"创意技术变现。钱是滚出来的。适合做资产置换，把虚钱变实产。", l:"喜欢漂亮时尚的女人，带出去有面子。脾气差，需包容。", k:"子女缘浅或早早出国。物质支持到位，情感沟通需加强。", h:"思虑过重，失眠脱发。睡前给大脑关机。" }, 
-            female: { c:"才女，自媒体、直播带货。开口即金。坚持走技术、专才路线。", w:"赚钱快花钱快。必须买房强制储蓄，做一个快乐的'守财奴'。", l:"眼光毒辣，嫌弃老公穷笨。建议找成熟稳重的'爹系'伴侣。", k:"溺爱孩子，孩子是软肋也是动力。", h:"甲状腺乳腺问题，多旅游散心化解湿气。" } 
+            male: { c:"科技创业、创意营销。点子多路子野，别打死工。", w:"创意技术变现。钱是滚出来的。适合资产置换。", l:"喜欢漂亮时尚女人。脾气差，需包容。", k:"子女缘浅或早早出国。物质支持到位。", h:"思虑过重，失眠脱发。睡前给大脑关机。" }, 
+            female: { c:"才女，自媒体、直播带货。开口即金。走专才路线。", w:"赚钱快花钱快。必须买房强制储蓄，做快乐的'守财奴'。", l:"眼光毒辣，嫌弃老公穷笨。建议找成熟'爹系'伴侣。", k:"溺爱孩子，孩子是软肋也是动力。", h:"甲状腺乳腺问题，多旅游散心。" } 
         },
         "建禄格": { 
             name: "💪 独立钢铁侠 (建禄/比劫)", 
             slogan: "身强自旺，唯我独尊。求人不如求己。", 
-            male: { c:"事必躬亲，闲不下来。技术总监、合伙人。适合带队冲锋。", w:"辛苦钱，每一分都是汗水。身旺任财，中晚年大富。但也容易被劫财。", l:"大男子主义，易克妻。需找温柔听话的老婆。", k:"孩子独立，放养式教育。", h:"身体壮如牛，精力旺。注意运动过量。" }, 
-            female: { c:"比男人还拼。外表文静柔弱，内心刚毅倔强。不喜弄险，稳扎稳打。", w:"极度守财，财坐禄地（钱在手心）。只进不出，厌恶借贷。", l:"容易遇到性格互补的硬汉。虽然嘴硬，但心里依赖对方。", k:"利生育，孩子健康活泼。", h:"火气大，易上火。注意甲状腺。" } 
+            male: { c:"事必躬亲，闲不下来。技术总监、合伙人。带队冲锋。", w:"辛苦钱，每一分都是汗水。身旺任财，中晚年大富。", l:"大男子主义，易克妻。需找温柔听话的老婆。", k:"孩子独立，放养式教育。", h:"身体壮如牛，精力旺。注意运动过量。" }, 
+            female: { c:"比男人还拼。外表文静柔弱，内心刚毅倔强。不喜弄险。", w:"极度守财，财坐禄地（钱在手心）。只进不出，厌恶借贷。", l:"容易遇到性格互补的硬汉。嘴硬心软。", k:"利生育，孩子健康活泼。", h:"火气大，易上火。注意甲状腺。" } 
         },
         "正官格": { 
             name: "👔 稳健老干部 (正官格)", 
@@ -352,15 +368,18 @@
             // 2. 渲染四柱
             renderPillars(pillars, dg);
             
-            // 3. 计算司令
+            // 3. 计算司令与能量分析
             const cmdInfo = calcCommander(lunar, mz);
-            const status = renderCommander(cmdInfo, dg, mz);
+            const strengthInfo = calculateGlobalStrength(pillars, dg, mz, cmdInfo);
+            
+            renderCommanderPanel(strengthInfo, cmdInfo, dg, mz);
+            renderCoreQishu(strengthInfo, dg, mz);
 
             // 4. 绘图
             drawArt(pillars, mz);
 
-            // 5. 核心优化：高阶格局判定
-            renderHighLevelPattern(pillars, dg, mz, cmdInfo);
+            // 5. 高阶格局判定
+            renderHighLevelPattern(pillars, dg, strengthInfo);
 
             const resArea = document.getElementById('result-area');
             resArea.style.display = 'block';
@@ -419,48 +438,104 @@
         return { commander, diffDays, prevJieName: prevJie.getName() };
     }
 
-    function renderCommander(info, dm, mZ) {
+    // === 核心逻辑优化：全局能量强弱判定 (不呆板) ===
+    function calculateGlobalStrength(pillars, dm, mz, cmdInfo) {
         const dmWx = WUXING_MAP[dm];
-        const mZWx = WUXING_MAP[mZ];
-        const cmdWx = WUXING_MAP[info.commander];
+        const mZWx = WUXING_MAP[mz];
+        const cmdWx = WUXING_MAP[cmdInfo.commander];
 
-        const isHelp = (tWx, sWx) => tWx===sWx || (tWx==="木"&&sWx==="火") || (tWx==="火"&&sWx==="土") || (tWx==="土"&&sWx==="金") || (tWx==="金"&&sWx==="水") || (tWx==="水"&&sWx==="木");
-
-        const menWang = isHelp(mZWx, dmWx);
-        const diWang = isHelp(cmdWx, dmWx);
+        // 1. 月令判定 (门旺)
+        const isMenWang = (mZWx === dmWx || (mZWx === '水' && dmWx === '木') || (mZWx === '木' && dmWx === '火') || (mZWx === '火' && dmWx === '土') || (mZWx === '土' && dmWx === '金') || (mZWx === '金' && dmWx === '水'));
         
-        let statusText = "";
-        let isStrong = false;
+        // 2. 司令判定 (地旺)
+        const isDiWang = (cmdWx === dmWx || (cmdWx === '水' && dmWx === '木') || (cmdWx === '木' && dmWx === '火') || (cmdWx === '火' && dmWx === '土') || (cmdWx === '土' && dmWx === '金') || (cmdWx === '金' && dmWx === '水'));
 
-        if(menWang && diWang) { 
-            statusText = "<span class='tag-wang'>门地双旺</span> 真身强，底气足，可担大财。"; 
-            isStrong = true; 
-        }
-        else if(menWang && !diWang) { 
-            statusText = "<span class='tag-wang'>门旺</span> <span class='tag-shuai'>地衰</span> 外强中干，表面风光，内里需补气。"; 
-            isStrong = false; 
-        }
-        else if(!menWang && diWang) { 
-            statusText = "<span class='tag-shuai'>门衰</span> <span class='tag-wang'>地旺</span> 绝处逢生，关键时刻有靠山。"; 
-            isStrong = true;
-        }
-        else { 
-            statusText = "<span class='tag-shuai'>门地俱衰</span> 真身弱，适合稳健发展，忌硬抗。"; 
-            isStrong = false; 
+        // 3. 日时根气判定 (防呆板关键)
+        // 检查日支、时支是否为日主的“同五行”或“禄旺”之地
+        const dayZhiWx = WUXING_MAP[pillars[2].z];
+        const hourZhiWx = WUXING_MAP[pillars[3].z];
+        const dayRoot = (dayZhiWx === dmWx); 
+        const hourRoot = (hourZhiWx === dmWx);
+        
+        // 专禄格判断：日支是日主本气 (如乙卯、庚申)
+        const isZhuanLu = dayRoot; 
+
+        // 综合判定逻辑
+        let finalStrong = false;
+        let desc = "";
+
+        if (isMenWang && isDiWang) {
+            finalStrong = true;
+            desc = "<span class='strength-badge sb-strong'>门地双旺</span> 得令且得权，能量极强。";
+        } else if (isMenWang && !isDiWang) {
+            finalStrong = false; // 偏弱，外强中干，除非日时有根
+            if(dayRoot || hourRoot) {
+                finalStrong = true;
+                desc = "<span class='strength-badge sb-strong'>得令得地</span> 虽司令失势，但日时扎根深厚，身强无疑。";
+            } else {
+                desc = "<span class='strength-badge sb-weak'>门旺地衰</span> 外强中干，表面得令，内里虚浮。";
+            }
+        } else if (!isMenWang && isDiWang) {
+            finalStrong = true;
+            desc = "<span class='strength-badge sb-strong'>绝处逢生</span> 虽不得月令，但真神得用，关键时刻有靠山。";
+        } else {
+            // 门地俱衰，通常极弱，但检查“专禄”
+            if (isZhuanLu && hourRoot) {
+                finalStrong = true;
+                desc = "<span class='strength-badge sb-strong'>失令得地</span> 虽生于休囚之月，但日时归禄，根气极稳，身由弱转强。";
+            } else if (isZhuanLu) {
+                finalStrong = true; // 勉强算强，或者中和
+                desc = "<span class='strength-badge sb-strong'>日坐专禄</span> 虽不得月令，但自坐强根，足以抗官杀，不作弱论。";
+            } else {
+                finalStrong = false;
+                desc = "<span class='strength-badge sb-weak'>门地俱衰</span> 生不逢时，根气不足，真身弱。";
+            }
         }
 
-        const cmdGod = SHISHEN_MAP[dm][info.commander] || "";
-        const cmdDesc = `真神得用：月令中藏 <b style="color:var(--primary)">${info.commander}(${cmdGod})</b> 为司令。此为命格之灵魂，虽不一定透干，但暗中主导全局。`;
+        return { isStrong: finalStrong, desc: desc, dmWx: dmWx, isZhuanLu: isZhuanLu };
+    }
 
+    function renderCommanderPanel(strengthInfo, cmdInfo, dm, mz) {
+        const cmdGod = SHISHEN_MAP[dm][cmdInfo.commander] || "";
+        const cmdWx = WUXING_MAP[cmdInfo.commander];
+        
         const html = `
-            <div>📅 <b>节气定位</b>：${info.prevJieName}后第 <span class="highlight">${info.diffDays}</span> 天</div>
-            <div style="margin-top:5px;">🦁 <b>人元司令</b>：当前由 <span class="highlight">${info.commander}${cmdWx}</span> 执政掌权。</div>
-            <div style="margin-top:5px; font-size:12px; color:#555;">${cmdDesc}</div>
-            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:10px;">${statusText}</div>
+            <div>📅 <b>节气定位</b>：${cmdInfo.prevJieName}后第 <span class="highlight">${cmdInfo.diffDays}</span> 天</div>
+            <div style="margin-top:5px;">🦁 <b>人元司令</b>：<span class="highlight">${cmdInfo.commander}${cmdWx} (${cmdGod})</span> 执政。</div>
+            <div style="margin-top:10px; border-top:1px dashed #eee; padding-top:10px;">${strengthInfo.desc}</div>
         `;
         document.getElementById('commander-box').innerHTML = html;
+    }
 
-        return { isStrong, dmWx };
+    function renderCoreQishu(strengthInfo, dm, mZ) {
+        let joys = [];
+        let taboos = [];
+        
+        const season = ["亥","子","丑"].includes(mZ) ? "冬" : ["巳","午","未"].includes(mZ) ? "夏" : "平";
+        
+        if (strengthInfo.isStrong) {
+            joys.push("食伤 (泄秀生财)");
+            joys.push("官杀 (护财守业)");
+            joys.push("财星 (养命之源)");
+            taboos.push("印星 (过旺易折)");
+            taboos.push("比劫 (夺财)");
+        } else {
+            joys.push("印星 (贵人扶持)");
+            joys.push("比劫 (朋友帮身)");
+            taboos.push("官杀 (克身压力)");
+            taboos.push("食伤 (泄气太过)");
+        }
+
+        if (season === "冬") { joys.unshift("🔥 火 (调候暖局)"); taboos.push("💧 水 (湿寒)"); }
+        if (season === "夏") { joys.unshift("💧 水 (调候润局)"); taboos.push("🔥 火 (焦燥)"); }
+
+        let html = `<div style="font-weight:bold; margin-bottom:5px;">💡 五行喜忌实战批断：</div>`;
+        html += `<div class="joy-taboo-box">`;
+        joys.forEach(j => html += `<span class="jt-tag jt-joy">喜：${j}</span>`);
+        taboos.forEach(t => html += `<span class="jt-tag jt-taboo">忌：${t}</span>`);
+        html += `</div>`;
+        
+        document.getElementById('core-qishu-box').innerHTML = html;
     }
 
     function drawArt(pillars, mZ) {
@@ -507,80 +582,70 @@
         document.getElementById('art-tag').innerText = `意象：${maxWx}气充盈`;
     }
 
-    // === 核心优化：高阶格局判定逻辑 (Adjacency + Power) ===
-    function renderHighLevelPattern(pillars, dm, mz, cmdInfo) {
-        const godMap = {}; // {年干:'伤官', 月干:'正财', ...}
-        
-        // 1. 获取所有天干十神
+    // === 严谨格局判定：位置 + 阻隔检测 ===
+    function renderHighLevelPattern(pillars, dm, strengthInfo) {
+        const godMap = {};
         const positions = ['年干', '月干', '日干', '时干'];
         const gans = [pillars[0].g, pillars[1].g, pillars[2].g, pillars[3].g];
         
         gans.forEach((g, i) => {
-            if(i === 2) return; // 跳过日主
-            const god = SHISHEN_MAP[dm][g];
-            godMap[positions[i]] = god;
+            if(i === 2) return;
+            godMap[positions[i]] = SHISHEN_MAP[dm][g];
         });
 
-        // 2. 判定逻辑：优先找七杀，次找伤官
         let key = "五行流通";
         let reason = "五行流通，气势较为平衡";
 
-        // --- 逻辑A: 七杀格判定 ---
-        const hasSha = Object.values(godMap).includes("七杀");
-        if (hasSha) {
-            // 检查是否有食神/伤官紧贴制杀
+        // 1. 七杀格判定 (优先级最高)
+        if (Object.values(godMap).includes("七杀")) {
             const mGod = godMap['月干'];
             const yGod = godMap['年干'];
             const hGod = godMap['时干'];
             
-            // 贴身制杀：月干是七杀，年/时有食神
+            // 贴身制杀才算
             let isControlled = false;
             if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
-            if (yGod === "七杀" && mGod === "食神") isControlled = true;
-            if (hGod === "七杀" && mGod === "食神") isControlled = true;
+            if ((yGod === "七杀" || hGod === "七杀") && mGod === "食神") isControlled = true;
 
-            if (isControlled) { key = "食神制杀"; reason = "食神紧贴七杀，制杀有力"; }
-            else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; reason = "伤官与七杀并见，以柔克刚"; }
-            else { key = "七杀格"; reason = "七杀透出，且无强力制化，需注重身强抗杀"; }
+            if (isControlled) { key = "食神制杀"; reason = "食神紧贴七杀，制化有力，贵气之造"; }
+            else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; reason = "伤官合杀，以柔克刚，异路功名"; }
+            else { key = "七杀格"; reason = "七杀无制，压力较大，需印化或身抗"; }
         }
-        // --- 逻辑B: 伤官格判定 (重点优化：位置相邻) ---
+        // 2. 伤官格判定 (需相邻或通关)
         else if (Object.values(godMap).includes("伤官")) {
             const mGod = godMap['月干'];
             const yGod = godMap['年干'];
             const hGod = godMap['时干'];
             
-            // 伤官生财条件：伤官与财星相邻 (年-月 或 月-时)
             let isShengCai = false;
+            // 相邻生财：月干伤-年时财，或 年时伤-月干财
             if (mGod === "伤官" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
             if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
 
-            // 遥隔检测 (如年干伤官，时干财星，月干阻隔)
-            if (yGod === "伤官" && ["正财","偏财"].includes(hGod) && !isShengCai) {
-                // 如果月干是比劫/印星，则为破格
+            // 遥隔检测：年伤-时财
+            if (yGod === "伤官" && ["正财","偏财"].includes(hGod)) {
+                // 如果月干是比劫/印，则阻隔
                 if(["比肩","劫财","正印","偏印"].includes(mGod)) {
-                    isShengCai = false;
-                    reason = "年时遥隔，中间受阻，伤官生财力度减弱";
+                    isShengCai = false; reason = "伤官与财星遥隔，且被月干阻断，生财无力";
                 } else {
-                    isShengCai = true; // 月干通关（如食神）
+                    isShengCai = true; // 如食神通关
                 }
             }
 
-            if (isShengCai) { key = "伤官生财"; reason = reason === "五行流通，气势较为平衡" ? "伤官与财星紧贴相生，气势顺畅" : reason; }
-            else { key = "伤官格"; reason = "伤官透出，但财星未紧贴或力量不足"; }
+            if (isShengCai) { key = "伤官生财"; reason = "伤官紧贴财星，气势流通，富贵之局"; }
+            else { key = "伤官格"; reason = "伤官透出，但财星未紧贴，才华优于财富"; }
         }
-        // --- 逻辑C: 建禄/月劫 ---
-        else if (["比肩","劫财"].includes(SHISHEN_MAP[dm][pillars[1].z])) {
-            // 建禄格看月支
-            key = "建禄格"; reason = "月令建禄，身强财官有气";
+        // 3. 专禄/建禄
+        else if (strengthInfo.isZhuanLu || ["比肩","劫财"].includes(SHISHEN_MAP[dm][pillars[1].z])) {
+            key = "建禄格"; reason = "日坐专禄或月令建禄，身强财官有气";
         }
-        // --- 逻辑D: 官印 ---
+        // 4. 官印
         else if (Object.values(godMap).includes("正官")) {
-            key = "正官格"; reason = "正官透出，气象纯正";
+            key = "正官格"; reason = "正官透出，气象纯正，利于公职";
         }
 
         if(!WITTY_DB[key]) key = "五行流通";
 
-        // 渲染UI
         const data = WITTY_DB[key];
         const genderKey = currentGender === 1 ? 'male' : 'female';
         const detail = data[genderKey];
