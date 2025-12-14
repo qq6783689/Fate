@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 终极典藏版</title>
+    <title>命运黑盒 Pro Max · 终极典藏版 (No-Crash Ver)</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -12,7 +12,7 @@
             --dark: #1a1a2e;         /* 深夜蓝 */
             --card: #16213e;         /* 卡片底 */
             --text: #eaeaea;
-            --gold: #f9ed69;
+            --gold: #f9ed69;         /* 传说金 */
             --border-r: 12px;
         }
 
@@ -28,7 +28,7 @@
             display: flex; justify-content: center;
         }
 
-        .container { width: 100%; max-width: 650px; padding-bottom: 80px; }
+        .container { width: 100%; max-width: 680px; padding-bottom: 100px; }
 
         /* 头部 */
         .header { text-align: center; margin-bottom: 30px; position: relative; }
@@ -145,6 +145,11 @@
             border: 1px solid rgba(255, 46, 99, 0.3); padding: 12px; border-radius: 8px;
             margin-top: 20px; font-size: 0.85rem; color: #ffcccb; line-height: 1.5;
         }
+        
+        .joy-taboo { margin-top: 8px; }
+        .jt-tag { margin-right: 10px; font-weight: bold; }
+        .jt-joy { color: var(--accent); }
+        .jt-bad { color: var(--primary); }
 
         #error-msg { display:none; background:var(--primary); padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:12px; }
     </style>
@@ -154,7 +159,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-tag">SYSTEM: ONLINE · PRO MAX</div>
+        <div class="sys-tag">SYSTEM: ONLINE · ULTIMATE VER</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -171,7 +176,7 @@
             <span class="label">输入出生时间 / SPAWN DATE</span>
             <input type="datetime-local" id="birth-input">
         </div>
-        <button class="btn-start" onclick="startScan()">启动命运扫描 / START</button>
+        <button class="btn-start" onclick="startScan()">启动命运扫描 / START SCAN</button>
     </div>
 
     <div id="result-area">
@@ -202,7 +207,7 @@
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:30px;">
-            Destiny Algorithm © 2025 · Deep Logic Version
+            Destiny Algorithm © 2025 · Verified
         </div>
     </div>
 </div>
@@ -272,8 +277,14 @@
         '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]
     };
 
-    // 终极文案库 (Ultra Rich Content)
+    // 终极文案库 (Ultra Rich Content & Game Style)
     const GAME_DB = {
+        "伤官配印": {
+            name: "🔮 智者神启 (Oracle)", tags: ["UR", "天命级", "智慧"], icon: "📜",
+            slogan: "“烈火烹油非长久，深水静流是真理。”",
+            male: { c:"**[天赋：大智慧]**<br>你生于特殊季节，本应焦躁，却得贵人（印）润局。你的核心竞争力不是拼命，而是**“降维打击”**。适合学术、参谋、科研。你是团队大脑。", w:"**[被动：知识付费]**<br>忌土（贪财坏印）。你的财运来自名望和知识变现。不要赚快钱，要赚“慢钱”、“大钱”。", l:"**[羁绊：灵魂伴侣]**<br>伴侣是你的贵人，能让你冷静。不要嫌弃对方沉闷，那是你的救命稻草。", k:"**[传承：书香]**<br>孩子聪明好学，有文化底蕴。", h:"**[Buff：水火既济]**<br>身体底子不错，但注意心火过旺。" },
+            female: { c:"**[天赋：才女]**<br>伤官佩印，贵不可言。适合教育、文化、艺术。以柔克刚，以静制动。", w:"**[被动：养财]**<br>你的钱是“养”出来的。适合长线投资，购买保险。远离高风险。", l:"**[羁绊：去官就食]**<br>你太聪明了，一般男人驾驭不了。只要他能包容你、滋养你就是上等姻缘。", k:"**[传承：灵性]**<br>孩子有灵气，善解人意。", h:"**[Buff：滋阴]**<br>多补水，少熬夜耗阴。" }
+        },
         "伤官合杀": { 
             name: "⚡ 危机终结者 (Terminator)", tags: ["SSR", "爆发型", "乱世英雄"], icon: "🗡️",
             slogan: "“混乱是阶梯。当别人在恐惧时，正是我接管战场的时候。”",
@@ -411,11 +422,13 @@
             renderPillars(pillars, dg);
             const cmdInfo = calcCommander(lunar, mz);
             const strengthInfo = analyzeGlobalStrength(cmdInfo, dg, mz, dz, hz);
-            renderCoreQishu(strengthInfo, cmdInfo, dg, mz, pillars);
-            drawArt(pillars, mz);
             
-            // 3. 核心：调用游戏化格局文案 (使用安全的 DOM 操作)
-            renderGamePattern(pillars, dg, mz);
+            // 3. 核心：调候与格局
+            const climate = analyzeClimate(dg, mz, pillars);
+            renderCoreQishu(strengthInfo, cmdInfo, dg, mz, climate);
+            
+            drawArt(pillars, mz);
+            renderGamePattern(climate, pillars, dg, mz);
 
             const resArea = document.getElementById('result-area');
             resArea.style.display = 'block';
@@ -433,7 +446,6 @@
             const god = p.t.includes('日柱') ? '日主 (Me)' : (SHISHEN_MAP[dayMaster][p.g] || "");
             const cs = CHANGSHENG_TABLE[p.g][p.z] || "";
             const csClass = STRONG_CS.includes(cs) ? 'cs-strong' : '';
-            const csMeaning = CS_MEANING[cs] || "";
             const gWx = WUXING_MAP[p.g];
             const zWx = WUXING_MAP[p.z];
 
@@ -443,15 +455,15 @@
                     <div class="col-god">${god}</div>
                     <div class="col-char ${WX_COLOR[gWx]}">${p.g}</div>
                     <div class="col-char ${WX_COLOR[zWx]}">${p.z}</div>
-                    <span class="col-cs ${csClass}">${cs} [${csMeaning}]</span>
+                    <span class="col-cs ${csClass}">${cs}</span>
                 </div>
             `;
         });
         document.getElementById('pillars-box').innerHTML = html;
     }
 
+    // 手动计算司令
     function calcCommander(lunar, monthZhi) {
-        // 手动时间戳计算，避免 getCalendar() 错误
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
         const jieTime = new Date(pjSolar.getYear(), pjSolar.getMonth()-1, pjSolar.getDay(), pjSolar.getHour(), pjSolar.getMinute(), pjSolar.getSecond()).getTime();
@@ -505,27 +517,52 @@
         return { isStrong: finalStrong, desc, dmWx };
     }
 
-    function renderCoreQishu(status, cmdInfo, dm, mZ, pillars) {
+    // 调候分析逻辑
+    function analyzeClimate(dm, mz, pillars) {
+        const dmWx = WUXING_MAP[dm];
+        const season = ["亥","子","丑"].includes(mz) ? "冬" : ["巳","午","未"].includes(mz) ? "夏" : "平";
+        let report = { isHot: season === "夏", isCold: season === "冬", hasWater: false, hasFire: false, specialPattern: null };
+
+        pillars.forEach(p => {
+            if (WUXING_MAP[p.g] === '水' || WUXING_MAP[p.z] === '水') report.hasWater = true;
+            if (WUXING_MAP[p.g] === '火' || WUXING_MAP[p.z] === '火') report.hasFire = true;
+        });
+
+        // 调候格局判定
+        if (dmWx === '木' && report.isHot && report.hasWater) report.specialPattern = "伤官配印";
+        // 其他调候格局可在此扩展
+
+        return report;
+    }
+
+    function renderCoreQishu(status, cmdInfo, dm, mZ, climate) {
         let joys = [];
         let taboos = [];
-        const season = ["亥","子","丑"].includes(mZ) ? "冬" : ["巳","午","未"].includes(mZ) ? "夏" : "平";
         
+        // 1. 调候优先
+        if (climate.isHot) { joys.push("水 (润局)"); taboos.push("火 (焦燥)"); }
+        else if (climate.isCold) { joys.push("火 (暖局)"); taboos.push("水 (湿寒)"); }
+
+        // 2. 强弱补救
         if (status.isStrong) {
-            joys.push("食伤"); joys.push("官杀"); joys.push("财星");
-            taboos.push("印星"); taboos.push("比劫");
+            if (!joys.includes("火")) joys.push("食伤");
+            if (!joys.includes("水")) joys.push("官杀");
+            joys.push("财星");
+            if (!taboos.includes("水")) taboos.push("印星");
+            taboos.push("比劫");
         } else {
-            joys.push("印星"); joys.push("比劫");
-            taboos.push("官杀"); taboos.push("食伤");
+            if (!joys.includes("水")) joys.push("印星");
+            joys.push("比劫");
+            if (!taboos.includes("火")) taboos.push("官杀");
+            taboos.push("食伤");
         }
-        if (season === "冬") { joys.unshift("火"); taboos.push("水"); }
-        if (season === "夏") { joys.unshift("水"); taboos.push("火"); }
 
         let html = `<div><strong>真神司令：</strong><span style="color:#fff">${cmdInfo.commander}</span> (${SHISHEN_MAP[dm][cmdInfo.commander] || '气'})</div>`;
         html += `<div><strong>能量判定：</strong>${status.desc}</div>`;
-        html += `<div style="margin-top:8px;"><strong>喜用神：</strong>`;
-        joys.forEach(j => html += `<b style="color:#08d9d6;margin-right:5px;">${j}</b>`);
-        html += ` | <strong>忌神：</strong>`;
-        taboos.forEach(t => html += `<b style="color:#ff2e63;margin-right:5px;">${t}</b>`);
+        html += `<div class="joy-taboo">`;
+        joys.forEach(j => html += `<span class="jt-tag jt-joy">喜：${j}</span>`);
+        html += ` | `;
+        taboos.forEach(t => html += `<span class="jt-tag jt-bad">忌：${t}</span>`);
         html += `</div>`;
 
         document.getElementById('core-analysis').innerHTML = html;
@@ -580,63 +617,69 @@
         ctx.closePath(); ctx.fill(); ctx.stroke();
     }
 
-    function renderGamePattern(pillars, dm, mz) {
+    function renderGamePattern(climate, pillars, dm, mz) {
         const godMap = {}; 
         const positions = ['年干', '月干', '日干', '时干'];
         const gans = [pillars[0].g, pillars[1].g, pillars[2].g, pillars[3].g];
-        
         gans.forEach((g, i) => { if(i === 2) return; godMap[positions[i]] = SHISHEN_MAP[dm][g]; });
 
         let key = "";
         let origin = "";
 
-        // 1. 优先特殊格局
-        const hasSha = Object.values(godMap).includes("七杀");
-        if (hasSha) {
-            const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
-            let isControlled = false;
-            if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
-            if (yGod === "七杀" && mGod === "食神") isControlled = true;
-            if (hGod === "七杀" && mGod === "食神") isControlled = true;
+        // 1. 优先采用调候特殊格局
+        if (climate.specialPattern) {
+            key = climate.specialPattern;
+            origin = "[天时调候]";
+        } 
+        else {
+            // 2. 严谨格局判定
+            const hasSha = Object.values(godMap).includes("七杀");
+            if (hasSha) {
+                const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
+                let isControlled = false;
+                if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
+                if (yGod === "七杀" && mGod === "食神") isControlled = true;
+                if (hGod === "七杀" && mGod === "食神") isControlled = true;
 
-            if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
-            else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; origin = "[组合成格]"; }
-        }
-        else if (Object.values(godMap).includes("伤官")) {
-            const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
-            let isShengCai = false;
-            if (mGod === "伤官" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
-            if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
+                if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
+                else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; origin = "[组合成格]"; }
+                else { key = "七杀格"; origin = "[十神主导]"; }
+            }
+            else if (Object.values(godMap).includes("伤官")) {
+                const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
+                let isShengCai = false;
+                if (mGod === "伤官" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
+                if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
 
-            if (isShengCai) { key = "伤官生财"; origin = "[组合成格]"; }
-        }
+                if (isShengCai) { key = "伤官生财"; origin = "[组合成格]"; }
+            }
 
-        // 2. 如果特殊格局未中，查月令本气定正格
-        if (!key) {
-            const mainQi = ZHI_MAIN_QI[mz];
-            const mainGod = SHISHEN_MAP[dm][mainQi];
-            const patternMap = {
-                "比肩": "建禄格", "劫财": "建禄格", "食神": "食神格", "伤官": "伤官生财", // 伤官无财可归类为伤官格，这里复用
-                "正财": "正财格", "偏财": "偏财格", "正官": "正官格", "七杀": "七杀格",
-                "正印": "正印格", "偏印": "偏印格"
-            };
-            if (patternMap[mainGod]) {
-                key = patternMap[mainGod];
-                origin = "[月令本气]";
-            } else {
-                key = "五行流通";
-                origin = "[全盘气势]";
+            // 3. 正八格兜底
+            if (!key) {
+                const mainQi = ZHI_MAIN_QI[mz];
+                const mainGod = SHISHEN_MAP[dm][mainQi];
+                const patternMap = {
+                    "比肩": "建禄格", "劫财": "建禄格", "食神": "食神格", "伤官": "伤官生财",
+                    "正财": "正财格", "偏财": "偏财格", "正官": "正官格", "七杀": "七杀格",
+                    "正印": "正印格", "偏印": "偏印格"
+                };
+                if (patternMap[mainGod]) {
+                    key = patternMap[mainGod];
+                    origin = "[月令本气]";
+                } else {
+                    key = "五行流通";
+                    origin = "[全盘气势]";
+                }
             }
         }
 
-        // 3. 兜底
+        // 4. 兜底中的兜底
         if(!GAME_DB[key]) key = "五行流通";
 
         const data = GAME_DB[key];
         const genderKey = currentGender === 1 ? 'male' : 'female';
         const detail = data[genderKey];
 
-        // 渲染头部
         document.getElementById('role-icon').innerText = data.icon;
         document.getElementById('role-name').innerText = data.name;
         document.getElementById('role-slogan').innerText = data.slogan;
@@ -645,7 +688,7 @@
         data.tags.forEach(t => tagsHtml += `<span class="tag ${t==='SSR'?'ssr':''}">${t}</span>`);
         document.getElementById('role-tags').innerHTML = tagsHtml;
 
-        // 渲染攻略 (使用一次性 innerHTML 注入，避免 ID 查找错误)
+        // 修复：直接使用 innerHTML 注入完整 HTML 字符串
         const guideHtml = `
             <div class="guide-item">
                 <div class="guide-title">⚔️ 事业与成就</div>
