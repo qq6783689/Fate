@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 终极修复版</title>
+    <title>命运黑盒 Pro Max · 万字详解版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -129,35 +129,36 @@
 
         /* 攻略区 */
         .guide-item { 
-            margin-bottom: 20px; padding: 15px; border-radius: 10px; 
-            background: rgba(0,0,0,0.2); border-left: 3px solid var(--gray);
+            margin-bottom: 25px; padding: 20px; border-radius: 12px; 
+            background: rgba(0,0,0,0.25); border-left: 4px solid var(--accent);
         }
         .guide-title { 
-            font-size: 0.95rem; font-weight: bold; color: var(--accent); margin-bottom: 8px;
-            display: flex; align-items: center; gap: 8px;
+            font-size: 1rem; font-weight: bold; color: var(--gold); margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px;
         }
-        .guide-text { font-size: 0.9rem; line-height: 1.6; color: #ccc; text-align: justify; }
-        .guide-text b { color: #fff; font-weight: bold; }
+        .guide-text { font-size: 0.95rem; line-height: 1.8; color: #ddd; text-align: justify; }
+        .guide-text b { color: #fff; font-weight: bold; border-bottom: 1px dashed rgba(255,255,255,0.3); }
+        .guide-sub { margin-top: 10px; font-size: 0.85rem; color: #888; font-style: italic; }
 
         /* 核心分析条 */
         .core-bar {
             background: linear-gradient(to right, rgba(255, 46, 99, 0.1), transparent);
-            border: 1px solid rgba(255, 46, 99, 0.3); padding: 12px; border-radius: 8px;
-            margin-top: 20px; font-size: 0.85rem; color: #ffcccb; line-height: 1.5;
+            border: 1px solid rgba(255, 46, 99, 0.3); padding: 15px; border-radius: 8px;
+            margin-top: 20px; font-size: 0.9rem; color: #ffcccb; line-height: 1.6;
         }
         
-        .joy-taboo { margin-top: 8px; }
-        .jt-tag { margin-right: 10px; font-weight: bold; }
-        .jt-joy { color: #2ed573; }
-        .jt-bad { color: #ff4757; }
+        .joy-taboo { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); }
+        .jt-tag { margin-right: 15px; font-weight: bold; display: inline-block; }
+        .jt-joy { color: #2ed573; text-shadow: 0 0 5px rgba(46, 213, 115, 0.3); }
+        .jt-bad { color: #ff4757; text-shadow: 0 0 5px rgba(255, 71, 87, 0.3); }
 
-        /* 新增：喜忌条样式 */
+        /* 喜忌条样式 */
         .logic-bar { 
             margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid #333; 
             font-size: 0.9rem; line-height: 1.6; border-radius: 8px;
         }
-        .logic-title { color: var(--gold); font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.8rem; }
-        .good-text { color: #2ecc71; } .bad-text { color: #ff4757; }
+        .logic-title { color: var(--gold); font-weight: bold; display: block; margin-bottom: 8px; font-size: 0.85rem; letter-spacing: 1px; }
+        .good-text { color: #2ecc71; font-weight: bold; } .bad-text { color: #ff4757; font-weight: bold; }
 
         #error-msg { display:none; background:var(--primary); padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:12px; }
     </style>
@@ -167,7 +168,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-tag">SYSTEM: ONLINE · STABLE VER</div>
+        <div class="sys-tag">SYSTEM: ONLINE · LORE EXPANDED</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -209,12 +210,12 @@
 
             <div class="logic-bar">
                 <span class="logic-title">⚡ 格局喜忌铁律 (PATTERN LOGIC)</span>
-                <div id="pattern-reason" style="margin-bottom:8px; color:#999; font-size:0.85rem;"></div>
+                <div id="pattern-reason" style="margin-bottom:8px; color:#aaa; font-size:0.9rem;"></div>
                 <div>
-                    <span class="good-text">★ 喜用：</span> <span id="txt-joy">...</span>
+                    <span class="good-text">★ 喜用神：</span> <span id="txt-joy" style="color:#eee">...</span>
                 </div>
                 <div style="margin-top:5px;">
-                    <span class="bad-text">✖ 忌神：</span> <span id="txt-taboo">...</span>
+                    <span class="bad-text">✖ 忌神：</span> <span id="txt-taboo" style="color:#eee">...</span>
                 </div>
             </div>
         </div>
@@ -225,7 +226,7 @@
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:30px;">
-            Destiny Algorithm © 2025 · Verified Code
+            Destiny Algorithm © 2025 · Full Content Ver.
         </div>
     </div>
 </div>
@@ -388,14 +389,14 @@
         "金水伤官": {
             name: "❄️ 寒冰剑仙 (Frost Blade)", tags: ["SSR", "高冷", "权谋"], icon: "🗡️",
             slogan: "“金寒水冷，唯火暖心。我的剑，只为守护那一点温存。”",
-            male: { c:"**[天赋：权谋]**<br>金水伤官人最聪明，但也最傲气。你天生适合从政、管理或高层策划。必须见官（火），见了官就有地位，就有权威。若无火，则只是穷酸秀才。", w:"**[被动：显贵]**<br>你的财运伴随着地位而来。有了权（官）自然有钱。切忌贪污腐败，因为水太清，容易被查。", l:"**[羁绊：暖阳]**<br>你太冷了，需要一个热情如火的伴侣。对方可能是你的上司或崇拜者。", k:"**[传承：严父]**<br>对孩子要求高，孩子多半有出息。", h:"**[Buff：调候]**<br>多晒太阳，多穿红衣。忌去北方。" },
-            female: { c:"**[天赋：冰山美人]**<br>才貌双全，气质高冷。适合演艺、外交、高管。必须有火暖局，否则容易孤独终老。", w:"**[被动：夫荣妻贵]**<br>你的官星（火）就是你的夫星，也是你的喜用神。旺夫即旺己。", l:"**[羁绊：喜官]**<br>伤官本克官，但金水伤官独喜官。你非常需要男人的呵护和温暖。千万别作。", k:"**[传承：贵子]**<br>孩子聪明漂亮。", h:"**[Buff：暖宫]**<br>注意妇科寒症，多泡脚。" }
+            male: { c:"**[天赋：权谋]**<br>金水伤官人最聪明，但也最傲气。你天生适合从政、管理或高层策划。必须见官（火），见了官就有地位，就有权威。若无火，则只是穷酸秀才，空有一身才华。", w:"**[被动：显贵]**<br>你的财运伴随着地位而来。有了权（官）自然有钱。切忌贪污腐败，因为水太清，容易被查。走火运时，财富爆发最快。", l:"**[羁绊：暖阳]**<br>你太冷了，内心渴望被温暖。需要一个热情如火的伴侣，对方可能是你的上司或崇拜者，能融化你的冰冷。", k:"**[传承：严父]**<br>对孩子要求极高，希望他们出人头地。孩子多半聪明且有出息，但要注意别给太大压力。", h:"**[Buff：调候]**<br>多晒太阳，多穿红衣。忌去北方，宜往南方发展。注意风湿寒症和心血管健康。" },
+            female: { c:"**[天赋：冰山美人]**<br>才貌双全，气质高冷。适合演艺、外交、高管。必须有火暖局，否则容易孤独终老。你的才华需要舞台（火）来照亮。", w:"**[被动：夫荣妻贵]**<br>你的官星（火）就是你的夫星，也是你的喜用神。旺夫即旺己，你的财富往往来自伴侣或合作方的支持。", l:"**[羁绊：喜官]**<br>伤官本克官，但金水伤官独喜官。你非常需要男人的呵护和温暖。千万别作，珍惜那个能包容你的人。", k:"**[传承：贵子]**<br>孩子聪明漂亮，是你生命的延续和希望。", h:"**[Buff：暖宫]**<br>特别注意妇科寒症，多泡脚，保持体温。少吃生冷食物。" }
         },
         "木火通明": {
             name: "🔥 薪火传人 (Phoenix)", tags: ["SSR", "文化", "名望"], icon: "🔥",
             slogan: "“木火交辉，光耀千秋。我不是凡火，我是文明的灯塔。”",
-            male: { c:"**[天赋：文昌]**<br>木火通明主文才。你适合做学者、教授、作家、艺术家。你的名声比钱更重要。最忌金来砍木，坏了秀气。", w:"**[被动：名利双收]**<br>名气大了，钱自然来。不要为了钱去从政（见官），那会让你很痛苦。", l:"**[羁绊：知音]**<br>你需要一个能读懂你文章、听懂你音乐的灵魂伴侣。", k:"**[传承：书香门第]**<br>孩子多半文质彬彬。", h:"**[Buff：通达]**<br>心血管系统要注意，别熬夜。" },
-            female: { c:"**[天赋：才女]**<br>气质出众，才华横溢。适合教育、媒体、设计。你的光芒太耀眼，容易遭人嫉妒。", w:"**[被动：清贵]**<br>不屑于谈钱，但生活品味极高。", l:"**[羁绊：晚婚]**<br>眼光高，普通人入不了眼。且不喜受管束（忌官），适合晚婚。", k:"**[传承：优生]**<br>孩子有艺术天分。", h:"**[Buff：护眼]**<br>注意视力保护。" }
+            male: { c:"**[天赋：文昌]**<br>木火通明主文才。你适合做学者、教授、作家、艺术家。你的名声比钱更重要。最忌金来砍木，坏了秀气，导致怀才不遇。", w:"**[被动：名利双收]**<br>名气大了，钱自然来。不要为了钱去从政（见官），那会让你很痛苦。通过知识付费或版权变现是最佳路径。", l:"**[羁绊：知音]**<br>你需要一个能读懂你文章、听懂你音乐的灵魂伴侣。精神层面的共鸣比物质条件更重要。", k:"**[传承：书香门第]**<br>孩子多半文质彬彬，学习成绩好，继承你的文化基因。", h:"**[Buff：通达]**<br>心血管系统要注意，别熬夜。多接触大自然，保持灵感通畅。" },
+            female: { c:"**[天赋：才女]**<br>气质出众，才华横溢。适合教育、媒体、设计。你的光芒太耀眼，容易遭人嫉妒，要学会适当收敛。", w:"**[被动：清贵]**<br>不屑于谈钱，但生活品味极高。适合从事高雅行业，如艺术品鉴定、高端设计。", l:"**[羁绊：晚婚]**<br>眼光高，普通人入不了眼。且不喜受管束（忌官），适合晚婚，或者找一个欣赏你才华的伴侣。", k:"**[传承：优生]**<br>孩子有艺术天分，培养方向宜文不宜武。", h:"**[Buff：护眼]**<br>火主目，注意视力保护。少看电子屏幕，多看绿色植物。" }
         },
         "伤官配印": {
             name: "🔮 智者神启 (Oracle)", tags: ["UR", "天命级", "智慧"], icon: "📜",
@@ -413,7 +414,7 @@
             name: "🦁 铁腕驯兽师 (Beast Tamer)", tags: ["SR+", "控制型", "威望"], icon: "🦁",
             slogan: "“愤怒是无用的，只有绝对的力量和规则才能驯服野兽。”",
             male: { c:"**[天赋：不怒自威]**<br>不需要大吼大叫，专业能力足以服众。适合公检法、技术总监。", w:"**[被动：资历加成]**<br>财富是大后期型。资历越老越值钱。靠手艺吃饭，金饭碗最稳。", l:"**[羁绊：一家之主]**<br>家中地位极高，妻子敬重你。责任感爆棚。", k:"**[传承：栋梁之材]**<br>孩子规矩懂事，成绩优异。", h:"**[Debuff：富贵病]**<br>身体底子好，但容易摄入过剩。防三高。" }, 
-            female: { c:"**[天赋：逻辑女王]**<br>不屑宫斗，靠硬实力。财务总监、审计。逻辑滴水不漏。", w:"**[被动：CFO]**<br>天生的理财圣手。不仅能赚更能管。对数字敏感。", l:"**[羁绊：严妻良母]**<br>管老公像管孩子，虽然啰嗦但为家好。", k:"**[传承：贴心棉袄]**<br>子女缘分极佳，母慈子孝。", h:"**[Debuff：肠胃敏感]**<br>压力大时易胃痛。注意饮食规律。" }
+            female: { c:"**[天赋：逻辑女王]**<br>不屑宫斗，靠硬实力。财务总监、审计。逻辑滴水不漏。", w:"**[被动：CFO]**<br>天生的理财圣手。不仅能赚更能管。对数字敏感。", l:"**[羁绊：严妻良母]**<br>管老公像管孩子，虽然啰嗦但为家好。", k:"**[传承：贴心棉袄]**<br>子女缘分极佳，母慈子孝。", h:"**[Debuff：肠胃敏感]**<br>压力大时易胃痛。注意饮食规律。" } 
         },
         "伤官生财": { 
             name: "💸 炼金术士 (Alchemist)", tags: ["SSR", "智谋系", "高收益"], icon: "⚗️",
@@ -424,8 +425,8 @@
         "伤官格": {
             name: "🎭 孤傲艺术家 (Maverick)", tags: ["SR", "创造型", "自由"], icon: "🎭",
             slogan: "“我不是为了迎合世界而生，我是为了改变它。”",
-            male: { c:"**[天赋：创新]**<br>传统的规则束缚不了你。适合设计、艺术、自由职业。你的才华需要自由的土壤。", w:"**[被动：技能变现]**<br>不喜求人，靠真本事吃饭。财运不稳定，但爆发力强。", l:"**[羁绊：不羁]**<br>婚姻对你来说是束缚。晚婚或不婚的概率较高。", k:"**[传承：代沟]**<br>与孩子像朋友，但不像父子。", h:"**[Debuff：敏感]**<br>情绪化严重，注意心理健康。" },
-            female: { c:"**[天赋：灵气]**<br>极具艺术天分。适合演艺、写作。受不了朝九晚五。", w:"**[被动：随性]**<br>开心就赚，不开心就躺。对金钱看得不重。", l:"**[羁绊：克夫]**<br>伤官太旺，对伴侣挑剔。需要找宽容度极高的人。", k:"**[传承：依赖]**<br>孩子是你的一切。", h:"**[Debuff：郁结]**<br>多运动，释放多余的能量。" }
+            male: { c:"**[天赋：创新]**<br>传统的规则束缚不了你。适合设计、艺术、自由职业。你的才华需要自由的土壤，体制内会让你窒息。", w:"**[被动：技能变现]**<br>不喜求人，靠真本事吃饭。财运不稳定，但爆发力强，一单吃三年。要学会理财。", l:"**[羁绊：不羁]**<br>婚姻对你来说是束缚。晚婚或不婚的概率较高。需要一个能给你极大自由空间的伴侣。", k:"**[传承：代沟]**<br>与孩子像朋友，但不像传统的父子。你更在乎精神交流。", h:"**[Debuff：敏感]**<br>情绪化严重，容易抑郁或狂躁。注意心理健康，多冥想。" },
+            female: { c:"**[天赋：灵气]**<br>极具艺术天分。适合演艺、写作、设计。受不了朝九晚五，必须做自己喜欢的事。", w:"**[被动：随性]**<br>开心就赚，不开心就躺。对金钱看得不重，但往往不缺小钱。", l:"**[羁绊：克夫]**<br>伤官太旺，对伴侣挑剔、毒舌。需要找宽容度极高、性格温和的人。", k:"**[传承：依赖]**<br>孩子是你的一切，可能是你在这个世界上唯一的软肋。", h:"**[Debuff：郁结]**<br>气血不通，多运动，释放多余的能量。" }
         },
         "正官格": {
             name: "⚖️ 秩序守护者 (Guardian)", tags: ["SR", "稳健型", "官运"], icon: "🏛️",
@@ -559,7 +560,7 @@
             // 4. 绘图
             drawArt(pillars, mz);
             
-            // 5. 核心渲染
+            // 5. 核心渲染：传入所有分析结果，由 renderGamePattern 统一调度喜忌和文案
             renderGamePattern(climate, strengthInfo, pillars, dg, mz);
 
             const resArea = document.getElementById('result-area');
@@ -583,11 +584,11 @@
 
             html += `
                 <div class="col">
-                    <div class="c-head">${p.t}</div>
-                    <div class="c-god">${god}</div>
-                    <div class="c-char ${WX_COLOR[gWx]}">${p.g}</div>
-                    <div class="c-char ${WX_COLOR[zWx]}">${p.z}</div>
-                    <span class="c-cs ${csClass}">${cs}</span>
+                    <div class="col-head">${p.t}</div>
+                    <div class="col-god">${god}</div>
+                    <div class="col-char ${WX_COLOR[gWx]}">${p.g}</div>
+                    <div class="col-char ${WX_COLOR[zWx]}">${p.z}</div>
+                    <span class="col-cs ${csClass}">${cs}</span>
                 </div>
             `;
         });
@@ -731,7 +732,7 @@
         // 1. 优先采用调候特殊格局
         if (climate.specialPattern) {
             key = climate.specialPattern;
-            origin = "[天时调候]";
+            origin = "[天时调候格]";
         } 
         else {
             // 2. 严谨格局判定 (相邻检测)
@@ -745,7 +746,7 @@
 
                 if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
                 else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; origin = "[组合成格]"; }
-                // 暂时不兜底，留给透干判断
+                else { key = "七杀格"; origin = "[十神主导]"; }
             }
             else if (Object.values(godMap).includes("伤官")) {
                 const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
@@ -754,12 +755,13 @@
                 if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
 
                 if (isShengCai) { key = "伤官生财"; origin = "[组合成格]"; }
+                else { key = "伤官格"; origin = "[十神主导]"; } // 单纯伤官格
             }
 
-            // 3. 透干取格 (正八格核心逻辑 - 修复版)
+            // 3. 透干取格 (正八格逻辑 - 修复版)
             if (!key) {
-                const hiddenGans = HIDDEN_GAN_MAP[mz]; // ['戊','乙','癸']
-                const stems = [pillars[0].g, pillars[1].g, pillars[3].g]; // 年月时干
+                const hiddenGans = HIDDEN_GAN_MAP[mz]; 
+                const stems = [pillars[0].g, pillars[1].g, pillars[3].g]; 
                 
                 let patternGan = "";
                 // 优先取透出之干
