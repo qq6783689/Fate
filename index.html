@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 终极典藏版 (No-Crash Ver)</title>
+    <title>命运黑盒 Pro Max · 调候真解版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -30,7 +30,6 @@
 
         .container { width: 100%; max-width: 680px; padding-bottom: 100px; }
 
-        /* 头部 */
         .header { text-align: center; margin-bottom: 30px; position: relative; }
         .header h1 { 
             font-size: 2.2rem; font-weight: 900; margin: 0; letter-spacing: 2px;
@@ -45,21 +44,17 @@
             box-shadow: 0 0 10px rgba(8, 217, 214, 0.2);
         }
 
-        /* 卡片容器 */
         .card {
             background: rgba(22, 33, 62, 0.95); border: 1px solid rgba(255,255,255,0.08);
             border-radius: var(--border-r); padding: 20px; margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3); backdrop-filter: blur(10px);
             position: relative; overflow: hidden;
         }
-        
-        /* 装饰线 */
         .card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
             background: linear-gradient(to bottom, var(--primary), var(--accent));
         }
 
-        /* 输入控件 */
         .input-group { margin-bottom: 20px; }
         .label { color: var(--accent); font-size: 0.85rem; margin-bottom: 8px; display: block; font-weight: bold; letter-spacing: 1px; }
         
@@ -88,11 +83,9 @@
         }
         .btn-start:active { transform: scale(0.98); }
 
-        /* 结果区动画 */
         #result-area { display: none; animation: slideUp 0.6s ease-out; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 角色卡头 */
         .role-header { display: flex; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 20px; }
         .role-icon {
             width: 64px; height: 64px; background: #0f3460; border-radius: 12px;
@@ -106,12 +99,10 @@
         .tag.ssr { background: linear-gradient(45deg, var(--primary), var(--gold)); color: #000; font-weight: bold; }
         .tag.logic { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
 
-        /* 能量图 */
         .chart-box { height: 180px; width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 20px; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         canvas { width: 100%; height: 100%; }
         .chart-label { position: absolute; bottom: 5px; right: 8px; font-size: 0.7rem; color: rgba(255,255,255,0.5); }
 
-        /* 排盘格 */
         .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
         .col { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 2px; text-align: center; }
         .col-head { font-size: 0.65rem; color: #666; margin-bottom: 4px; text-transform: uppercase; }
@@ -120,14 +111,12 @@
         .col-cs { font-size: 0.65rem; color: #888; margin-top: 4px; display: block; }
         .cs-strong { color: var(--gold); }
 
-        /* 五行色 */
         .wx-金 { color: #ffeaa7; text-shadow: 0 0 5px rgba(255,234,167,0.5); } 
         .wx-木 { color: #55efc4; text-shadow: 0 0 5px rgba(85,239,196,0.5); } 
         .wx-水 { color: #74b9ff; text-shadow: 0 0 5px rgba(116,185,255,0.5); } 
         .wx-火 { color: #ff7675; text-shadow: 0 0 5px rgba(255,118,117,0.5); } 
         .wx-土 { color: #a29bfe; text-shadow: 0 0 5px rgba(162,155,254,0.5); }
 
-        /* 攻略区 */
         .guide-item { 
             margin-bottom: 20px; padding: 15px; border-radius: 10px; 
             background: rgba(0,0,0,0.2); border-left: 3px solid var(--gray);
@@ -139,7 +128,6 @@
         .guide-text { font-size: 0.9rem; line-height: 1.6; color: #ccc; text-align: justify; }
         .guide-text b { color: #fff; font-weight: bold; }
 
-        /* 核心分析条 */
         .core-bar {
             background: linear-gradient(to right, rgba(255, 46, 99, 0.1), transparent);
             border: 1px solid rgba(255, 46, 99, 0.3); padding: 12px; border-radius: 8px;
@@ -148,8 +136,8 @@
         
         .joy-taboo { margin-top: 8px; }
         .jt-tag { margin-right: 10px; font-weight: bold; }
-        .jt-joy { color: var(--accent); }
-        .jt-bad { color: var(--primary); }
+        .jt-joy { color: #2ed573; }
+        .jt-bad { color: #ff4757; }
 
         #error-msg { display:none; background:var(--primary); padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:12px; }
     </style>
@@ -159,7 +147,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-tag">SYSTEM: ONLINE · ULTIMATE VER</div>
+        <div class="sys-tag">SYSTEM: PRO MAX · CLIMATE VER</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -202,12 +190,11 @@
 
         <div class="card">
             <span class="label" style="margin-bottom:15px;">天命通关攻略 / STRATEGY GUIDE</span>
-            <div id="guide-content">
-                </div>
+            <div id="guide-content"></div>
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:30px;">
-            Destiny Algorithm © 2025 · Verified
+            Destiny Algorithm © 2025 · Climate Logic Enabled
         </div>
     </div>
 </div>
@@ -216,7 +203,7 @@
     let currentGender = 1;
 
     // ==========================================================
-    // 静态数据字典 (全内置，零依赖)
+    // 静态数据字典 (内置逻辑库)
     // ==========================================================
     
     const WUXING_MAP = {
@@ -225,7 +212,6 @@
     };
     const WX_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
 
-    // 月令本气表 (用于正八格判定)
     const ZHI_MAIN_QI = {
         '子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', 
         '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'
@@ -277,7 +263,6 @@
         '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]
     };
 
-    // 终极文案库 (Ultra Rich Content & Game Style)
     const GAME_DB = {
         "伤官配印": {
             name: "🔮 智者神启 (Oracle)", tags: ["UR", "天命级", "智慧"], icon: "📜",
@@ -685,7 +670,7 @@
         document.getElementById('role-slogan').innerText = data.slogan;
         
         let tagsHtml = `<span class="tag logic">${origin}</span>`;
-        data.tags.forEach(t => tagsHtml += `<span class="tag ${t==='SSR'?'ssr':''}">${t}</span>`);
+        data.tags.forEach(t => tagsHtml += `<span class="tag ${t==='UR'||t==='SSR'?'ssr':''}">${t}</span>`);
         document.getElementById('role-tags').innerHTML = tagsHtml;
 
         // 修复：直接使用 innerHTML 注入完整 HTML 字符串
