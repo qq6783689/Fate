@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 终极无错版</title>
+    <title>命运黑盒 Pro Max · 终极典藏版 (Full Content)</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -29,12 +29,12 @@
         .container { width: 100%; max-width: 700px; padding-bottom: 120px; }
 
         /* 头部 */
-        .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .header { text-align: center; margin-bottom: 30px; position: relative; }
         .header h1 { 
             font-size: 2.2rem; font-weight: 900; margin: 0; letter-spacing: 4px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255, 46, 99, 0.3);
+            text-shadow: 0 0 20px rgba(255, 46, 99, 0.3);
         }
         .sys-badge { 
             font-size: 0.7rem; border: 1px solid var(--accent); color: var(--accent);
@@ -45,7 +45,7 @@
         /* 卡片容器 */
         .card {
             background: var(--card); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: var(--border-r); padding: 25px; margin-bottom: 30px;
+            border-radius: var(--border-r); padding: 20px; margin-bottom: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
         }
         .card::after {
@@ -64,7 +64,7 @@
         }
         .g-btn.active {
             border-color: var(--primary); color: #fff; background: rgba(255, 46, 99, 0.2);
-            box-shadow: 0 0 20px rgba(255, 46, 99, 0.2);
+            box-shadow: 0 0 15px rgba(255, 46, 99, 0.2);
         }
 
         input[type="datetime-local"] {
@@ -74,28 +74,28 @@
         input:focus { border-color: var(--accent); }
 
         .btn-start {
-            width: 100%; padding: 18px; border: none; border-radius: 8px;
+            width: 100%; padding: 16px; border: none; border-radius: 8px;
             background: linear-gradient(135deg, var(--primary), #8000ff);
             color: #fff; font-size: 1.2rem; font-weight: 900; letter-spacing: 3px;
-            cursor: pointer; margin-top: 15px; transition: transform 0.1s;
+            cursor: pointer; margin-top: 10px; transition: transform 0.1s;
             box-shadow: 0 10px 30px rgba(255, 46, 99, 0.4);
         }
         .btn-start:active { transform: scale(0.98); }
 
         /* 结果区动画 */
         #result-area { display: none; animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
 
         /* 角色卡头 */
         .role-header { display: flex; align-items: flex-start; padding-bottom: 20px; border-bottom: 1px dashed rgba(255,255,255,0.15); margin-bottom: 20px; }
         .role-icon {
-            width: 80px; height: 80px; background: #2a2a35; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center; font-size: 40px;
+            width: 70px; height: 70px; background: #2a2a35; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center; font-size: 35px;
             border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
             margin-right: 20px; flex-shrink: 0;
         }
-        .role-title { font-size: 1.6rem; font-weight: bold; color: #fff; margin: 0 0 8px 0; }
-        .role-sub { font-size: 0.9rem; color: #888; font-style: italic; line-height: 1.4; }
+        .role-title { font-size: 1.5rem; font-weight: bold; color: #fff; margin: 0 0 5px 0; }
+        .role-sub { font-size: 0.85rem; color: #888; font-style: italic; line-height: 1.4; }
         
         .role-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
         .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); color: #bbb; }
@@ -103,16 +103,17 @@
         .tag.logic { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
 
         /* 能量图 */
-        .chart-box { height: 200px; width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 25px; position: relative; border: 1px solid rgba(255,255,255,0.1); }
+        .chart-box { height: 180px; width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 20px; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         canvas { width: 100%; height: 100%; }
+        .chart-label { position: absolute; bottom: 5px; right: 8px; font-size: 0.7rem; color: rgba(255,255,255,0.5); }
 
         /* 排盘格 */
-        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .col { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px 5px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        .c-head { font-size: 0.7rem; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        .c-god { font-size: 0.75rem; color: var(--accent); height: 16px; margin-bottom: 4px; }
-        .c-char { font-family: "KaiTi", serif; font-size: 2rem; font-weight: bold; line-height: 1.1; color: #fff; }
-        .c-cs { font-size: 0.7rem; color: #888; margin-top: 6px; display: block; }
+        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .col { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 2px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .c-head { font-size: 0.65rem; color: #666; margin-bottom: 4px; text-transform: uppercase; }
+        .c-god { font-size: 0.7rem; color: var(--accent); height: 14px; margin-bottom: 4px; }
+        .c-char { font-family: "KaiTi", serif; font-size: 1.8rem; font-weight: bold; line-height: 1.1; color: #fff; }
+        .c-cs { font-size: 0.65rem; color: #888; margin-top: 4px; display: block; }
         .cs-strong { color: var(--gold); }
 
         .wx-金 { color: #ffeaa7; text-shadow: 0 0 8px rgba(255,234,167,0.4); } 
@@ -123,37 +124,35 @@
 
         /* 攻略区 */
         .guide-item { 
-            margin-bottom: 30px; padding: 25px; border-radius: 12px; 
+            margin-bottom: 25px; padding: 20px; border-radius: 12px; 
             background: rgba(0,0,0,0.25); border-left: 4px solid var(--accent);
         }
-        .guide-item:hover { background: rgba(255,255,255,0.02); }
-        
-        .g-title { 
-            font-size: 1.1rem; font-weight: bold; color: var(--gold); margin-bottom: 15px;
-            display: flex; align-items: center; gap: 10px; letter-spacing: 1px;
+        .guide-title { 
+            font-size: 1rem; font-weight: bold; color: var(--gold); margin-bottom: 10px;
+            display: flex; align-items: center; gap: 8px; letter-spacing: 1px;
         }
-        .g-text { 
-            font-size: 0.95rem; line-height: 1.9; color: #ddd; text-align: justify; 
+        .guide-text { 
+            font-size: 0.95rem; line-height: 1.8; color: #ddd; text-align: justify; 
         }
-        .g-text b { color: #fff; font-weight: bold; border-bottom: 1px dotted rgba(255,255,255,0.5); }
-        
+        .guide-text b { color: #fff; font-weight: bold; border-bottom: 1px dotted rgba(255,255,255,0.5); }
+
         /* 核心分析条 */
         .core-bar {
             background: linear-gradient(to right, rgba(255, 46, 99, 0.1), transparent);
-            border: 1px solid rgba(255, 46, 99, 0.3); padding: 18px; border-radius: 10px;
-            margin-top: 25px; font-size: 0.9rem; color: #ffcccb; line-height: 1.7;
+            border: 1px solid rgba(255, 46, 99, 0.3); padding: 15px; border-radius: 10px;
+            margin-top: 20px; font-size: 0.9rem; color: #ffcccb; line-height: 1.6;
         }
         
         /* 喜忌条 */
         .logic-bar { 
-            margin-top: 25px; padding: 20px; background: rgba(0,0,0,0.3); border: 1px solid #333; 
-            font-size: 0.95rem; line-height: 1.8; border-radius: 10px;
+            margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid #333; 
+            font-size: 0.9rem; line-height: 1.6; border-radius: 10px;
         }
-        .logic-title { color: var(--accent); font-weight: bold; display: block; margin-bottom: 10px; font-size: 0.9rem; letter-spacing: 1px; }
+        .logic-title { color: var(--accent); font-weight: bold; display: block; margin-bottom: 8px; font-size: 0.85rem; letter-spacing: 1px; }
         .good-text { color: #2ecc71; font-weight: bold; margin-right: 5px; } 
         .bad-text { color: #ff4757; font-weight: bold; margin-right: 5px; }
 
-        #error-msg { display:none; background:var(--primary); padding:15px; border-radius:8px; text-align:center; margin-bottom:20px; font-size:14px; }
+        #error-msg { display:none; background:var(--primary); padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:12px; }
     </style>
 </head>
 <body>
@@ -161,7 +160,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-badge">SYSTEM: PRO MAX · FIX V5.0</div>
+        <div class="sys-badge">SYSTEM: PRO MAX · FULL LORE</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -214,12 +213,12 @@
         </div>
 
         <div class="card">
-            <span class="label" style="margin-bottom:20px; font-size:1rem;">天命通关攻略 / STRATEGY GUIDE</span>
+            <span class="label" style="margin-bottom:15px; font-size:1rem;">天命通关攻略 / STRATEGY GUIDE</span>
             <div id="guide-content"></div>
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:40px;">
-            Destiny Algorithm © 2025 · Full Content Ver.
+            Destiny Algorithm © 2025 · Full Content Verified
         </div>
     </div>
 </div>
@@ -275,7 +274,6 @@
         "癸": { "癸":"比肩", "壬":"劫财", "乙":"食神", "甲":"伤官", "丁":"偏财", "丙":"正财", "己":"七杀", "戊":"正官", "辛":"偏印", "庚":"正印" }
     };
 
-    // 核心数据库：格局喜忌规则 (XIJI RULES)
     const SILING_RULES = {
         '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
         '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
@@ -283,6 +281,7 @@
         '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]
     };
 
+    // 核心数据库：格局喜忌规则 (XIJI RULES)
     const XIJI_RULES = {
         "金水伤官": {
             desc: "天寒地冻，金水虽清但无生机。喜火（官杀）暖局，喜木（财）生火。此为伤官见官反为贵的特殊格局。",
@@ -326,12 +325,12 @@
         },
         "月劫格": {
             desc: "月令劫财，身强财弱。首取官杀制劫，次取食伤泄劫。最怕比劫夺财。",
-            joy: ["🗡️ 官杀 (制劫)", "🎨 食伤 (泄秀)"],
+            joy: ["🗡️ 官杀 (制劫)", "🎨 食伤 (泄秀)", "💰 财星 (需食伤通关)"],
             taboo: ["📜 印星 (生劫)", "💪 比劫 (争财)"]
         },
         "七杀格": {
             desc: "七杀当权，如抱虎而眠。若身弱，首取印星化杀；若身强，首取食神制杀。",
-            joy: ["📜 印星 (化杀)", "🎨 食伤 (制杀)"],
+            joy: ["📜 印星 (化杀生身)", "🎨 食伤 (制杀)"],
             taboo: ["💰 财星 (生杀)", "🗡️ 官杀 (攻身)"]
         },
         "正官格": {
@@ -488,6 +487,12 @@
             male: { c:"**[天赋：中流砥柱]**<br>事必躬亲，闲不下来。技术总监、合伙人。适合带队冲锋。你很难给别人打工，迟早要自己单干。", w:"**[被动：血汗钱]**<br>每一分都是汗水。身旺任财，中晚年大富。但也容易被劫财（朋友借钱不还）。", l:"**[羁绊：大男人]**<br>易克妻。需找温柔听话的老婆。你在家里说一不二。", k:"**[传承：放养]**<br>孩子独立，将来可能不在身边。", h:"**[Debuff：过劳]**<br>身体壮如牛，但易透支。" }, 
             female: { c:"**[天赋：不靠男人]**<br>比男人还拼。创业或高管。不喜欢依赖别人。", w:"**[被动：漏斗]**<br>赚钱猛守财难。易被借钱不还。需找人打理。", l:"**[羁绊：强势]**<br>易遇第三者或老公弱。太强势让男人有压力，学会示弱。", k:"**[传承：健康]**<br>利生育，孩子活泼适应力强。", h:"**[Debuff：上火]**<br>火气大，注意甲状腺。少吃辛辣。" }
         },
+        "月劫格": {
+            name: "⚔️ 豪侠义士 (Rogue)", tags: ["SR", "竞争型", "义气"], icon: "🤜",
+            slogan: "“路见不平一声吼。钱财如粪土，仁义值千金。”",
+            male: { c:"**[天赋：团队领袖]**<br>善于聚集人气，适合做团队Leader。但要防备手下或合伙人背刺。你的成功往往来自于兄弟朋友的帮衬，失败也往往因为被朋友拖累。", w:"**[被动：散财]**<br>对朋友大方，存不住钱。最好的存钱方式是买房或交给老婆管。不适合合伙做生意，因为容易因财失义。", l:"**[羁绊：克妻]**<br>比劫夺财，感情容易有竞争者。晚婚为宜。你需要一个能包容你“讲义气”的伴侣。", k:"**[传承：健康]**<br>孩子身体好，但不一定听话。教育上要多花心思。", h:"**[Debuff：外伤]**<br>性格冲动，易与人起冲突。注意交通安全和运动伤害。" },
+            female: { c:"**[天赋：女汉子]**<br>性格直爽，不让须眉。在职场上敢打敢拼，适合竞争激烈的行业，如销售、保险。", w:"**[被动：月光]**<br>喜欢购物，容易冲动消费。需强制储蓄。你的钱往往花在面子和朋友身上。", l:"**[羁绊：争夫]**<br>感情路坎坷，容易遇到渣男或三角恋。要擦亮眼睛，不要被花言巧语蒙蔽。", k:"**[传承：独立]**<br>带孩子不娇气，培养孩子独立性。你和孩子的关系像朋友。", h:"**[Debuff：呼吸道]**<br>注意肺部和呼吸系统健康。" }
+        },
         "正官格": {
             name: "⚖️ 秩序守护者 (Guardian)", tags: ["SR", "稳健型", "官运"], icon: "🏛️",
             slogan: "“规则是世界的基石。按部就班，才是通往顶峰的捷径。”",
@@ -643,7 +648,6 @@
         document.getElementById('pillars-box').innerHTML = html;
     }
 
-    // 手动计算司令
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
@@ -776,11 +780,13 @@
         let key = "";
         let origin = "";
 
+        // 1. 优先采用调候特殊格局
         if (climate.specialPattern) {
             key = climate.specialPattern;
             origin = "[天时调候]";
         } 
         else {
+            // 2. 严谨格局判定 (相邻检测)
             const hasSha = Object.values(godMap).includes("七杀");
             if (hasSha) {
                 const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
@@ -803,6 +809,7 @@
                 else { key = "伤官格"; origin = "[十神主导]"; }
             }
 
+            // 3. 透干取格
             if (!key) {
                 const hiddenGans = HIDDEN_GAN_MAP[mz]; 
                 const stems = [pillars[0].g, pillars[1].g, pillars[3].g]; 
@@ -863,24 +870,24 @@
 
         const guideHtml = `
             <div class="guide-item">
-                <div class="g-title">⚔️ 事业与成就</div>
-                <div class="g-text">${detail.c}</div>
+                <div class="guide-title">⚔️ 事业与成就</div>
+                <div class="guide-text">${detail.c}</div>
             </div>
             <div class="guide-item">
-                <div class="g-title">💰 财富与资产</div>
-                <div class="g-text">${detail.w}</div>
+                <div class="guide-title">💰 财富与资产</div>
+                <div class="guide-text">${detail.w}</div>
             </div>
             <div class="guide-item">
-                <div class="g-title">💞 情感与婚姻</div>
-                <div class="g-text">${detail.l}</div>
+                <div class="guide-title">💞 情感与婚姻</div>
+                <div class="guide-text">${detail.l}</div>
             </div>
             <div class="guide-item">
-                <div class="g-title">🌱 后代与传承</div>
-                <div class="g-text">${detail.k}</div>
+                <div class="guide-title">🌱 后代与传承</div>
+                <div class="guide-text">${detail.k}</div>
             </div>
             <div class="guide-item">
-                <div class="g-title">❤️ 健康与状态</div>
-                <div class="g-text">${detail.h}</div>
+                <div class="guide-title">❤️ 健康与状态</div>
+                <div class="guide-text">${detail.h}</div>
             </div>
         `;
         document.getElementById('guide-content').innerHTML = guideHtml;
