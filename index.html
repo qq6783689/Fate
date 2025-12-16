@@ -3,65 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 宗师实战版</title>
+    <title>命运黑盒 Pro Max · 终极无错版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
-            --primary: #ff2e63;      /* 核心能量/煞气 */
-            --accent: #00f2ea;       /* 智慧/调候 */
-            --gold: #ffd700;         /* 尊贵/财星 */
-            --dark: #0e0e12;         /* 深渊黑 */
-            --card-bg: #16161e;      /* 卡片底色 */
-            --text-main: #eaeaea;
-            --text-sub: #a0a0b0;
-            --border-r: 16px;
+            --primary: #ff2e63;      /* 故障红 */
+            --accent: #08d9d6;       /* 赛博蓝 */
+            --dark: #121212;         /* 纯黑 */
+            --card: #1e1e24;         /* 卡片黑 */
+            --text: #e0e0e0;
+            --gold: #ffd700;
+            --border-r: 12px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
-            background-color: var(--dark); color: var(--text-main);
+            background-color: var(--dark); color: var(--text);
             margin: 0; padding: 20px 10px; min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 50%, #232330 0%, #0e0e12 100%);
+            background-image: radial-gradient(circle at 50% 50%, #2a2d3e 0%, #121212 100%);
             display: flex; justify-content: center;
         }
 
-        .container { width: 100%; max-width: 700px; padding-bottom: 100px; }
+        .container { width: 100%; max-width: 700px; padding-bottom: 120px; }
 
         /* 头部 */
-        .header { text-align: center; margin-bottom: 30px; position: relative; }
+        .header { text-align: center; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
         .header h1 { 
-            font-size: 2.4rem; font-weight: 900; margin: 0; letter-spacing: 4px;
+            font-size: 2.2rem; font-weight: 900; margin: 0; letter-spacing: 4px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255, 46, 99, 0.4);
+            text-shadow: 0 0 30px rgba(255, 46, 99, 0.3);
         }
         .sys-badge { 
-            font-size: 0.75rem; border: 1px solid var(--gold); color: var(--gold);
-            padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 10px;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); letter-spacing: 1px; font-weight: bold;
+            font-size: 0.7rem; border: 1px solid var(--accent); color: var(--accent);
+            padding: 4px 10px; border-radius: 20px; display: inline-block; margin-top: 10px;
+            box-shadow: 0 0 10px rgba(8, 217, 214, 0.2); letter-spacing: 1px;
         }
 
         /* 卡片容器 */
         .card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.08);
+            background: var(--card); border: 1px solid rgba(255,255,255,0.08);
             border-radius: var(--border-r); padding: 25px; margin-bottom: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); position: relative; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
         }
-        .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: linear-gradient(to bottom, var(--primary), var(--accent));
+        .card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
         }
 
         /* 输入控件 */
         .input-group { margin-bottom: 20px; }
-        .label { color: var(--accent); font-size: 0.85rem; margin-bottom: 8px; display: block; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
+        .label { color: var(--accent); font-size: 0.85rem; margin-bottom: 8px; display: block; font-weight: bold; letter-spacing: 1px; }
         
         .gender-box { display: flex; gap: 15px; }
         .g-btn {
             flex: 1; padding: 14px; text-align: center; border-radius: 8px; background: rgba(255,255,255,0.05);
-            border: 1px solid #444; color: #888; cursor: pointer; transition: 0.3s; font-weight: bold;
+            border: 1px solid #333; color: #888; cursor: pointer; transition: 0.3s; font-weight: bold;
         }
         .g-btn.active {
             border-color: var(--primary); color: #fff; background: rgba(255, 46, 99, 0.2);
@@ -92,10 +91,10 @@
         .role-icon {
             width: 80px; height: 80px; background: #2a2a35; border-radius: 16px;
             display: flex; align-items: center; justify-content: center; font-size: 40px;
-            border: 2px solid var(--gold); box-shadow: 0 0 25px rgba(255, 215, 0, 0.2);
+            border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
             margin-right: 20px; flex-shrink: 0;
         }
-        .role-title { font-size: 1.6rem; font-weight: bold; color: #fff; margin: 0 0 5px 0; }
+        .role-title { font-size: 1.6rem; font-weight: bold; color: #fff; margin: 0 0 8px 0; }
         .role-sub { font-size: 0.9rem; color: #888; font-style: italic; line-height: 1.4; }
         
         .role-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
@@ -103,61 +102,56 @@
         .tag.ssr { background: linear-gradient(45deg, var(--primary), var(--gold)); color: #000; font-weight: bold; }
         .tag.logic { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
 
-        /* 意象画 */
+        /* 能量图 */
         .chart-box { height: 200px; width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 25px; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         canvas { width: 100%; height: 100%; }
-        .chart-label { position: absolute; bottom: 8px; right: 10px; font-size: 0.75rem; color: rgba(255,255,255,0.6); letter-spacing: 1px; }
 
         /* 排盘格 */
         .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .col { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px 5px; text-align: center; border: 1px solid rgba(255,255,255,0.05); position: relative; }
-        .col-head { font-size: 0.7rem; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        .col-god { font-size: 0.75rem; color: var(--accent); height: 16px; margin-bottom: 4px; }
-        .col-char { font-family: "KaiTi", serif; font-size: 2rem; font-weight: bold; line-height: 1.1; color: #fff; }
-        .col-cs { font-size: 0.7rem; color: #888; margin-top: 6px; display: block; }
+        .col { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 15px 5px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .c-head { font-size: 0.7rem; color: #666; margin-bottom: 5px; text-transform: uppercase; }
+        .c-god { font-size: 0.75rem; color: var(--accent); height: 16px; margin-bottom: 4px; }
+        .c-char { font-family: "KaiTi", serif; font-size: 2rem; font-weight: bold; line-height: 1.1; color: #fff; }
+        .c-cs { font-size: 0.7rem; color: #888; margin-top: 6px; display: block; }
         .cs-strong { color: var(--gold); }
 
-        .wx-金 { color: #ffeaa7; text-shadow: 0 0 10px rgba(255,234,167,0.4); } 
-        .wx-木 { color: #55efc4; text-shadow: 0 0 10px rgba(85,239,196,0.4); } 
-        .wx-水 { color: #74b9ff; text-shadow: 0 0 10px rgba(116,185,255,0.4); } 
-        .wx-火 { color: #ff7675; text-shadow: 0 0 10px rgba(255,118,117,0.4); } 
-        .wx-土 { color: #a29bfe; text-shadow: 0 0 10px rgba(162,155,254,0.4); }
-
-        /* 核心逻辑条 (司令/喜忌) */
-        .logic-bar { 
-            margin-top: 25px; padding: 20px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); 
-            font-size: 0.95rem; line-height: 1.8; border-radius: 10px;
-        }
-        .logic-title { color: var(--gold); font-weight: bold; display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 0.9rem; letter-spacing: 1px; }
-        .siling-info { background: rgba(255, 46, 99, 0.1); padding: 10px; border-radius: 6px; border-left: 3px solid var(--primary); margin-bottom: 15px; color: #ffccd5; font-size: 0.9rem; }
-        .good-text { color: #2ecc71; font-weight: bold; margin-right: 5px; } 
-        .bad-text { color: #ff4757; font-weight: bold; margin-right: 5px; }
+        .wx-金 { color: #ffeaa7; text-shadow: 0 0 8px rgba(255,234,167,0.4); } 
+        .wx-木 { color: #55efc4; text-shadow: 0 0 8px rgba(85,239,196,0.4); } 
+        .wx-水 { color: #74b9ff; text-shadow: 0 0 8px rgba(116,185,255,0.4); } 
+        .wx-火 { color: #ff7675; text-shadow: 0 0 8px rgba(255,118,117,0.4); } 
+        .wx-土 { color: #a29bfe; text-shadow: 0 0 8px rgba(162,155,254,0.4); }
 
         /* 攻略区 */
         .guide-item { 
             margin-bottom: 30px; padding: 25px; border-radius: 12px; 
             background: rgba(0,0,0,0.25); border-left: 4px solid var(--accent);
         }
-        .guide-title { 
-            font-size: 1.1rem; font-weight: bold; color: var(--accent); margin-bottom: 15px;
+        .guide-item:hover { background: rgba(255,255,255,0.02); }
+        
+        .g-title { 
+            font-size: 1.1rem; font-weight: bold; color: var(--gold); margin-bottom: 15px;
             display: flex; align-items: center; gap: 10px; letter-spacing: 1px;
         }
-        .guide-text { 
+        .g-text { 
             font-size: 0.95rem; line-height: 1.9; color: #ddd; text-align: justify; 
         }
-        .guide-text b { color: #fff; font-weight: bold; border-bottom: 1px dashed rgba(255,255,255,0.4); }
+        .g-text b { color: #fff; font-weight: bold; border-bottom: 1px dotted rgba(255,255,255,0.5); }
         
-        /* 老师傅批语 */
-        .master-comment {
-            margin-top: 30px; background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
-            padding: 20px; border-radius: 10px; border: 1px solid var(--gold);
-            position: relative;
+        /* 核心分析条 */
+        .core-bar {
+            background: linear-gradient(to right, rgba(255, 46, 99, 0.1), transparent);
+            border: 1px solid rgba(255, 46, 99, 0.3); padding: 18px; border-radius: 10px;
+            margin-top: 25px; font-size: 0.9rem; color: #ffcccb; line-height: 1.7;
         }
-        .master-comment::before {
-            content: "👁️ 宗师心法"; position: absolute; top: -12px; left: 20px;
-            background: var(--gold); color: #000; padding: 2px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem;
+        
+        /* 喜忌条 */
+        .logic-bar { 
+            margin-top: 25px; padding: 20px; background: rgba(0,0,0,0.3); border: 1px solid #333; 
+            font-size: 0.95rem; line-height: 1.8; border-radius: 10px;
         }
-        .mc-text { color: #dcdcdc; font-style: italic; line-height: 1.6; font-size: 0.9rem; }
+        .logic-title { color: var(--accent); font-weight: bold; display: block; margin-bottom: 10px; font-size: 0.9rem; letter-spacing: 1px; }
+        .good-text { color: #2ecc71; font-weight: bold; margin-right: 5px; } 
+        .bad-text { color: #ff4757; font-weight: bold; margin-right: 5px; }
 
         #error-msg { display:none; background:var(--primary); padding:15px; border-radius:8px; text-align:center; margin-bottom:20px; font-size:14px; }
     </style>
@@ -167,7 +161,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-badge">SYSTEM: MASTER CLASS · LOGIC V4.0</div>
+        <div class="sys-badge">SYSTEM: PRO MAX · FIX V5.0</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -184,7 +178,7 @@
             <span class="label">输入出生时间 / SPAWN DATE</span>
             <input type="datetime-local" id="birth-input">
         </div>
-        <button class="btn-start" onclick="startScan()">启动宗师级推演 / START</button>
+        <button class="btn-start" onclick="startScan()">启动深层扫描 / DEEP SCAN</button>
     </div>
 
     <div id="result-area">
@@ -205,13 +199,16 @@
 
             <div class="pillars" id="pillars-box"></div>
             
+            <div class="core-bar" id="core-analysis"></div>
+
             <div class="logic-bar">
-                <span class="logic-title">⚡ 底层逻辑 & 喜忌铁律 (CORE LOGIC)</span>
-                <div class="siling-info" id="siling-info">...</div>
-                <div id="pattern-reason" style="margin-bottom:12px; color:#aaa;"></div>
-                <div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:10px;">
-                    <div style="margin-bottom:5px;"><span class="good-text">★ 喜用神：</span> <span id="txt-joy" style="color:#eee">...</span></div>
-                    <div><span class="bad-text">✖ 忌神：</span> <span id="txt-taboo" style="color:#eee">...</span></div>
+                <span class="logic-title">⚡ 格局喜忌铁律 (PATTERN LOGIC)</span>
+                <div id="pattern-reason" style="margin-bottom:10px; color:#aaa;"></div>
+                <div>
+                    <span class="good-text">★ 喜用神：</span> <span id="txt-joy" style="color:#eee">...</span>
+                </div>
+                <div style="margin-top:5px;">
+                    <span class="bad-text">✖ 忌神：</span> <span id="txt-taboo" style="color:#eee">...</span>
                 </div>
             </div>
         </div>
@@ -219,14 +216,10 @@
         <div class="card">
             <span class="label" style="margin-bottom:20px; font-size:1rem;">天命通关攻略 / STRATEGY GUIDE</span>
             <div id="guide-content"></div>
-            
-            <div class="master-comment">
-                <div class="mc-text" id="master-text">...</div>
-            </div>
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:40px;">
-            Destiny Algorithm © 2025 · Ultimate Edition
+            Destiny Algorithm © 2025 · Full Content Ver.
         </div>
     </div>
 </div>
@@ -243,21 +236,18 @@
 
     const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
 
-    // 司令执政天数 (按古法)
-    const SILING_DAYS = {
-        '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
-        '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
-        '申': [['戊',7], ['壬',7], ['庚',16]], '酉': [['庚',10], ['辛',20]], '戌': [['辛',9], ['丁',3], ['戊',18]],
-        '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]
-    };
-
     const HIDDEN_GAN_MAP = {
         '子':['癸'], '丑':['己','癸','辛'], '寅':['甲','丙','戊'], '卯':['乙'], 
         '辰':['戊','乙','癸'], '巳':['丙','戊','庚'], '午':['丁','己'], '未':['己','丁','乙'], 
         '申':['庚','壬','戊'], '酉':['辛'], '戌':['戊','辛','丁'], '亥':['壬','甲']
     };
 
-    const CS_MEANING = { "长生":"稳固", "沐浴":"魅力", "冠带":"进取", "临官":"强盛", "帝旺":"巅峰", "衰":"稳重", "病":"敏感", "死":"沉静", "墓":"囤积", "绝":"重生", "胎":"希望", "养":"培育" };
+    const CS_MEANING = {
+        "长生": "稳固", "沐浴": "魅力", "冠带": "进取", "临官": "强盛", 
+        "帝旺": "巅峰", "衰": "稳重", "病": "敏感", "死": "沉静", 
+        "墓": "囤积", "绝": "重生", "胎": "希望", "养": "培育"
+    };
+
     const CHANGSHENG_TABLE = {
         "甲": { "亥":"长生", "子":"沐浴", "丑":"冠带", "寅":"临官", "卯":"帝旺", "辰":"衰", "巳":"病", "午":"死", "未":"墓", "申":"绝", "酉":"胎", "戌":"养" },
         "乙": { "午":"长生", "巳":"沐浴", "辰":"冠带", "卯":"临官", "寅":"帝旺", "丑":"衰", "子":"病", "亥":"死", "戌":"墓", "酉":"绝", "申":"胎", "未":"养" },
@@ -271,6 +261,7 @@
         "癸": { "卯":"长生", "寅":"沐浴", "丑":"冠带", "子":"临官", "亥":"帝旺", "戌":"衰", "酉":"病", "申":"死", "未":"墓", "午":"绝", "巳":"胎", "辰":"养" }
     };
     const STRONG_CS = ["长生", "帝旺", "临官", "冠带"]; 
+
     const SHISHEN_MAP = {
         "甲": { "甲":"比肩", "乙":"劫财", "丙":"食神", "丁":"伤官", "戊":"偏财", "己":"正财", "庚":"七杀", "辛":"正官", "壬":"偏印", "癸":"正印" },
         "乙": { "乙":"比肩", "甲":"劫财", "丁":"食神", "丙":"伤官", "己":"偏财", "戊":"正财", "辛":"七杀", "庚":"正官", "癸":"偏印", "壬":"正印" },
@@ -285,102 +276,93 @@
     };
 
     // 核心数据库：格局喜忌规则 (XIJI RULES)
+    const SILING_RULES = {
+        '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
+        '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
+        '申': [['戊',7], ['壬',7], ['庚',16]], '酉': [['庚',10], ['辛',20]], '戌': [['辛',9], ['丁',3], ['戊',18]],
+        '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]
+    };
+
     const XIJI_RULES = {
         "金水伤官": {
             desc: "天寒地冻，金水虽清但无生机。喜火（官杀）暖局，喜木（财）生火。此为伤官见官反为贵的特殊格局。",
             joy: ["🔥 火 (官杀·暖局)", "🌲 木 (财星·助燃)"],
-            taboo: ["💧 水 (伤官·加寒)", "⛰️ 土 (印星·埋金)"],
-            advice: "必须有火！无火则孤贫，有火则显贵。你的舞台在温暖的地方。"
+            taboo: ["💧 水 (伤官·加寒)", "⛰️ 土 (印星·埋金)"]
         },
         "木火通明": {
             desc: "春木生火，木火两旺，气象光辉。最忌金（官杀）来克伐，损了秀气；也忌水（印）太旺灭火。",
             joy: ["🔥 火 (食伤·泄秀)", "🌲 木 (比劫·助势)"],
-            taboo: ["🗡️ 金 (官杀·克战)", "💧 水 (印星·灭火)"],
-            advice: "名声比财富更重要。保护你的才华不被世俗（金）扼杀。"
+            taboo: ["🗡️ 金 (官杀·克战)", "💧 水 (印星·灭火)"]
         },
         "伤官配印": {
             desc: "火炎土燥（夏木）或身弱伤旺。急需印星（水）来调候润局并生身。贵在有印，印星为第一救星。",
             joy: ["💧 水 (印星·润局)", "🌲 木 (比劫·护印)"],
-            taboo: ["⛰️ 土 (财星·坏印)", "🔥 火 (伤官·过旺)"],
-            advice: "贪财坏印是最大陷阱。用知识和名望去赚钱，不要急功近利。"
+            taboo: ["⛰️ 土 (财星·坏印)", "🔥 火 (伤官·过旺)"]
         },
         "食神制杀": {
             desc: "七杀攻身，幸有食神制之。这是一个英雄独压万人的格局。喜身强以抗杀，喜食神以制敌。",
             joy: ["🎨 食神 (制杀)", "📜 印星 (化杀)", "💪 比劫 (帮身)"],
-            taboo: ["💰 财星 (党杀·泄食)", "🗡️ 官杀 (攻身)"],
-            advice: "不要害怕压力，压力就是你的军功章。只有你能解决这个难题。"
+            taboo: ["💰 财星 (党杀·泄食)", "🗡️ 官杀 (攻身)"]
         },
         "伤官生财": {
             desc: "伤官虽旺，但有财星引通食伤之气，形成流通。只要身不弱，即为富格。技艺成家，财富自来。",
             joy: ["身弱喜印比 (📜/💪)", "身强喜食伤财 (🎨/💰)"], 
-            taboo: ["身弱忌财官", "身强忌印比"],
-            advice: "你的头脑就是印钞机。不要打死工，要做有复利的事。"
+            taboo: ["身弱忌财官", "身强忌印比"]
         },
         "伤官合杀": {
             desc: "伤官与七杀相合，化干戈为玉帛。这是异路功名之象。喜身旺，喜印绶。",
             joy: ["📜 印星 (生身)", "💪 比劫 (帮身)"],
-            taboo: ["💰 财星 (生杀)", "🗡️ 官杀 (混杂)"],
-            advice: "善用手段和谋略，把敌人变成盟友。这是外交家的格局。"
+            taboo: ["💰 财星 (生杀)", "🗡️ 官杀 (混杂)"]
         },
         "伤官格": {
             desc: "伤官当令，泄气太过。若无财无印，则为孤傲清高之士。需印制伤，或财引化。",
             joy: ["📜 印星 (制伤)", "💰 财星 (引化)"],
-            taboo: ["🗡️ 官杀 (克战)", "💪 比劫 (助伤)"],
-            advice: "才华需要变现或者沉淀，否则就是恃才傲物，易招小人。"
+            taboo: ["🗡️ 官杀 (克战)", "💪 比劫 (助伤)"]
         },
         "建禄格": {
             desc: "月令建禄，身旺财官有气。喜财官食伤以泄秀，忌印比再来生扶。",
             joy: ["🗡️ 官杀 (护财)", "🎨 食伤 (生财)", "💰 财星 (养命)"],
-            taboo: ["📜 印星 (过旺)", "💪 比劫 (夺财)"],
-            advice: "你天生比别人底子厚。不要懒惰，去承担更大的责任。"
+            taboo: ["📜 印星 (过旺)", "💪 比劫 (夺财)"]
         },
         "月劫格": {
             desc: "月令劫财，身强财弱。首取官杀制劫，次取食伤泄劫。最怕比劫夺财。",
             joy: ["🗡️ 官杀 (制劫)", "🎨 食伤 (泄秀)"],
-            taboo: ["📜 印星 (生劫)", "💪 比劫 (争财)"],
-            advice: "防备朋友背刺。最好的防守是进攻（官杀），让自己变强。"
+            taboo: ["📜 印星 (生劫)", "💪 比劫 (争财)"]
         },
         "七杀格": {
             desc: "七杀当权，如抱虎而眠。若身弱，首取印星化杀；若身强，首取食神制杀。",
             joy: ["📜 印星 (化杀)", "🎨 食伤 (制杀)"],
-            taboo: ["💰 财星 (生杀)", "🗡️ 官杀 (攻身)"],
-            advice: "你是乱世英雄。不要追求安逸，安逸会让你生锈。"
+            taboo: ["💰 财星 (生杀)", "🗡️ 官杀 (攻身)"]
         },
         "正官格": {
             desc: "正官纯正，气象尊贵。喜财生官，喜印护官。最怕伤官克官。",
             joy: ["💰 财星 (生官)", "📜 印星 (护官)"],
-            taboo: ["🎨 伤官 (克官)", "🗡️ 七杀 (混杂)"],
-            advice: "按部就班，遵守规则。你的成功在体制内或大平台上。"
+            taboo: ["🎨 伤官 (克官)", "🗡️ 七杀 (混杂)"]
         },
         "正财格": {
             desc: "财星当令，勤劳致富。身强能任财，身弱喜印比。",
             joy: ["身强喜官杀食伤", "身弱喜印比"],
-            taboo: ["身强忌印比", "身弱忌财官"],
-            advice: "积少成多，不要想一夜暴富。你的财富是时间的玫瑰。"
+            taboo: ["身强忌印比", "身弱忌财官"]
         },
         "偏财格": {
             desc: "偏财当令，慷慨多情。喜官杀护财，喜食伤生财。",
             joy: ["🗡️ 官杀", "🎨 食伤", "身弱喜印比"],
-            taboo: ["💪 比劫 (夺财)", "空亡"],
-            advice: "人脉就是钱脉。大方一点，会有意想不到的回报。"
+            taboo: ["💪 比劫 (夺财)", "空亡"]
         },
         "正印格": {
             desc: "印绶生身，慈悲为怀。喜官杀生印，忌财星坏印。",
             joy: ["🗡️ 官杀 (生印)", "💪 比劫 (护印)"],
-            taboo: ["💰 财星 (坏印)"],
-            advice: "保护好你的名誉，那是你最大的资产。不要因为钱而坏了名声。"
+            taboo: ["💰 财星 (坏印)"]
         },
         "偏印格": {
             desc: "偏印当权，鬼才逻辑。喜偏财制枭，忌食神被夺（枭神夺食）。",
             joy: ["💰 偏财 (制枭)", "天月德贵人"],
-            taboo: ["🎨 食神 (被克)"],
-            advice: "你的直觉是天赋。适合走冷门、偏门路线，不要随大流。"
+            taboo: ["🎨 食神 (被克)"]
         },
         "食神格": {
             desc: "食神生财，福寿双全。喜财星流通，忌枭神（偏印）夺食。",
             joy: ["💰 财星 (流通)", "💪 比劫 (生食)"],
-            taboo: ["📜 偏印 (夺食)"],
-            advice: "开心就能赚钱。保持好心情，那是你的运势风向标。"
+            taboo: ["📜 偏印 (夺食)"]
         }
     };
 
@@ -500,6 +482,12 @@
             male: { c:"**[天赋：创新]**<br>传统的规则束缚不了你。适合设计、艺术、自由职业。你的才华需要自由的土壤，体制内会让你窒息。", w:"**[被动：技能变现]**<br>不喜求人，靠真本事吃饭。财运不稳定，但爆发力强，一单吃三年。要学会理财。", l:"**[羁绊：不羁]**<br>婚姻对你来说是束缚。晚婚或不婚的概率较高。需要一个能给你极大自由空间的伴侣。", k:"**[传承：代沟]**<br>与孩子像朋友，但不像传统的父子。你更在乎精神交流。", h:"**[Debuff：敏感]**<br>情绪化严重，容易抑郁或狂躁。注意心理健康，多冥想。" },
             female: { c:"**[天赋：灵气]**<br>极具艺术天分。适合演艺、写作、设计。受不了朝九晚五，必须做自己喜欢的事。", w:"**[被动：随性]**<br>开心就赚，不开心就躺。对金钱看得不重，但往往不缺小钱。", l:"**[羁绊：克夫]**<br>伤官太旺，对伴侣挑剔、毒舌。需要找宽容度极高、性格温和的人。", k:"**[传承：依赖]**<br>孩子是你的一切，可能是你在这个世界上唯一的软肋。", h:"**[Debuff：郁结]**<br>气血不通，多运动，释放多余的能量。" }
         },
+        "建禄格": {
+            name: "🏰 独立领主 (Independent Lord)", tags: ["SR", "坦克型", "稳健", "自立"], icon: "🗿",
+            slogan: "“求人不如求己。我的领土，我说了算。”",
+            male: { c:"**[天赋：中流砥柱]**<br>事必躬亲，闲不下来。技术总监、合伙人。适合带队冲锋。你很难给别人打工，迟早要自己单干。", w:"**[被动：血汗钱]**<br>每一分都是汗水。身旺任财，中晚年大富。但也容易被劫财（朋友借钱不还）。", l:"**[羁绊：大男人]**<br>易克妻。需找温柔听话的老婆。你在家里说一不二。", k:"**[传承：放养]**<br>孩子独立，将来可能不在身边。", h:"**[Debuff：过劳]**<br>身体壮如牛，但易透支。" }, 
+            female: { c:"**[天赋：不靠男人]**<br>比男人还拼。创业或高管。不喜欢依赖别人。", w:"**[被动：漏斗]**<br>赚钱猛守财难。易被借钱不还。需找人打理。", l:"**[羁绊：强势]**<br>易遇第三者或老公弱。太强势让男人有压力，学会示弱。", k:"**[传承：健康]**<br>利生育，孩子活泼适应力强。", h:"**[Debuff：上火]**<br>火气大，注意甲状腺。少吃辛辣。" }
+        },
         "正官格": {
             name: "⚖️ 秩序守护者 (Guardian)", tags: ["SR", "稳健型", "官运"], icon: "🏛️",
             slogan: "“规则是世界的基石。按部就班，才是通往顶峰的捷径。”",
@@ -541,18 +529,6 @@
             slogan: "“人间不值得，但美食值得。快乐才是人生的终极意义。”",
             male: { c:"**[天赋：灵感源泉]**<br>艺术、餐饮、设计。才华横溢但不爱卷。灵感在玩乐中产生。", w:"**[被动：躺赢]**<br>细水长流，一辈子不缺钱。总有贵人送钱，傻人有傻福。", l:"**[羁绊：暖男]**<br>懂疼老婆，会做饭。婚姻生活平淡温馨，令人羡慕。", k:"**[传承：福星]**<br>晚年享子女福，孩子性格讨喜。", h:"**[Debuff：肥胖]**<br>心宽体胖，贪吃导致三高。动起来！" },
             female: { c:"**[天赋：亲和力]**<br>幼师、美食博主。不争不抢，人缘极好。工作环境单纯。", w:"**[被动：小确幸]**<br>不计较钱，钱反而来找你。有不少私房钱。", l:"**[羁绊：仪式感]**<br>有点作，注重浪漫。希望对方懂你的情趣。", k:"**[传承：慈母]**<br>孩子是命根子，极其宠爱。孩子幸福感强。", h:"**[Debuff：亚健康]**<br>太懒了，缺乏运动。多去户外走走。" }
-        },
-        "建禄格": {
-            name: "🏰 独立领主 (Lord)", tags: ["SR", "坦克型", "自立"], icon: "🗿",
-            slogan: "“求人不如求己。我的领土，我说了算。”",
-            male: { c:"**[天赋：中流砥柱]**<br>事必躬亲，闲不下来。技术总监、合伙人。适合带队冲锋。", w:"**[被动：血汗钱]**<br>每一分都是汗水。身旺任财，中晚年大富。但也容易被劫财。", l:"**[羁绊：大男人]**<br>易克妻。需找温柔听话的老婆。", k:"**[传承：放养]**<br>孩子独立，将来可能不在身边。", h:"**[Debuff：过劳]**<br>身体壮如牛，但易透支。" }, 
-            female: { c:"**[天赋：不靠男人]**<br>比男人还拼。创业或高管。不喜欢依赖别人。", w:"**[被动：漏斗]**<br>赚钱猛守财难。易被借钱不还。需找人打理。", l:"**[羁绊：强势]**<br>易遇第三者或老公弱。太强势让男人有压力，学会示弱。", k:"**[传承：健康]**<br>利生育，孩子活泼适应力强。", h:"**[Debuff：上火]**<br>火气大，注意甲状腺。少吃辛辣。" }
-        },
-        "月劫格": {
-            name: "⚔️ 豪侠义士 (Rogue)", tags: ["SR", "竞争型", "义气"], icon: "🤜",
-            slogan: "“路见不平一声吼。钱财如粪土，仁义值千金。”",
-            male: { c:"**[天赋：团队领袖]**<br>善于聚集人气，适合做团队Leader。但要防备手下或合伙人背刺。", w:"**[被动：散财]**<br>对朋友大方，存不住钱。最好的存钱方式是买房或交给老婆管。", l:"**[羁绊：克妻]**<br>比劫夺财，感情容易有竞争者。晚婚为宜。", k:"**[传承：健康]**<br>孩子身体好，但不一定听话。", h:"**[Debuff：外伤]**<br>性格冲动，易与人起冲突。" },
-            female: { c:"**[天赋：女汉子]**<br>性格直爽，不让须眉。在职场上敢打敢拼。", w:"**[被动：月光]**<br>喜欢购物，容易冲动消费。需强制储蓄。", l:"**[羁绊：争夫]**<br>感情路坎坷，容易遇到渣男或三角恋。要擦亮眼睛。", k:"**[传承：独立]**<br>带孩子不娇气，培养孩子独立性。", h:"**[Debuff：呼吸道]**<br>注意肺部和呼吸系统健康。" }
         },
         "五行流通": { 
             name: "☯️ 太极宗师 (Grandmaster)", tags: ["SSR", "全能型", "反脆弱"], icon: "🧘",
@@ -667,6 +643,7 @@
         document.getElementById('pillars-box').innerHTML = html;
     }
 
+    // 手动计算司令
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
@@ -731,7 +708,6 @@
             if (WUXING_MAP[p.g] === '火' || WUXING_MAP[p.z] === '火') report.hasFire = true;
         });
 
-        // 天时调候格局判定 (第一优先级)
         if (dmWx === '金' && report.isCold) {
             report.specialPattern = "金水伤官";
         }
@@ -761,7 +737,7 @@
         const centerX = w/2; const centerY = h/2 + 5; const radius = 55;
         const keys = Object.keys(counts); const total = 8;
         
-        ctx.strokeStyle = "#444"; ctx.lineWidth = 1;
+        ctx.strokeStyle = "#333"; ctx.lineWidth = 1;
         for(let r=1; r<=3; r++) {
             ctx.beginPath();
             for(let i=0; i<5; i++) {
@@ -800,13 +776,11 @@
         let key = "";
         let origin = "";
 
-        // 1. 优先采用调候特殊格局
         if (climate.specialPattern) {
             key = climate.specialPattern;
-            origin = "[天时调候格]";
+            origin = "[天时调候]";
         } 
         else {
-            // 2. 严谨格局判定 (相邻检测)
             const hasSha = Object.values(godMap).includes("七杀");
             if (hasSha) {
                 const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
@@ -829,7 +803,6 @@
                 else { key = "伤官格"; origin = "[十神主导]"; }
             }
 
-            // 3. 透干取格 (正八格逻辑)
             if (!key) {
                 const hiddenGans = HIDDEN_GAN_MAP[mz]; 
                 const stems = [pillars[0].g, pillars[1].g, pillars[3].g]; 
@@ -911,16 +884,6 @@
             </div>
         `;
         document.getElementById('guide-content').innerHTML = guideHtml;
-        
-        document.getElementById('siling-info').innerText = "人元司令：" + cmdInfo.commander;
-        
-        // 老师傅批语
-        document.getElementById('master-text').innerHTML = `
-            <b>老夫赠言：</b><br>
-            命局判定为【${key}】。${strengthInfo.desc}<br>
-            所谓“${data.slogan}”。<br>
-            ${xijiData.advice || "顺势而为，方能大吉。"}
-        `;
     }
 
 </script>
