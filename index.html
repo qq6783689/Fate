@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 宗师真神修复版</title>
+    <title>命运黑盒 Pro Max · 宗师典藏版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -102,12 +102,13 @@
         .tag.ssr { background: linear-gradient(45deg, var(--primary), var(--gold)); color: #000; font-weight: bold; }
         .tag.logic { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
 
-        /* 真神司令徽章 (修复显示) */
+        /* 真神司令显示区 */
         .siling-badge {
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
-            border-left: 4px solid var(--gold); padding: 10px; border-radius: 4px;
-            color: var(--gold); font-size: 0.9rem; font-weight: bold; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent);
+            border-left: 4px solid var(--gold);
+            padding: 12px; margin-bottom: 20px; border-radius: 4px;
+            color: var(--gold); font-weight: bold; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 10px;
         }
 
         /* 能量图 */
@@ -168,7 +169,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-badge">SYSTEM: PRO MAX · FIX V6.0</div>
+        <div class="sys-badge">SYSTEM: PRO MAX · ULTIMATE FINAL</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -199,8 +200,9 @@
                 </div>
             </div>
 
-            <div class="siling-badge">
-                <span>👑</span> <span id="siling-text">正在计算真神...</span>
+            <div class="siling-badge" id="siling-box">
+                <span style="font-size:1.2rem">👑</span> 
+                <span id="siling-text">正在计算真神...</span>
             </div>
             
             <div class="chart-box">
@@ -230,7 +232,7 @@
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:40px;">
-            Destiny Algorithm © 2025 · Verified
+            Destiny Algorithm © 2025 · Verified by Gemini
         </div>
     </div>
 </div>
@@ -239,7 +241,7 @@
     let currentGender = 1;
 
     // ==========================================================
-    // 静态数据字典
+    // 静态数据字典 (全内置，零依赖，防崩)
     // ==========================================================
     
     const WUXING_MAP = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水','子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
@@ -247,7 +249,7 @@
 
     const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
 
-    // 司令规则 (修复变量名一致性)
+    // 司令规则 (日)
     const SILING_RULES = {
         '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
         '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
@@ -261,13 +263,8 @@
         '申':['庚','壬','戊'], '酉':['辛'], '戌':['戊','辛','丁'], '亥':['壬','甲']
     };
 
-    const CS_MEANING = {
-        "长生": "稳固", "沐浴": "魅力", "冠带": "进取", "临官": "强盛", 
-        "帝旺": "巅峰", "衰": "稳重", "病": "敏感", "死": "沉静", 
-        "墓": "囤积", "绝": "重生", "胎": "希望", "养": "培育"
-    };
-
-    // 修正：十二长生阴阳顺逆表
+    // 阴阳长生表 (修复版)
+    // 阳顺阴逆：甲生亥，乙生午；丙生寅，丁生酉...
     const CHANGSHENG_TABLE = {
         "甲": { "亥":"长生", "子":"沐浴", "丑":"冠带", "寅":"临官", "卯":"帝旺", "辰":"衰", "巳":"病", "午":"死", "未":"墓", "申":"绝", "酉":"胎", "戌":"养" },
         "乙": { "午":"长生", "巳":"沐浴", "辰":"冠带", "卯":"临官", "寅":"帝旺", "丑":"衰", "子":"病", "亥":"死", "戌":"墓", "酉":"绝", "申":"胎", "未":"养" },
@@ -501,6 +498,12 @@
             male: { c:"**[天赋：中流砥柱]**<br>事必躬亲，闲不下来。技术总监、合伙人。适合带队冲锋。你很难给别人打工，迟早要自己单干。", w:"**[被动：血汗钱]**<br>每一分都是汗水。身旺任财，中晚年大富。但也容易被劫财（朋友借钱不还）。", l:"**[羁绊：大男人]**<br>易克妻。需找温柔听话的老婆。你在家里说一不二。", k:"**[传承：放养]**<br>孩子独立，将来可能不在身边。", h:"**[Debuff：过劳]**<br>身体壮如牛，但易透支。" }, 
             female: { c:"**[天赋：不靠男人]**<br>比男人还拼。创业或高管。不喜欢依赖别人。", w:"**[被动：漏斗]**<br>赚钱猛守财难。易被借钱不还。需找人打理。", l:"**[羁绊：强势]**<br>易遇第三者或老公弱。太强势让男人有压力，学会示弱。", k:"**[传承：健康]**<br>利生育，孩子活泼适应力强。", h:"**[Debuff：上火]**<br>火气大，注意甲状腺。少吃辛辣。" }
         },
+        "月劫格": {
+            name: "⚔️ 豪侠义士 (Rogue)", tags: ["SR", "竞争型", "义气"], icon: "🤜",
+            slogan: "“路见不平一声吼。钱财如粪土，仁义值千金。”",
+            male: { c:"**[天赋：团队领袖]**<br>善于聚集人气，适合做团队Leader。但要防备手下或合伙人背刺。你的成功往往来自于兄弟朋友的帮衬，失败也往往因为被朋友拖累。", w:"**[被动：散财]**<br>对朋友大方，存不住钱。最好的存钱方式是买房或交给老婆管。不适合合伙做生意，因为容易因财失义。", l:"**[羁绊：克妻]**<br>比劫夺财，感情容易有竞争者。晚婚为宜。你需要一个能包容你“讲义气”的伴侣。", k:"**[传承：健康]**<br>孩子身体好，但不一定听话。教育上要多花心思。", h:"**[Debuff：外伤]**<br>性格冲动，易与人起冲突。注意交通安全和运动伤害。" },
+            female: { c:"**[天赋：女汉子]**<br>性格直爽，不让须眉。在职场上敢打敢拼，适合竞争激烈的行业，如销售、保险。", w:"**[被动：月光]**<br>喜欢购物，容易冲动消费。需强制储蓄。你的钱往往花在面子和朋友身上。", l:"**[羁绊：争夫]**<br>感情路坎坷，容易遇到渣男或三角恋。要擦亮眼睛，不要被花言巧语蒙蔽。", k:"**[传承：独立]**<br>带孩子不娇气，培养孩子独立性。你和孩子的关系像朋友。", h:"**[Debuff：呼吸道]**<br>注意肺部和呼吸系统健康。" }
+        },
         "正官格": {
             name: "⚖️ 秩序守护者 (Guardian)", tags: ["SR", "稳健型", "官运"], icon: "🏛️",
             slogan: "“规则是世界的基石。按部就班，才是通往顶峰的捷径。”",
@@ -621,7 +624,7 @@
             // 4. 绘图
             drawArt(pillars, mz);
             
-            // 5. 核心渲染
+            // 5. 核心渲染：传入所有分析结果，由 renderGamePattern 统一调度喜忌和文案
             renderGamePattern(climate, strengthInfo, pillars, dg, mz, cmdInfo);
 
             const resArea = document.getElementById('result-area');
@@ -763,7 +766,7 @@
             ctx.closePath(); ctx.stroke();
         }
 
-        ctx.fillStyle = "rgba(8, 217, 214, 0.2)"; ctx.strokeStyle = "#08d9d6"; ctx.lineWidth = 2;
+        ctx.fillStyle = "rgba(8, 217, 214, 0.3)"; ctx.strokeStyle = "#08d9d6"; ctx.lineWidth = 2;
         ctx.beginPath();
         keys.forEach((k, i) => {
             const val = counts[k];
@@ -793,7 +796,7 @@
         // 1. 优先采用调候特殊格局
         if (climate.specialPattern) {
             key = climate.specialPattern;
-            origin = "[天时调候]";
+            origin = "[天时调候格]";
         } 
         else {
             // 2. 严谨格局判定 (相邻检测)
@@ -862,9 +865,8 @@
         data.tags.forEach(t => tagsHtml += `<span class="tag ${t==='UR'||t==='SSR'?'ssr':''}">${t}</span>`);
         document.getElementById('role-tags').innerHTML = tagsHtml;
 
-        // 修复：补回司令显示逻辑 (之前漏了这里)
+        // 修复：补回司令显示逻辑
         const cmdGod = SHISHEN_MAP[dm][cmdInfo.commander];
-        // 确保 siling-text 元素存在
         if (document.getElementById('siling-text')) {
             document.getElementById('siling-text').innerText = `当令真神：${cmdInfo.commander} (${cmdGod}) · 执政第 ${cmdInfo.diffDays} 天`;
         }
