@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 宗师典藏版</title>
+    <title>命运黑盒 Pro Max · 真神透干终极版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
             --primary: #ff2e63;      /* 故障红 */
             --accent: #08d9d6;       /* 赛博蓝 */
-            --dark: #121212;         /* 纯黑 */
-            --card: #1e1e24;         /* 卡片黑 */
+            --dark: #0f0f13;         /* 纯黑 */
+            --card: #1a1a24;         /* 卡片黑 */
             --text: #e0e0e0;
             --gold: #ffd700;
             --border-r: 12px;
@@ -22,7 +22,7 @@
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: var(--dark); color: var(--text);
             margin: 0; padding: 20px 10px; min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 50%, #2a2d3e 0%, #121212 100%);
+            background-image: radial-gradient(circle at 50% 50%, #252530 0%, #0f0f13 100%);
             display: flex; justify-content: center;
         }
 
@@ -102,13 +102,12 @@
         .tag.ssr { background: linear-gradient(45deg, var(--primary), var(--gold)); color: #000; font-weight: bold; }
         .tag.logic { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
 
-        /* 真神司令显示区 */
+        /* 司令显示 */
         .siling-badge {
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent);
-            border-left: 4px solid var(--gold);
-            padding: 12px; margin-bottom: 20px; border-radius: 4px;
-            color: var(--gold); font-weight: bold; font-size: 0.95rem;
-            display: flex; align-items: center; gap: 10px;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+            border-left: 4px solid var(--gold); padding: 10px; border-radius: 4px;
+            color: var(--gold); font-size: 0.9rem; font-weight: bold; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
         }
 
         /* 能量图 */
@@ -169,7 +168,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-badge">SYSTEM: PRO MAX · ULTIMATE FINAL</div>
+        <div class="sys-badge">SYSTEM: TRUE GOD REVEALED</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -186,7 +185,7 @@
             <span class="label">输入出生时间 / SPAWN DATE</span>
             <input type="datetime-local" id="birth-input">
         </div>
-        <button class="btn-start" onclick="startScan()">启动深层扫描 / DEEP SCAN</button>
+        <button class="btn-start" onclick="startScan()">启动宗师级推演 / START SCAN</button>
     </div>
 
     <div id="result-area">
@@ -200,9 +199,8 @@
                 </div>
             </div>
 
-            <div class="siling-badge" id="siling-box">
-                <span style="font-size:1.2rem">👑</span> 
-                <span id="siling-text">正在计算真神...</span>
+            <div class="siling-badge">
+                <span>👑</span> <span id="siling-text">正在计算真神...</span>
             </div>
             
             <div class="chart-box">
@@ -232,7 +230,7 @@
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:40px;">
-            Destiny Algorithm © 2025 · Verified by Gemini
+            Destiny Algorithm © 2025 · Master Class
         </div>
     </div>
 </div>
@@ -241,7 +239,7 @@
     let currentGender = 1;
 
     // ==========================================================
-    // 静态数据字典 (全内置，零依赖，防崩)
+    // 静态数据字典 (全内置，零依赖)
     // ==========================================================
     
     const WUXING_MAP = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水','子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
@@ -263,8 +261,13 @@
         '申':['庚','壬','戊'], '酉':['辛'], '戌':['戊','辛','丁'], '亥':['壬','甲']
     };
 
-    // 阴阳长生表 (修复版)
-    // 阳顺阴逆：甲生亥，乙生午；丙生寅，丁生酉...
+    const CS_MEANING = {
+        "长生": "稳固", "沐浴": "魅力", "冠带": "进取", "临官": "强盛", 
+        "帝旺": "巅峰", "衰": "稳重", "病": "敏感", "死": "沉静", 
+        "墓": "囤积", "绝": "重生", "胎": "希望", "养": "培育"
+    };
+
+    // 阴阳顺逆长生表
     const CHANGSHENG_TABLE = {
         "甲": { "亥":"长生", "子":"沐浴", "丑":"冠带", "寅":"临官", "卯":"帝旺", "辰":"衰", "巳":"病", "午":"死", "未":"墓", "申":"绝", "酉":"胎", "戌":"养" },
         "乙": { "午":"长生", "巳":"沐浴", "辰":"冠带", "卯":"临官", "寅":"帝旺", "丑":"衰", "子":"病", "亥":"死", "戌":"墓", "酉":"绝", "申":"胎", "未":"养" },
@@ -624,7 +627,7 @@
             // 4. 绘图
             drawArt(pillars, mz);
             
-            // 5. 核心渲染：传入所有分析结果，由 renderGamePattern 统一调度喜忌和文案
+            // 5. 核心渲染
             renderGamePattern(climate, strengthInfo, pillars, dg, mz, cmdInfo);
 
             const resArea = document.getElementById('result-area');
@@ -659,7 +662,6 @@
         document.getElementById('pillars-box').innerHTML = html;
     }
 
-    // 手动计算司令
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
@@ -796,58 +798,59 @@
         // 1. 优先采用调候特殊格局
         if (climate.specialPattern) {
             key = climate.specialPattern;
-            origin = "[天时调候格]";
+            origin = "[天时调候]";
         } 
         else {
-            // 2. 严谨格局判定 (相邻检测)
-            const hasSha = Object.values(godMap).includes("七杀");
-            if (hasSha) {
-                const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
-                let isControlled = false;
-                if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
-                if (yGod === "七杀" && mGod === "食神") isControlled = true;
-                if (hGod === "七杀" && mGod === "食神") isControlled = true;
+            // 2. 透干取格 (真神 > 本气)
+            // 先检查司令真神是否透干
+            let patternGan = "";
+            let isCmdRevealed = false;
+            const cmdGan = cmdInfo.commander;
+            const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
 
-                if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
-                else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; origin = "[组合成格]"; }
-                else { key = "七杀格"; origin = "[十神主导]"; }
+            if (stems.includes(cmdGan)) {
+                patternGan = cmdGan;
+                isCmdRevealed = true;
+            } else {
+                // 司令未透，查月令本气
+                patternGan = ZHI_MAIN_QI[mz];
             }
-            else if (Object.values(godMap).includes("伤官")) {
+
+            const mainGod = SHISHEN_MAP[dm][patternGan];
+            const patternMap = {
+                "比肩": "建禄格", "劫财": "月劫格", "食神": "食神格", 
+                "伤官": "伤官格", "正财": "正财格", "偏财": "偏财格", 
+                "正官": "正官格", "七杀": "七杀格", "正印": "正印格", "偏印": "偏印格"
+            };
+            
+            // 2.1 七杀优先权 (有杀先论杀)
+            const hasSha = Object.values(godMap).includes("七杀");
+            if (hasSha && !isCmdRevealed) {
+                 // 如果司令不是真神，且有七杀，优先论七杀
+                 const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
+                 let isControlled = false;
+                 if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
+                 if (yGod === "七杀" && mGod === "食神") isControlled = true;
+                 if (hGod === "七杀" && mGod === "食神") isControlled = true;
+
+                 if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
+                 else { key = "七杀格"; origin = "[七杀攻身]"; }
+            }
+            // 2.2 伤官优先权
+            else if (Object.values(godMap).includes("伤官") && !isCmdRevealed) {
                 const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
                 let isShengCai = false;
                 if (mGod === "伤官" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
                 if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
 
                 if (isShengCai) { key = "伤官生财"; origin = "[组合成格]"; }
-                else { key = "伤官格"; origin = "[十神主导]"; }
+                else if (godMap['月干'] === '伤官') { key = "伤官格"; origin = "[月令透干]"; }
             }
-
-            // 3. 透干取格 (正八格逻辑)
-            if (!key) {
-                const hiddenGans = HIDDEN_GAN_MAP[mz]; 
-                const stems = [pillars[0].g, pillars[1].g, pillars[3].g]; 
-                
-                let patternGan = "";
-                for (let gan of hiddenGans) {
-                    if (stems.includes(gan)) {
-                        patternGan = gan;
-                        break;
-                    }
-                }
-                if (!patternGan) patternGan = hiddenGans[0];
-
-                const mainGod = SHISHEN_MAP[dm][patternGan];
-                
-                const patternMap = {
-                    "比肩": "建禄格", "劫财": "月劫格", "食神": "食神格", 
-                    "伤官": "伤官格", "正财": "正财格", "偏财": "偏财格", 
-                    "正官": "正官格", "七杀": "七杀格", "正印": "正印格", "偏印": "偏印格"
-                };
-                
-                if (patternMap[mainGod]) {
-                    key = patternMap[mainGod];
-                    origin = `[月令透干: ${patternGan}]`;
-                }
+            
+            // 2.3 真神/本气定格 (如果上面没定)
+            if (!key && patternMap[mainGod]) {
+                key = patternMap[mainGod];
+                origin = isCmdRevealed ? `[真神透干: ${patternGan}]` : `[月令本气: ${patternGan}]`;
             }
         }
 
@@ -865,11 +868,9 @@
         data.tags.forEach(t => tagsHtml += `<span class="tag ${t==='UR'||t==='SSR'?'ssr':''}">${t}</span>`);
         document.getElementById('role-tags').innerHTML = tagsHtml;
 
-        // 修复：补回司令显示逻辑
+        // 修复：司令显示
         const cmdGod = SHISHEN_MAP[dm][cmdInfo.commander];
-        if (document.getElementById('siling-text')) {
-            document.getElementById('siling-text').innerText = `当令真神：${cmdInfo.commander} (${cmdGod}) · 执政第 ${cmdInfo.diffDays} 天`;
-        }
+        document.getElementById('siling-text').innerText = `当令真神：${cmdInfo.commander} (${cmdGod}) · 执政第 ${cmdInfo.diffDays} 天`;
 
         let xijiData = XIJI_RULES[key];
         if (!xijiData) {
