@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 真神透干终极版</title>
+    <title>命运黑盒 Pro Max · 宗师真传版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
             --primary: #ff2e63;      /* 故障红 */
             --accent: #08d9d6;       /* 赛博蓝 */
-            --dark: #0f0f13;         /* 纯黑 */
-            --card: #1a1a24;         /* 卡片黑 */
+            --dark: #121212;         /* 纯黑 */
+            --card: #1e1e24;         /* 卡片黑 */
             --text: #e0e0e0;
             --gold: #ffd700;
             --border-r: 12px;
@@ -22,7 +22,7 @@
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: var(--dark); color: var(--text);
             margin: 0; padding: 20px 10px; min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 50%, #252530 0%, #0f0f13 100%);
+            background-image: radial-gradient(circle at 50% 50%, #2a2d3e 0%, #121212 100%);
             display: flex; justify-content: center;
         }
 
@@ -102,12 +102,13 @@
         .tag.ssr { background: linear-gradient(45deg, var(--primary), var(--gold)); color: #000; font-weight: bold; }
         .tag.logic { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
 
-        /* 司令显示 */
+        /* 真神司令显示区 */
         .siling-badge {
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
-            border-left: 4px solid var(--gold); padding: 10px; border-radius: 4px;
-            color: var(--gold); font-size: 0.9rem; font-weight: bold; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent);
+            border-left: 4px solid var(--gold);
+            padding: 12px; margin-bottom: 20px; border-radius: 4px;
+            color: var(--gold); font-weight: bold; font-size: 0.95rem;
+            display: flex; align-items: center; gap: 10px;
         }
 
         /* 能量图 */
@@ -168,7 +169,7 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-badge">SYSTEM: TRUE GOD REVEALED</div>
+        <div class="sys-badge">SYSTEM: MASTER CLASS V8.0</div>
     </div>
 
     <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
@@ -199,8 +200,9 @@
                 </div>
             </div>
 
-            <div class="siling-badge">
-                <span>👑</span> <span id="siling-text">正在计算真神...</span>
+            <div class="siling-badge" id="siling-box">
+                <span style="font-size:1.2rem">👑</span> 
+                <span id="siling-text">正在计算真神...</span>
             </div>
             
             <div class="chart-box">
@@ -230,7 +232,7 @@
         </div>
 
         <div style="text-align:center; font-size:12px; color:#444; margin-top:40px;">
-            Destiny Algorithm © 2025 · Master Class
+            Destiny Algorithm © 2025 · Verified by Gemini
         </div>
     </div>
 </div>
@@ -261,13 +263,7 @@
         '申':['庚','壬','戊'], '酉':['辛'], '戌':['戊','辛','丁'], '亥':['壬','甲']
     };
 
-    const CS_MEANING = {
-        "长生": "稳固", "沐浴": "魅力", "冠带": "进取", "临官": "强盛", 
-        "帝旺": "巅峰", "衰": "稳重", "病": "敏感", "死": "沉静", 
-        "墓": "囤积", "绝": "重生", "胎": "希望", "养": "培育"
-    };
-
-    // 阴阳顺逆长生表
+    // 阴阳长生表 (修复版: 阳顺阴逆)
     const CHANGSHENG_TABLE = {
         "甲": { "亥":"长生", "子":"沐浴", "丑":"冠带", "寅":"临官", "卯":"帝旺", "辰":"衰", "巳":"病", "午":"死", "未":"墓", "申":"绝", "酉":"胎", "戌":"养" },
         "乙": { "午":"长生", "巳":"沐浴", "辰":"冠带", "卯":"临官", "寅":"帝旺", "丑":"衰", "子":"病", "亥":"死", "戌":"墓", "酉":"绝", "申":"胎", "未":"养" },
@@ -301,6 +297,11 @@
             desc: "天寒地冻，金水虽清但无生机。喜火（官杀）暖局，喜木（财）生火。此为伤官见官反为贵的特殊格局。",
             joy: ["🔥 火 (官杀·调候)", "🌲 木 (财星·助燃)"],
             taboo: ["💧 水 (伤官·加寒)", "⛰️ 土 (印星·埋金)"]
+        },
+        "金水食神": {
+            desc: "金白水清，才华横溢。与金水伤官类似，亦喜火暖局，但性格更温和，福气更厚。",
+            joy: ["🔥 火 (调候·暖局)", "🌲 木 (财星·流通)"],
+            taboo: ["⛰️ 土 (枭神·夺食)", "💧 水 (过寒)"]
         },
         "木火通明": {
             desc: "春木生火，木火两旺，气象光辉。最忌金（官杀）来克伐，损了秀气；也忌水（印）太旺灭火。",
@@ -398,6 +399,12 @@
                 k:"**[传承：贵子临门]**<br>你的孩子通常长相漂亮，聪明伶俐，是你生命的延续和希望。生孩子对你的运势有提升作用，因为孩子代表食伤，也是你才华的具象化。", 
                 h:"**[Buff：暖宫驱寒]**<br>你是典型的“冷底子”。特别要注意**妇科寒症、痛经、手脚冰凉**的问题。坚持泡脚，少吃生冷食物（冰淇淋、刺身），多吃温补的食物。保持体温，就是保持运气。" 
             }
+        },
+        "金水食神": {
+            name: "🌊 灵动智者 (Fluid Sage)", tags: ["SSR", "聪慧", "清贵"], icon: "🌊",
+            slogan: "“金白水清，聪明绝顶。文秀之气，流转不息。”",
+            male: { c:"**[天赋：才子]**<br>相比金水伤官的傲气，金水食神更显温文尔雅。你适合学术、艺术、文学创作。你的才华是内敛而深沉的，不鸣则已，一鸣惊人。同样喜火暖局，有火则名扬四海。", w:"**[被动：福气]**<br>食神生财，财源细水长流。你不屑于赚快钱，更看重长期的积累和名声。你的财富往往来自你的专业技能和作品。", l:"**[羁绊：知己]**<br>你注重精神交流，需要一个能听懂你弦外之音的伴侣。感情生活平淡而真实。", k:"**[传承：聪慧]**<br>孩子继承了你的高智商，性格温和。", h:"**[实战]**<br>注意保暖，多做户外运动，保持心情开朗。" },
+            female: { c:"**[天赋：清秀]**<br>金水食神女命多貌美，气质清新脱俗。适合从事文化、教育、艺术等行业。你的存在本身就是一种美好的风景。", w:"**[被动：安稳]**<br>一生衣食无忧，福泽深厚。不需要太过操劳，自然有人为你铺路。", l:"**[羁绊：良缘]**<br>虽然食神克官，但金水食神喜火（官），所以你也能得到丈夫的宠爱。只要不过分任性，婚姻美满。", k:"**[传承：孝顺]**<br>子女孝顺，晚年享福。", h:"**[实战]**<br>注意肾脏和妇科保养，少熬夜。" }
         },
         "木火通明": {
             name: "🔥 薪火传人 (Phoenix)", tags: ["SSR", "文化", "名望"], icon: "🔥",
@@ -500,12 +507,6 @@
             slogan: "“求人不如求己。我的领土，我说了算。”",
             male: { c:"**[天赋：中流砥柱]**<br>事必躬亲，闲不下来。技术总监、合伙人。适合带队冲锋。你很难给别人打工，迟早要自己单干。", w:"**[被动：血汗钱]**<br>每一分都是汗水。身旺任财，中晚年大富。但也容易被劫财（朋友借钱不还）。", l:"**[羁绊：大男人]**<br>易克妻。需找温柔听话的老婆。你在家里说一不二。", k:"**[传承：放养]**<br>孩子独立，将来可能不在身边。", h:"**[Debuff：过劳]**<br>身体壮如牛，但易透支。" }, 
             female: { c:"**[天赋：不靠男人]**<br>比男人还拼。创业或高管。不喜欢依赖别人。", w:"**[被动：漏斗]**<br>赚钱猛守财难。易被借钱不还。需找人打理。", l:"**[羁绊：强势]**<br>易遇第三者或老公弱。太强势让男人有压力，学会示弱。", k:"**[传承：健康]**<br>利生育，孩子活泼适应力强。", h:"**[Debuff：上火]**<br>火气大，注意甲状腺。少吃辛辣。" }
-        },
-        "月劫格": {
-            name: "⚔️ 豪侠义士 (Rogue)", tags: ["SR", "竞争型", "义气"], icon: "🤜",
-            slogan: "“路见不平一声吼。钱财如粪土，仁义值千金。”",
-            male: { c:"**[天赋：团队领袖]**<br>善于聚集人气，适合做团队Leader。但要防备手下或合伙人背刺。你的成功往往来自于兄弟朋友的帮衬，失败也往往因为被朋友拖累。", w:"**[被动：散财]**<br>对朋友大方，存不住钱。最好的存钱方式是买房或交给老婆管。不适合合伙做生意，因为容易因财失义。", l:"**[羁绊：克妻]**<br>比劫夺财，感情容易有竞争者。晚婚为宜。你需要一个能包容你“讲义气”的伴侣。", k:"**[传承：健康]**<br>孩子身体好，但不一定听话。教育上要多花心思。", h:"**[Debuff：外伤]**<br>性格冲动，易与人起冲突。注意交通安全和运动伤害。" },
-            female: { c:"**[天赋：女汉子]**<br>性格直爽，不让须眉。在职场上敢打敢拼，适合竞争激烈的行业，如销售、保险。", w:"**[被动：月光]**<br>喜欢购物，容易冲动消费。需强制储蓄。你的钱往往花在面子和朋友身上。", l:"**[羁绊：争夫]**<br>感情路坎坷，容易遇到渣男或三角恋。要擦亮眼睛，不要被花言巧语蒙蔽。", k:"**[传承：独立]**<br>带孩子不娇气，培养孩子独立性。你和孩子的关系像朋友。", h:"**[Debuff：呼吸道]**<br>注意肺部和呼吸系统健康。" }
         },
         "正官格": {
             name: "⚖️ 秩序守护者 (Guardian)", tags: ["SR", "稳健型", "官运"], icon: "🏛️",
@@ -627,7 +628,7 @@
             // 4. 绘图
             drawArt(pillars, mz);
             
-            // 5. 核心渲染
+            // 5. 核心渲染：传入所有分析结果
             renderGamePattern(climate, strengthInfo, pillars, dg, mz, cmdInfo);
 
             const resArea = document.getElementById('result-area');
@@ -665,9 +666,8 @@
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
-        const jieTime = new Date(pjSolar.getYear(), pjSolar.getMonth()-1, pjSolar.getDay(), pjSolar.getHour(), pjSolar.getMinute(), pjSolar.getSecond()).getTime();
-        const bSolar = lunar.getSolar();
-        const birthTime = new Date(bSolar.getYear(), bSolar.getMonth()-1, bSolar.getDay(), bSolar.getHour(), bSolar.getMinute(), bSolar.getSecond()).getTime();
+        const jieTime = new Date(pjSolar.getYear(), pjSolar.getMonth()-1, pjSolar.getDay(), pjSolar.getHour(), pjSolar.getMinute()).getTime();
+        const birthTime = new Date(lunar.getSolar().getYear(), lunar.getSolar().getMonth()-1, lunar.getSolar().getDay(), lunar.getSolar().getHour(), lunar.getSolar().getMinute()).getTime();
         const diffDays = Math.floor((birthTime - jieTime) / (1000 * 60 * 60 * 24));
         
         const rules = SILING_RULES[monthZhi] || [];
@@ -728,7 +728,10 @@
 
         // 天时调候格局判定 (第一优先级)
         if (dmWx === '金' && report.isCold) {
-            report.specialPattern = "金水伤官";
+            // 细分：透食神为金水食神，透伤官为金水伤官
+            const hasShangGuan = pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官');
+            if (hasShangGuan) report.specialPattern = "金水伤官";
+            else report.specialPattern = "金水食神";
         }
         else if (dmWx === '木' && ["寅","卯"].includes(mz) && report.hasFire) {
             report.specialPattern = "木火通明";
@@ -801,56 +804,67 @@
             origin = "[天时调候]";
         } 
         else {
-            // 2. 透干取格 (真神 > 本气)
-            // 先检查司令真神是否透干
-            let patternGan = "";
-            let isCmdRevealed = false;
-            const cmdGan = cmdInfo.commander;
-            const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
-
-            if (stems.includes(cmdGan)) {
-                patternGan = cmdGan;
-                isCmdRevealed = true;
-            } else {
-                // 司令未透，查月令本气
-                patternGan = ZHI_MAIN_QI[mz];
-            }
-
-            const mainGod = SHISHEN_MAP[dm][patternGan];
-            const patternMap = {
-                "比肩": "建禄格", "劫财": "月劫格", "食神": "食神格", 
-                "伤官": "伤官格", "正财": "正财格", "偏财": "偏财格", 
-                "正官": "正官格", "七杀": "七杀格", "正印": "正印格", "偏印": "偏印格"
-            };
-            
-            // 2.1 七杀优先权 (有杀先论杀)
+            // 2. 严谨格局判定 (相邻检测)
             const hasSha = Object.values(godMap).includes("七杀");
-            if (hasSha && !isCmdRevealed) {
-                 // 如果司令不是真神，且有七杀，优先论七杀
-                 const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
-                 let isControlled = false;
-                 if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
-                 if (yGod === "七杀" && mGod === "食神") isControlled = true;
-                 if (hGod === "七杀" && mGod === "食神") isControlled = true;
+            if (hasSha) {
+                const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
+                let isControlled = false;
+                if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
+                if (yGod === "七杀" && mGod === "食神") isControlled = true;
+                if (hGod === "七杀" && mGod === "食神") isControlled = true;
 
-                 if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
-                 else { key = "七杀格"; origin = "[七杀攻身]"; }
+                if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
+                else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; origin = "[组合成格]"; }
+                else { key = "七杀格"; origin = "[十神主导]"; }
             }
-            // 2.2 伤官优先权
-            else if (Object.values(godMap).includes("伤官") && !isCmdRevealed) {
+            else if (Object.values(godMap).includes("伤官")) {
                 const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
                 let isShengCai = false;
                 if (mGod === "伤官" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
                 if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
 
                 if (isShengCai) { key = "伤官生财"; origin = "[组合成格]"; }
-                else if (godMap['月干'] === '伤官') { key = "伤官格"; origin = "[月令透干]"; }
+                else { key = "伤官格"; origin = "[十神主导]"; }
             }
-            
-            // 2.3 真神/本气定格 (如果上面没定)
-            if (!key && patternMap[mainGod]) {
-                key = patternMap[mainGod];
-                origin = isCmdRevealed ? `[真神透干: ${patternGan}]` : `[月令本气: ${patternGan}]`;
+
+            // 3. 透干取格 (正八格逻辑 - 修复版)
+            if (!key) {
+                const hiddenGans = HIDDEN_GAN_MAP[mz]; 
+                const stems = [pillars[0].g, pillars[1].g, pillars[3].g]; 
+                
+                let patternGan = "";
+                // 优先取司令 (如果司令透干)
+                if (stems.includes(cmdInfo.commander)) {
+                    patternGan = cmdInfo.commander;
+                    origin = `[司令透干: ${patternGan}]`;
+                } else {
+                    // 否则取其他透出之干
+                    for (let gan of hiddenGans) {
+                        if (stems.includes(gan)) {
+                            patternGan = gan;
+                            origin = `[月令透干: ${patternGan}]`;
+                            break;
+                        }
+                    }
+                }
+                
+                // 若都不透，取本气
+                if (!patternGan) {
+                    patternGan = hiddenGans[0];
+                    origin = `[月令本气: ${patternGan}]`;
+                }
+
+                const mainGod = SHISHEN_MAP[dm][patternGan];
+                
+                const patternMap = {
+                    "比肩": "建禄格", "劫财": "月劫格", "食神": "食神格", 
+                    "伤官": "伤官格", "正财": "正财格", "偏财": "偏财格", 
+                    "正官": "正官格", "七杀": "七杀格", "正印": "正印格", "偏印": "偏印格"
+                };
+                
+                if (patternMap[mainGod]) {
+                    key = patternMap[mainGod];
+                }
             }
         }
 
@@ -868,9 +882,11 @@
         data.tags.forEach(t => tagsHtml += `<span class="tag ${t==='UR'||t==='SSR'?'ssr':''}">${t}</span>`);
         document.getElementById('role-tags').innerHTML = tagsHtml;
 
-        // 修复：司令显示
+        // 修复：补回司令显示逻辑
         const cmdGod = SHISHEN_MAP[dm][cmdInfo.commander];
-        document.getElementById('siling-text').innerText = `当令真神：${cmdInfo.commander} (${cmdGod}) · 执政第 ${cmdInfo.diffDays} 天`;
+        if (document.getElementById('siling-text')) {
+            document.getElementById('siling-text').innerText = `当令真神：${cmdInfo.commander} (${cmdGod}) · 执政第 ${cmdInfo.diffDays} 天`;
+        }
 
         let xijiData = XIJI_RULES[key];
         if (!xijiData) {
