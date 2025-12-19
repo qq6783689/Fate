@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 宗师真诠实战版</title>
+    <title>命运黑盒 Pro Max · 宗师真传终极修正版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
@@ -16,8 +16,7 @@
             --border-r: 12px;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
+        * { box-sizing: border-box; }
         body {
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: var(--dark); color: var(--text);
@@ -25,10 +24,8 @@
             background-image: radial-gradient(circle at 50% 50%, #252530 0%, #0f0f13 100%);
             display: flex; justify-content: center;
         }
-
         .container { width: 100%; max-width: 700px; padding-bottom: 120px; }
-
-        .header { text-align: center; margin-bottom: 30px; position: relative; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
         .header h1 { 
             font-size: 2.2rem; font-weight: 900; margin: 0; letter-spacing: 4px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -38,9 +35,7 @@
         .sys-badge { 
             font-size: 0.7rem; border: 1px solid var(--accent); color: var(--accent);
             padding: 4px 10px; border-radius: 20px; display: inline-block; margin-top: 10px;
-            box-shadow: 0 0 10px rgba(8, 217, 214, 0.2); letter-spacing: 1px;
         }
-
         .card {
             background: var(--card); border: 1px solid rgba(255,255,255,0.08);
             border-radius: var(--border-r); padding: 20px; margin-bottom: 25px;
@@ -50,44 +45,32 @@
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
             background: linear-gradient(90deg, var(--primary), var(--accent));
         }
-
         .input-group { margin-bottom: 20px; }
-        .label { color: var(--accent); font-size: 0.85rem; margin-bottom: 8px; display: block; font-weight: bold; letter-spacing: 1px; }
-        
+        .label { color: var(--accent); font-size: 0.85rem; margin-bottom: 8px; display: block; font-weight: bold; }
         .gender-box { display: flex; gap: 15px; }
         .g-btn {
             flex: 1; padding: 14px; text-align: center; border-radius: 8px; background: rgba(255,255,255,0.05);
             border: 1px solid #333; color: #888; cursor: pointer; transition: 0.3s; font-weight: bold;
         }
-        .g-btn.active {
-            border-color: var(--primary); color: #fff; background: rgba(255, 46, 99, 0.2);
-            box-shadow: 0 0 15px rgba(255, 46, 99, 0.2);
-        }
-
+        .g-btn.active { border-color: var(--primary); color: #fff; background: rgba(255, 46, 99, 0.2); }
         input[type="datetime-local"] {
             width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid #333;
-            color: #fff; border-radius: 8px; font-size: 1.1rem; outline: none; transition: 0.3s;
+            color: #fff; border-radius: 8px; font-size: 1.1rem; outline: none;
         }
-        
         .btn-start {
             width: 100%; padding: 16px; border: none; border-radius: 8px;
             background: linear-gradient(135deg, var(--primary), #8000ff);
             color: #fff; font-size: 1.2rem; font-weight: 900; letter-spacing: 3px;
-            cursor: pointer; margin-top: 10px; transition: transform 0.1s;
-            box-shadow: 0 10px 30px rgba(255, 46, 99, 0.4);
+            cursor: pointer; margin-top: 10px; box-shadow: 0 10px 30px rgba(255, 46, 99, 0.4);
         }
-        .btn-start:active { transform: scale(0.98); }
-
-        #result-area { display: none; animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        #result-area { display: none; animation: slideUp 0.8s ease; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* 角色卡头 */
+        
         .role-header { display: flex; align-items: flex-start; padding-bottom: 20px; border-bottom: 1px dashed rgba(255,255,255,0.15); margin-bottom: 20px; }
         .role-icon {
             width: 70px; height: 70px; background: #2a2a35; border-radius: 14px;
             display: flex; align-items: center; justify-content: center; font-size: 35px;
-            border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-            margin-right: 20px; flex-shrink: 0;
+            border: 2px solid var(--gold); margin-right: 20px; flex-shrink: 0;
         }
         .role-title { font-size: 1.5rem; font-weight: bold; color: #fff; margin: 0 0 5px 0; }
         .role-sub { font-size: 0.85rem; color: #888; font-style: italic; line-height: 1.4; }
@@ -95,16 +78,12 @@
         .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); color: #bbb; }
         .tag.ssr { background: linear-gradient(45deg, var(--primary), var(--gold)); color: #000; font-weight: bold; }
         .tag.logic { border: 1px solid var(--accent); color: var(--accent); background: transparent; }
-
-        /* 真神司令显示区 */
+        
         .siling-badge {
             background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent);
-            border-left: 4px solid var(--gold);
-            padding: 12px; margin-bottom: 20px; border-radius: 4px;
-            color: var(--gold); font-weight: bold; font-size: 0.95rem;
-            display: flex; align-items: center; gap: 10px;
+            border-left: 4px solid var(--gold); padding: 12px; margin-bottom: 20px; border-radius: 4px;
+            color: var(--gold); font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;
         }
-
         .chart-box { height: 180px; width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 20px; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         canvas { width: 100%; height: 100%; }
 
@@ -112,21 +91,19 @@
         .col { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 2px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
         .c-head { font-size: 0.65rem; color: #666; margin-bottom: 4px; }
         .c-god { font-size: 0.7rem; color: var(--accent); height: 14px; margin-bottom: 4px; }
-        .c-char { font-family: "KaiTi", serif; font-size: 1.8rem; font-weight: bold; line-height: 1.1; color: #fff; }
+        .c-char { font-family: "KaiTi", serif; font-size: 1.8rem; font-weight: bold; color: #fff; }
         .c-cs { font-size: 0.65rem; color: #888; margin-top: 4px; display: block; }
-        .cs-strong { color: var(--gold); }
         .wx-金 { color: #ffeaa7; } .wx-木 { color: #55efc4; } .wx-水 { color: #74b9ff; } .wx-火 { color: #ff7675; } .wx-土 { color: #a29bfe; }
 
         .guide-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.25); border-left: 4px solid var(--accent); }
         .guide-title { font-size: 1rem; font-weight: bold; color: var(--gold); margin-bottom: 10px; }
         .guide-text { font-size: 0.95rem; line-height: 1.8; color: #ddd; text-align: justify; }
-
+        
         .logic-bar { margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid #333; font-size: 0.9rem; line-height: 1.6; border-radius: 10px; }
-        .logic-title { color: var(--accent); font-weight: bold; display: block; margin-bottom: 8px; letter-spacing: 1px; }
-        .good-text { color: #2ecc71; font-weight: bold; margin-right: 5px; } 
-        .bad-text { color: #ff4757; font-weight: bold; margin-right: 5px; }
+        .logic-title { color: var(--accent); font-weight: bold; display: block; margin-bottom: 8px; }
+        .good-text { color: #2ecc71; font-weight: bold; } .bad-text { color: #ff4757; font-weight: bold; }
 
-        #error-msg { display:none; background:var(--primary); padding:10px; border-radius:8px; text-align:center; margin-bottom:15px; font-size:12px; }
+        #error-msg { display:none; background:var(--primary); padding:10px; text-align:center; margin-bottom:15px; }
     </style>
 </head>
 <body>
@@ -134,10 +111,10 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-badge">SYSTEM: MASTER LOGIC V16.0</div>
+        <div class="sys-badge">SYSTEM: ORTHODOX LOGIC V17.0</div>
     </div>
 
-    <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
+    <div id="error-msg">⚠️ 核心组件加载异常，请检查网络</div>
 
     <div class="card">
         <div class="input-group">
@@ -205,7 +182,7 @@
     const WX_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
     const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
 
-    // 司令规则 (日) - 严格遵循渊海子平，亥月前7日为戊土
+    // 司令规则 (日) - 严格保留亥月戊土
     const SILING_RULES = {
         '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
         '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
@@ -232,8 +209,8 @@
         "壬": { "申":"长生", "酉":"沐浴", "戌":"冠带", "亥":"临官", "子":"帝旺", "丑":"衰", "寅":"病", "卯":"死", "辰":"墓", "巳":"绝", "午":"胎", "未":"养" },
         "癸": { "卯":"长生", "寅":"沐浴", "丑":"冠带", "子":"临官", "亥":"帝旺", "戌":"衰", "酉":"病", "申":"死", "未":"墓", "午":"绝", "巳":"胎", "辰":"养" }
     };
-    const STRONG_CS = ["长生", "帝旺", "临官", "冠带"]; 
-
+    
+    // 根气表 (判断食伤是否有力)
     const ROOT_MAP = {
         '甲':['寅','卯','亥','辰','未'], '乙':['卯','寅','辰','未','亥'],
         '丙':['巳','午','寅','戌'], '丁':['午','巳','未','戌','寅'],
@@ -255,9 +232,9 @@
         "癸": { "癸":"比肩", "壬":"劫财", "乙":"食神", "甲":"伤官", "丁":"偏财", "丙":"正财", "己":"七杀", "戊":"正官", "辛":"偏印", "庚":"正印" }
     };
 
-    // 核心数据库
+    // 核心数据库：格局喜忌规则 (XIJI RULES)
     const XIJI_RULES = {
-        "金水伤官": { desc: "冬金寒冷，必须见火。喜火（官杀）暖局，喜木（财）生火。", joy: ["🔥 火","🌲 木"], taboo: ["💧 水","⛰️ 土"] },
+        "金水伤官": { desc: "冬金寒冷，必须见火。喜火（官杀）暖局，喜木（财）生火。此为伤官见官反为贵的特殊格局。", joy: ["🔥 火","🌲 木"], taboo: ["💧 水","⛰️ 土"] },
         "金水食神": { desc: "金白水清，才华内敛。亦喜火暖局，忌土埋金、水过寒。", joy: ["🔥 火","🌲 木"], taboo: ["⛰️ 土","💧 水"] },
         "木火通明": { desc: "木生春月，见火泄秀。忌金克伐，忌水灭火。", joy: ["🔥 火","🌲 木"], taboo: ["🗡️ 金","💧 水"] },
         "伤官配印": { desc: "火炎土燥或身弱伤旺。急需水印润局生身。", joy: ["💧 水","🌲 木"], taboo: ["⛰️ 土","🔥 火"] },
@@ -276,7 +253,7 @@
         "正印格": { desc: "印绶生身。喜官生印，忌财坏印。", joy: ["🗡️ 官杀","💪 比劫"], taboo: ["💰 财星"] },
         "偏印格": { desc: "偏印当权。喜偏财制枭。", joy: ["💰 偏财","天月德"], taboo: ["🎨 食神"] },
         "食神格": { desc: "食神生财，福寿双全。忌枭神夺食。", joy: ["💰 财星","💪 比劫"], taboo: ["📜 偏印"] },
-        "杂格": { desc: "五行杂气，需看日主强弱与通关。", joy: ["平衡五行"], taboo: ["冲克用神"] }
+        "杂格": { desc: "格局未成，求其中和流通。", joy: ["扶抑","调候"], taboo: ["失衡"] }
     };
 
     const GAME_DB = {
@@ -303,17 +280,12 @@
     };
 
     // --- 初始化 ---
-
     window.onload = function() {
         try {
             const now = new Date();
             const str = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
             document.getElementById('birth-input').value = str;
-        } catch(e) {}
-        
-        if (typeof Solar === 'undefined') {
-            document.getElementById('error-msg').style.display = 'block';
-        }
+        } catch(e){}
     };
 
     function setGender(val, el) {
@@ -322,165 +294,191 @@
         el.classList.add('active');
     }
 
-    // --- 主逻辑 ---
-    
+    // --- 核心算法 ---
     function startScan() {
         const timeStr = document.getElementById('birth-input').value;
         if (!timeStr) return alert("请选择出生时间");
-
         try {
             const date = new Date(timeStr);
             const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
             const lunar = solar.getLunar();
             const bazi = lunar.getEightChar();
-            bazi.setSect(2); 
+            bazi.setSect(2);
 
-            // 1. 数据准备
-            const yg = bazi.getYearGan().toString();  const yz = bazi.getYearZhi().toString();
-            const mg = bazi.getMonthGan().toString(); const mz = bazi.getMonthZhi().toString();
-            const dg = bazi.getDayGan().toString();   const dz = bazi.getDayZhi().toString();
-            const hg = bazi.getTimeGan().toString();  const hz = bazi.getTimeZhi().toString();
+            const yg=bazi.getYearGan().toString(), yz=bazi.getYearZhi().toString();
+            const mg=bazi.getMonthGan().toString(), mz=bazi.getMonthZhi().toString();
+            const dg=bazi.getDayGan().toString(), dz=bazi.getDayZhi().toString();
+            const hg=bazi.getTimeGan().toString(), hz=bazi.getTimeZhi().toString();
 
-            const pillars = [
-                { t:'年柱 (ROOT)', g:yg, z:yz },
-                { t:'月柱 (CAREER)', g:mg, z:mz },
-                { t:'日柱 (SELF)', g:dg, z:dz },
-                { t:'时柱 (OUTCOME)', g:hg, z:hz }
-            ];
+            const pillars = [{t:'年柱',g:yg,z:yz},{t:'月柱',g:mg,z:mz},{t:'日柱',g:dg,z:dz},{t:'时柱',g:hg,z:hz}];
 
-            // 2. 渲染
             renderPillars(pillars, dg);
-            const cmdInfo = calcCommander(lunar, mz);
-            const strengthInfo = analyzeGlobalStrength(cmdInfo, dg, mz, dz, hz);
-            
-            // 3. 核心：调候与格局
+            const cmdInfo = calcCommander(lunar, mz); // 修正：不再传入 pillars，恢复戊土显示
             const climate = analyzeClimate(dg, mz, pillars);
+            const patternKey = determinePattern(climate, pillars, dg, mz, cmdInfo);
+            renderResult(patternKey, cmdInfo, dg, climate);
+            drawArt(pillars);
             
-            // 4. 绘图
-            drawArt(pillars, mz);
-            
-            // 5. 核心渲染：传入所有分析结果，由 renderGamePattern 统一调度喜忌和文案
-            renderGamePattern(climate, strengthInfo, pillars, dg, mz, cmdInfo);
-
-            const resArea = document.getElementById('result-area');
-            resArea.style.display = 'block';
-            resArea.scrollIntoView({ behavior: 'smooth' });
-
-        } catch (e) {
-            console.error(e);
-            alert("系统过载，请重试！" + e.message);
-        }
+            document.getElementById('result-area').style.display = 'block';
+            document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
+        } catch (e) { console.error(e); alert("计算错误: "+e.message); }
     }
 
-    function renderPillars(pillars, dayMaster) {
+    function renderPillars(pillars, dm) {
         let html = '';
         pillars.forEach(p => {
-            const god = p.t.includes('日柱') ? '日主 (Me)' : (SHISHEN_MAP[dayMaster][p.g] || "");
+            const god = p.t.includes('日柱') ? '日主' : (SHISHEN_MAP[dm][p.g] || "");
             const cs = CHANGSHENG_TABLE[p.g][p.z] || "";
-            const csClass = STRONG_CS.includes(cs) ? 'cs-strong' : '';
-            const gWx = WUXING_MAP[p.g];
-            const zWx = WUXING_MAP[p.z];
-
-            html += `
-                <div class="col">
-                    <div class="c-head">${p.t}</div>
-                    <div class="c-god">${god}</div>
-                    <div class="c-char ${WX_COLOR[gWx]}">${p.g}</div>
-                    <div class="c-char ${WX_COLOR[zWx]}">${p.z}</div>
-                    <span class="c-cs ${csClass}">${cs}</span>
-                </div>
-            `;
+            const gWx = WUXING_MAP[p.g], zWx = WUXING_MAP[p.z];
+            html += `<div class="col"><div class="c-head">${p.t}</div><div class="c-god">${god}</div><div class="c-char ${WX_COLOR[gWx]}">${p.g}</div><div class="c-char ${WX_COLOR[zWx]}">${p.z}</div><span class="c-cs">${cs}</span></div>`;
         });
         document.getElementById('pillars-box').innerHTML = html;
     }
 
-    // 手动计算司令
+    // 修正：司令计算 (保留亥月戊土)
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
-        const jieTime = new Date(pjSolar.getYear(), pjSolar.getMonth()-1, pjSolar.getDay(), pjSolar.getHour(), pjSolar.getMinute(), pjSolar.getSecond()).getTime();
-        const bSolar = lunar.getSolar();
-        const birthTime = new Date(bSolar.getYear(), bSolar.getMonth()-1, bSolar.getDay(), bSolar.getHour(), bSolar.getMinute(), bSolar.getSecond()).getTime();
+        const jieTime = new Date(pjSolar.getYear(), pjSolar.getMonth()-1, pjSolar.getDay(), pjSolar.getHour(), pjSolar.getMinute()).getTime();
+        const birthTime = new Date(lunar.getSolar().getYear(), lunar.getSolar().getMonth()-1, lunar.getSolar().getDay(), lunar.getSolar().getHour(), lunar.getSolar().getMinute()).getTime();
         const diffDays = Math.floor((birthTime - jieTime) / (1000 * 60 * 60 * 24));
         
         const rules = SILING_RULES[monthZhi] || [];
-        let commander = '未知';
+        let commander = rules[rules.length-1][0]; 
         let daysSum = 0;
         for (let rule of rules) {
             daysSum += rule[1];
-            if (diffDays < daysSum) {
-                commander = rule[0];
-                break;
-            }
+            if (diffDays < daysSum) { commander = rule[0]; break; }
         }
-        if (commander === '未知' && rules.length > 0) commander = rules[rules.length-1][0];
-        return { commander, diffDays, prevJieName: prevJie.getName() };
+        return { commander, diffDays };
     }
 
-    function analyzeGlobalStrength(info, dm, mZ, dZ, hZ) {
-        const dmWx = WUXING_MAP[dm];
-        const mZWx = WUXING_MAP[mZ];
-        const cmdWx = WUXING_MAP[info.commander];
-
-        const isHelp = (tWx, sWx) => tWx===sWx || (tWx==="木"&&sWx==="火") || (tWx==="火"&&sWx==="土") || (tWx==="土"&&sWx==="金") || (tWx==="金"&&sWx==="水") || (tWx==="水"&&sWx==="木");
-        const menWang = isHelp(mZWx, dmWx);
-        const diWang = isHelp(cmdWx, dmWx);
-        
-        const dayCs = CHANGSHENG_TABLE[dm][dZ];
-        const dayRootStrong = ["临官", "帝旺", "长生"].includes(dayCs);
-        const hourCs = CHANGSHENG_TABLE[dm][hZ];
-        const hourRootStrong = ["临官", "帝旺"].includes(hourCs);
-
-        let finalStrong = false;
-        let desc = "";
-
-        if (dayRootStrong && hourRootStrong) { finalStrong = true; desc = "日时扎根极深（专禄/归禄），无视月令衰弱，直断身强。"; }
-        else if (menWang && diWang) { finalStrong = true; desc = "得令得气，月令提纲有力，身强。"; }
-        else if (menWang && !diWang) {
-            if (dayRootStrong) { finalStrong = true; desc = "虽真神失令，但得月体且日坐强根，判身强。"; }
-            else { finalStrong = false; desc = "门旺地衰，日无强根，外强中干，判身弱。"; }
-        } else if (!menWang && diWang) {
-            if (dayRootStrong) { finalStrong = true; desc = "虽失月令，但真神相助且日坐强根，绝处逢生，判身强。"; }
-            else { finalStrong = false; desc = "虽真神得用，但全局克泄较重，判身弱喜生扶。"; }
-        } else {
-            if (dayRootStrong && ["冠带","临官"].includes(hourCs)) { finalStrong = true; desc = "虽生于衰月，但日时禄旺通根，判身强。"; }
-            else { finalStrong = false; desc = "门地俱衰，根气不足，真身弱。"; }
+    // 通根检查
+    function hasRoot(gan, pillars) {
+        const roots = ROOT_MAP[gan] || [];
+        for(let p of pillars) {
+            if (roots.includes(p.z)) return true;
         }
-        return { isStrong: finalStrong, desc, dmWx };
+        return false;
     }
 
     function analyzeClimate(dm, mz, pillars) {
         const dmWx = WUXING_MAP[dm];
         const season = ["亥","子","丑"].includes(mz) ? "冬" : ["巳","午","未"].includes(mz) ? "夏" : "平";
-        let report = { isHot: season === "夏", isCold: season === "冬", hasWater: false, hasFire: false, specialPattern: null };
+        let hasFire = pillars.some(p => WUXING_MAP[p.g] === '火' || WUXING_MAP[p.z] === '火');
+        let hasWater = pillars.some(p => WUXING_MAP[p.g] === '水' || WUXING_MAP[p.z] === '水');
 
-        pillars.forEach(p => {
-            if (WUXING_MAP[p.g] === '水' || WUXING_MAP[p.z] === '水') report.hasWater = true;
-            if (WUXING_MAP[p.g] === '火' || WUXING_MAP[p.z] === '火') report.hasFire = true;
-        });
-
-        // 天时调候格局判定 (第一优先级)
-        if (dmWx === '金' && report.isCold) {
-            // 细分：透食神为金水食神，透伤官为金水伤官
+        if (dmWx === '土' && season === '冬') return { special: null, advice: "水冷土冻，非丙火不可救！" };
+        if (dmWx === '金' && season === '冬') {
             const hasShangGuan = pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官');
-            if (hasShangGuan) report.specialPattern = "金水伤官";
-            else report.specialPattern = "金水食神";
+            return { special: hasShangGuan ? "金水伤官" : "金水食神" };
         }
-        else if (dmWx === '木' && ["寅","卯"].includes(mz) && report.hasFire) {
-            report.specialPattern = "木火通明";
-        }
-        else if (dmWx === '木' && report.isHot && report.hasWater) {
-            report.specialPattern = "伤官配印";
-        }
-        
-        return report;
+        if (dmWx === '木' && ["寅","卯"].includes(mz) && hasFire) return { special: "木火通明" };
+        if (dmWx === '木' && season === '夏' && hasWater) return { special: "伤官配印" };
+        return { special: null };
     }
 
-    function drawArt(pillars, mZ) {
+    function determinePattern(climate, pillars, dm, mz, cmdInfo) {
+        if (climate.special) return climate.special;
+
+        const godMap = {}; 
+        pillars.forEach((p, i) => { if(i!==2) godMap[i] = SHISHEN_MAP[dm][p.g]; });
+        const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
+
+        // 1. 真神透干优先
+        if (stems.includes(cmdInfo.commander)) {
+            const god = SHISHEN_MAP[dm][cmdInfo.commander];
+            // 透财 -> 查食伤生财 (必须有根)
+            if (god === '正财' || god === '偏财') {
+                for(let i of [0,1,3]) {
+                    const g = SHISHEN_MAP[dm][pillars[i].g];
+                    if ((g === '食神' || g === '伤官') && hasRoot(pillars[i].g, pillars)) {
+                        return g === '食神' ? '食神生财' : '伤官生财';
+                    }
+                }
+            }
+            // 透杀 -> 查制化
+            if (god === '七杀') {
+                for(let i of [0,1,3]) {
+                    const g = SHISHEN_MAP[dm][pillars[i].g];
+                    if (g === '食神' && hasRoot(pillars[i].g, pillars)) return '食神制杀';
+                    if (g === '伤官') return '伤官合杀';
+                    if (g === '正印' || g === '偏印') return '杀印相生';
+                }
+            }
+        }
+
+        // 2. 有杀先论杀 (无论是否透真神)
+        if (Object.values(godMap).includes("七杀")) {
+             for(let i of [0,1,3]) {
+                const g = SHISHEN_MAP[dm][pillars[i].g];
+                if (g === '食神' && hasRoot(pillars[i].g, pillars)) return '食神制杀';
+                if (g === '正印' || g === '偏印') return '杀印相生';
+             }
+             return '七杀格';
+        }
+
+        // 3. 伤官/食神 (需通根)
+        if (Object.values(godMap).includes("伤官")) {
+             let sgGan = null;
+             for(let i of [0,1,3]) if (SHISHEN_MAP[dm][pillars[i].g] === '伤官') sgGan = pillars[i].g;
+             if (sgGan && !hasRoot(sgGan, pillars)) {
+                 if (Object.values(godMap).includes("正财")) return "正财格";
+                 if (Object.values(godMap).includes("偏财")) return "偏财格";
+             } else {
+                 if (Object.values(godMap).some(g=>g.includes('财'))) return "伤官生财";
+                 return "伤官格";
+             }
+        }
+
+        // 4. 常规取格
+        const mainGod = SHISHEN_MAP[dm][ZHI_MAIN_QI[mz]];
+        const map = {
+            "比肩":"建禄格", "劫财":"月劫格", "食神":"食神格", 
+            "伤官":"伤官格", "正财":"正财格", "偏财":"偏财格", 
+            "正官":"正官格", "七杀":"七杀格", "正印":"正印格", "偏印":"偏印格"
+        };
+        return map[mainGod] || "五行流通";
+    }
+
+    function renderResult(key, cmdInfo, dm, climate) {
+        if(!GAME_DB[key]) key = "五行流通";
+        const data = GAME_DB[key];
+        const detail = data[currentGender === 1 ? 'male' : 'female'];
+
+        document.getElementById('role-icon').innerText = data.icon;
+        document.getElementById('role-name').innerText = data.name;
+        document.getElementById('role-slogan').innerText = data.slogan;
+        
+        let tagsHtml = `<span class="tag logic">[${key}]</span>`;
+        data.tags.forEach(t => tagsHtml += `<span class="tag ssr">${t}</span>`);
+        document.getElementById('role-tags').innerHTML = tagsHtml;
+
+        const cmdGod = SHISHEN_MAP[dm][cmdInfo.commander];
+        document.getElementById('siling-text').innerText = `当令真神：${cmdInfo.commander} (${cmdGod}) · 执政第 ${cmdInfo.diffDays} 天`;
+
+        let xiji = XIJI_RULES[key];
+        let reason = xiji.desc;
+        if (climate.advice) reason += " <br><span style='color:#ff4757'>⚠️ " + climate.advice + "</span>";
+
+        document.getElementById('pattern-reason').innerHTML = reason;
+        document.getElementById('txt-joy').innerText = xiji.joy.join(" ");
+        document.getElementById('txt-taboo').innerText = xiji.taboo.join(" ");
+
+        const guideHtml = `
+            <div class="guide-item"><div class="guide-title">⚔️ 事业与成就</div><div class="guide-text">${detail.c}</div></div>
+            <div class="guide-item"><div class="guide-title">💰 财富与资产</div><div class="guide-text">${detail.w}</div></div>
+            <div class="guide-item"><div class="guide-title">💞 情感与婚姻</div><div class="guide-text">${detail.l}</div></div>
+            <div class="guide-item"><div class="guide-title">🌱 后代与传承</div><div class="guide-text">${detail.k}</div></div>
+            <div class="guide-item"><div class="guide-title">❤️ 健康与状态</div><div class="guide-text">${detail.h}</div></div>
+        `;
+        document.getElementById('guide-content').innerHTML = guideHtml;
+    }
+
+    function drawArt(pillars) {
         const canvas = document.getElementById('energy-canvas');
         const ctx = canvas.getContext('2d');
-        const w = canvas.parentElement.offsetWidth;
-        const h = canvas.parentElement.offsetHeight;
+        const w = canvas.parentElement.offsetWidth, h = canvas.parentElement.offsetHeight;
         canvas.width = w; canvas.height = h;
 
         const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
@@ -488,184 +486,35 @@
         
         ctx.fillStyle = "#1e1e24"; ctx.fillRect(0,0,w,h);
         const colors = {"金":"#ffeaa7", "木":"#55efc4", "水":"#74b9ff", "火":"#ff7675", "土":"#a29bfe"};
+        const keys = Object.keys(counts);
+        const cx = w/2, cy = h/2, r = 60;
         
-        const centerX = w/2; const centerY = h/2 + 5; const radius = 55;
-        const keys = Object.keys(counts); const total = 8;
-        
-        ctx.strokeStyle = "#333"; ctx.lineWidth = 1;
-        for(let r=1; r<=3; r++) {
+        ctx.strokeStyle = "#444";
+        for(let j=1; j<=3; j++) {
             ctx.beginPath();
             for(let i=0; i<5; i++) {
-                const angle = (Math.PI*2/5)*i - Math.PI/2;
-                const x = centerX + Math.cos(angle)*radius*(r/3);
-                const y = centerY + Math.sin(angle)*radius*(r/3);
+                const a = (Math.PI*2/5)*i - Math.PI/2;
+                const x = cx + Math.cos(a)*r*(j/3);
+                const y = cy + Math.sin(a)*r*(j/3);
                 if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
             }
             ctx.closePath(); ctx.stroke();
         }
 
-        ctx.fillStyle = "rgba(8, 217, 214, 0.3)"; ctx.strokeStyle = "#08d9d6"; ctx.lineWidth = 2;
+        ctx.fillStyle = "rgba(8, 217, 214, 0.2)"; ctx.strokeStyle = "#08d9d6"; ctx.lineWidth = 2;
         ctx.beginPath();
         keys.forEach((k, i) => {
-            const val = counts[k];
-            const angle = (Math.PI*2/5)*i - Math.PI/2;
-            const len = (val / total) * radius * 3.5;
-            const x = centerX + Math.cos(angle)*len;
-            const y = centerY + Math.sin(angle)*len;
+            const v = counts[k];
+            const a = (Math.PI*2/5)*i - Math.PI/2;
+            const l = (v/8)*r*3; 
+            const x = cx + Math.cos(a)*l, y = cy + Math.sin(a)*l;
             if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
             
-            ctx.fillStyle = colors[k]; ctx.font = "bold 12px Arial";
-            const tx = centerX + Math.cos(angle)*(radius+20);
-            const ty = centerY + Math.sin(angle)*(radius+10);
-            ctx.fillText(k + val, tx-6, ty+4);
+            ctx.fillStyle = colors[k]; ctx.font = "12px Arial";
+            ctx.fillText(k, cx + Math.cos(a)*(r+20)-5, cy + Math.sin(a)*(r+20)+5);
         });
         ctx.closePath(); ctx.fill(); ctx.stroke();
     }
-
-    function renderGamePattern(climate, strengthInfo, pillars, dm, mz, cmdInfo) {
-        const godMap = {}; 
-        const positions = ['年干', '月干', '日干', '时干'];
-        const gans = [pillars[0].g, pillars[1].g, pillars[2].g, pillars[3].g];
-        gans.forEach((g, i) => { if(i === 2) return; godMap[positions[i]] = SHISHEN_MAP[dm][g]; });
-
-        let key = "";
-        let origin = "";
-
-        // 1. 优先采用调候特殊格局
-        if (climate.specialPattern) {
-            key = climate.specialPattern;
-            origin = "[天时调候]";
-        } 
-        else {
-            // 2. 严谨格局判定 (相邻检测)
-            const hasSha = Object.values(godMap).includes("七杀");
-            if (hasSha) {
-                const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
-                let isControlled = false;
-                if (mGod === "七杀" && (yGod === "食神" || hGod === "食神")) isControlled = true;
-                if (yGod === "七杀" && mGod === "食神") isControlled = true;
-                if (hGod === "七杀" && mGod === "食神") isControlled = true;
-                
-                // 杀印相生 (新增)
-                let isShaYin = false;
-                if (mGod === "七杀" && (yGod === "正印" || hGod === "正印" || yGod === "偏印" || hGod === "偏印")) isShaYin = true;
-                
-                if (isControlled) { key = "食神制杀"; origin = "[组合成格]"; }
-                else if (isShaYin) { key = "杀印相生"; origin = "[组合成格]"; }
-                else if (Object.values(godMap).includes("伤官")) { key = "伤官合杀"; origin = "[组合成格]"; }
-                else { key = "七杀格"; origin = "[十神主导]"; }
-            }
-            else if (Object.values(godMap).includes("伤官")) {
-                const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
-                let isShengCai = false;
-                if (mGod === "伤官" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
-                if (["正财","偏财"].includes(mGod) && (yGod === "伤官" || hGod === "伤官")) isShengCai = true;
-
-                if (isShengCai) { key = "伤官生财"; origin = "[组合成格]"; }
-                else { key = "伤官格"; origin = "[十神主导]"; }
-            }
-            else if (Object.values(godMap).includes("食神")) {
-                const mGod = godMap['月干']; const yGod = godMap['年干']; const hGod = godMap['时干'];
-                let isShengCai = false;
-                if (mGod === "食神" && (["正财","偏财"].includes(yGod) || ["正财","偏财"].includes(hGod))) isShengCai = true;
-                if (["正财","偏财"].includes(mGod) && (yGod === "食神" || hGod === "食神")) isShengCai = true;
-
-                if (isShengCai) { key = "食神生财"; origin = "[组合成格]"; }
-                else { key = "食神格"; origin = "[十神主导]"; }
-            }
-
-            // 3. 透干取格 (正八格逻辑)
-            if (!key) {
-                const hiddenGans = HIDDEN_GAN_MAP[mz]; 
-                const stems = [pillars[0].g, pillars[1].g, pillars[3].g]; 
-                
-                let patternGan = "";
-                // 优先取透出之干
-                for (let gan of hiddenGans) {
-                    if (stems.includes(gan)) {
-                        patternGan = gan;
-                        break;
-                    }
-                }
-                // 若都不透，取本气
-                if (!patternGan) patternGan = hiddenGans[0];
-
-                const mainGod = SHISHEN_MAP[dm][patternGan];
-                
-                const patternMap = {
-                    "比肩": "建禄格", "劫财": "月劫格", "食神": "食神格", 
-                    "伤官": "伤官格", "正财": "正财格", "偏财": "偏财格", 
-                    "正官": "正官格", "七杀": "七杀格", "正印": "正印格", "偏印": "偏印格"
-                };
-                
-                if (patternMap[mainGod]) {
-                    key = patternMap[mainGod];
-                    origin = `[月令透干: ${patternGan}]`;
-                }
-            }
-        }
-
-        if(!GAME_DB[key]) key = "五行流通";
-
-        const data = GAME_DB[key];
-        const genderKey = currentGender === 1 ? 'male' : 'female';
-        const detail = data[genderKey];
-
-        document.getElementById('role-icon').innerText = data.icon;
-        document.getElementById('role-name').innerText = data.name;
-        document.getElementById('role-slogan').innerText = data.slogan;
-        
-        let tagsHtml = `<span class="tag logic">${origin}</span>`;
-        data.tags.forEach(t => tagsHtml += `<span class="tag ${t==='UR'||t==='SSR'?'ssr':''}">${t}</span>`);
-        document.getElementById('role-tags').innerHTML = tagsHtml;
-
-        // 修复：补回司令显示逻辑
-        const cmdGod = SHISHEN_MAP[dm][cmdInfo.commander];
-        if (document.getElementById('siling-text')) {
-            document.getElementById('siling-text').innerText = `当令真神：${cmdInfo.commander} (${cmdGod}) · 执政第 ${cmdInfo.diffDays} 天`;
-        }
-
-        let xijiData = XIJI_RULES[key];
-        if (!xijiData) {
-            if (strengthInfo.isStrong) xijiData = { desc: "日主身强，喜克泄耗。", joy:["财星","官杀","食伤"], taboo:["印星","比劫"] };
-            else xijiData = { desc: "日主身弱，喜生扶。", joy:["印星","比劫"], taboo:["财星","官杀","食伤"] };
-        }
-
-        document.getElementById('pattern-reason').innerText = xijiData.desc;
-        
-        let joyHtml = "";
-        xijiData.joy.forEach(j => joyHtml += `<span style="margin-right:10px;">${j}</span>`);
-        document.getElementById('txt-joy').innerHTML = joyHtml;
-
-        let tabooHtml = "";
-        xijiData.taboo.forEach(t => tabooHtml += `<span style="margin-right:10px;">${t}</span>`);
-        document.getElementById('txt-taboo').innerHTML = tabooHtml;
-
-        const guideHtml = `
-            <div class="guide-item">
-                <div class="guide-title">⚔️ 事业与成就</div>
-                <div class="guide-text">${detail.c}</div>
-            </div>
-            <div class="guide-item">
-                <div class="guide-title">💰 财富与资产</div>
-                <div class="guide-text">${detail.w}</div>
-            </div>
-            <div class="guide-item">
-                <div class="guide-title">💞 情感与婚姻</div>
-                <div class="guide-text">${detail.l}</div>
-            </div>
-            <div class="guide-item">
-                <div class="guide-title">🌱 后代与传承</div>
-                <div class="guide-text">${detail.k}</div>
-            </div>
-            <div class="guide-item">
-                <div class="guide-title">❤️ 健康与状态</div>
-                <div class="guide-text">${detail.h}</div>
-            </div>
-        `;
-        document.getElementById('guide-content').innerHTML = guideHtml;
-    }
-
 </script>
 </body>
 </html>
