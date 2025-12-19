@@ -3,25 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>命运黑盒 Pro Max · 宗师真传终极修正版</title>
+    <title>命运黑盒 Pro Max · 宗师全本典藏版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         :root {
-            --primary: #ff2e63;      /* 故障红 */
-            --accent: #08d9d6;       /* 赛博蓝 */
-            --dark: #0f0f13;         /* 纯黑 */
-            --card: #1a1a24;         /* 卡片黑 */
-            --text: #e0e0e0;
-            --gold: #ffd700;
-            --border-r: 12px;
+            --primary: #ff2e63; --accent: #08d9d6; --dark: #121212; --card: #1e1e24;
+            --text: #e0e0e0; --gold: #ffd700; --border-r: 12px;
         }
-
         * { box-sizing: border-box; }
         body {
             font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
             background-color: var(--dark); color: var(--text);
             margin: 0; padding: 20px 10px; min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 50%, #252530 0%, #0f0f13 100%);
+            background-image: radial-gradient(circle at 50% 50%, #2a2d3e 0%, #121212 100%);
             display: flex; justify-content: center;
         }
         .container { width: 100%; max-width: 700px; padding-bottom: 120px; }
@@ -38,7 +32,7 @@
         }
         .card {
             background: var(--card); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: var(--border-r); padding: 20px; margin-bottom: 25px;
+            border-radius: var(--border-r); padding: 25px; margin-bottom: 25px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
         }
         .card::after {
@@ -46,7 +40,7 @@
             background: linear-gradient(90deg, var(--primary), var(--accent));
         }
         .input-group { margin-bottom: 20px; }
-        .label { color: var(--accent); font-size: 0.85rem; margin-bottom: 8px; display: block; font-weight: bold; }
+        .label { color: var(--accent); font-size: 0.85rem; margin-bottom: 8px; display: block; font-weight: bold; letter-spacing: 1px; }
         .gender-box { display: flex; gap: 15px; }
         .g-btn {
             flex: 1; padding: 14px; text-align: center; border-radius: 8px; background: rgba(255,255,255,0.05);
@@ -68,12 +62,12 @@
         
         .role-header { display: flex; align-items: flex-start; padding-bottom: 20px; border-bottom: 1px dashed rgba(255,255,255,0.15); margin-bottom: 20px; }
         .role-icon {
-            width: 70px; height: 70px; background: #2a2a35; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center; font-size: 35px;
+            width: 80px; height: 80px; background: #2a2a35; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center; font-size: 40px;
             border: 2px solid var(--gold); margin-right: 20px; flex-shrink: 0;
         }
-        .role-title { font-size: 1.5rem; font-weight: bold; color: #fff; margin: 0 0 5px 0; }
-        .role-sub { font-size: 0.85rem; color: #888; font-style: italic; line-height: 1.4; }
+        .role-title { font-size: 1.6rem; font-weight: bold; color: #fff; margin: 0 0 5px 0; }
+        .role-sub { font-size: 0.9rem; color: #888; font-style: italic; line-height: 1.4; }
         .role-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
         .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.08); color: #bbb; }
         .tag.ssr { background: linear-gradient(45deg, var(--primary), var(--gold)); color: #000; font-weight: bold; }
@@ -84,6 +78,7 @@
             border-left: 4px solid var(--gold); padding: 12px; margin-bottom: 20px; border-radius: 4px;
             color: var(--gold); font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; gap: 10px;
         }
+        
         .chart-box { height: 180px; width: 100%; border-radius: 12px; overflow: hidden; margin-bottom: 20px; position: relative; border: 1px solid rgba(255,255,255,0.1); }
         canvas { width: 100%; height: 100%; }
 
@@ -96,7 +91,7 @@
         .wx-金 { color: #ffeaa7; } .wx-木 { color: #55efc4; } .wx-水 { color: #74b9ff; } .wx-火 { color: #ff7675; } .wx-土 { color: #a29bfe; }
 
         .guide-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.25); border-left: 4px solid var(--accent); }
-        .guide-title { font-size: 1rem; font-weight: bold; color: var(--gold); margin-bottom: 10px; }
+        .guide-title { font-size: 1rem; font-weight: bold; color: var(--gold); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .guide-text { font-size: 0.95rem; line-height: 1.8; color: #ddd; text-align: justify; }
         
         .logic-bar { margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid #333; font-size: 0.9rem; line-height: 1.6; border-radius: 10px; }
@@ -111,21 +106,21 @@
 <div class="container">
     <div class="header">
         <h1>命运黑盒</h1>
-        <div class="sys-badge">SYSTEM: ORTHODOX LOGIC V17.0</div>
+        <div class="sys-badge">SYSTEM: MASTER CLASS · FULL LORE</div>
     </div>
 
-    <div id="error-msg">⚠️ 核心组件加载异常，请检查网络</div>
+    <div id="error-msg">⚠️ 核心组件加载异常，请检查网络 (jsDelivr)</div>
 
     <div class="card">
         <div class="input-group">
-            <span class="label">选择角色性别</span>
+            <span class="label">选择角色性别 / CHARACTER GENDER</span>
             <div class="gender-box">
                 <div class="g-btn active" onclick="setGender(1, this)">乾造 (Male)</div>
                 <div class="g-btn" onclick="setGender(0, this)">坤造 (Female)</div>
             </div>
         </div>
         <div class="input-group">
-            <span class="label">输入出生时间</span>
+            <span class="label">输入出生时间 / SPAWN DATE</span>
             <input type="datetime-local" id="birth-input">
         </div>
         <button class="btn-start" onclick="startScan()">启动宗师级推演</button>
@@ -182,7 +177,7 @@
     const WX_COLOR = { '金':'wx-金', '木':'wx-木', '水':'wx-水', '火':'wx-火', '土':'wx-土' };
     const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
 
-    // 司令规则 (日) - 严格保留亥月戊土
+    // 司令规则 (日) - 严格遵循渊海子平，亥月前7日为戊土
     const SILING_RULES = {
         '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
         '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
@@ -210,12 +205,12 @@
         "癸": { "卯":"长生", "寅":"沐浴", "丑":"冠带", "子":"临官", "亥":"帝旺", "戌":"衰", "酉":"病", "申":"死", "未":"墓", "午":"绝", "巳":"胎", "辰":"养" }
     };
     
-    // 根气表 (判断食伤是否有力)
+    // 根气表 (判断通根，申酉戌巳丑为金根)
     const ROOT_MAP = {
         '甲':['寅','卯','亥','辰','未'], '乙':['卯','寅','辰','未','亥'],
         '丙':['巳','午','寅','戌'], '丁':['午','巳','未','戌','寅'],
         '戊':['辰','戌','丑','未','巳','午'], '己':['丑','未','辰','戌','午','巳'],
-        '庚':['申','酉','巳','丑','戌'], '辛':['酉','申','丑','戌'],
+        '庚':['申','酉','巳','丑','戌'], '辛':['酉','申','丑','戌','巳'],
         '壬':['亥','子','申','辰'], '癸':['子','亥','辰','丑','申']
     };
 
@@ -256,6 +251,7 @@
         "杂格": { desc: "格局未成，求其中和流通。", joy: ["扶抑","调候"], taboo: ["失衡"] }
     };
 
+    // 终极文案库 (百万文案版 - 全量保留)
     const GAME_DB = {
         "金水伤官": { name: "❄️ 寒冰剑仙", tags: ["SSR","权谋"], icon: "🗡️", slogan: "金寒水冷，唯火暖心。", male: { c:"[天赋] 权谋洞察。适合从政、高管。", w:"[被动] 显贵致富。财随权来。", l:"[羁绊] 需暖阳伴侣融化冰冷。", k:"[传承] 严父出孝子。", h:"[锦囊] 必用火！多晒太阳，忌北方。" }, female: { c:"[天赋] 冰山美人。演艺、外交。", w:"[被动] 夫荣妻贵。旺夫旺己。", l:"[羁绊] 独喜官星呵护。", k:"[传承] 贵子临门。", h:"[锦囊] 暖宫驱寒，少吃生冷。" } },
         "金水食神": { name: "🌊 灵动智者", tags: ["SSR","清贵"], icon: "🌊", slogan: "金白水清，才华横溢。", male: { c:"[天赋] 内秀乾坤。学术、艺术、文学。才华内敛，不鸣则已一鸣惊人。喜火暖局，名扬四海。", w:"[被动] 技艺生财。财源细水长流。靠专业技能和名声赚钱，抗风险强。", l:"[羁绊] 灵魂知己。注重精神交流，需要懂你弦外之音的伴侣。", k:"[传承] 聪慧麒麟。孩子继承高智商，温和懂事。", h:"[锦囊] 金水过旺寒气重，务必补火！多做户外运动。" }, female: { c:"[天赋] 气质清流。貌美脱俗，适合文化、教育。与世无争反而赢。", w:"[被动] 福泽深厚。一生衣食无忧，安稳理财。", l:"[羁绊] 寒谷回春。虽食神克官，但金水喜火，故得夫宠。温柔是武器。", k:"[传承] 慈母福荫。疼爱孩子，晚年享福。", h:"[锦囊] 暖局养生。多穿暖色，注意妇科肾脏。" } },
@@ -313,7 +309,7 @@
             const pillars = [{t:'年柱',g:yg,z:yz},{t:'月柱',g:mg,z:mz},{t:'日柱',g:dg,z:dz},{t:'时柱',g:hg,z:hz}];
 
             renderPillars(pillars, dg);
-            const cmdInfo = calcCommander(lunar, mz); // 修正：不再传入 pillars，恢复戊土显示
+            const cmdInfo = calcCommander(lunar, mz);
             const climate = analyzeClimate(dg, mz, pillars);
             const patternKey = determinePattern(climate, pillars, dg, mz, cmdInfo);
             renderResult(patternKey, cmdInfo, dg, climate);
@@ -335,7 +331,7 @@
         document.getElementById('pillars-box').innerHTML = html;
     }
 
-    // 修正：司令计算 (保留亥月戊土)
+    // 司令计算 (亥月前7日为戊土)
     function calcCommander(lunar, monthZhi) {
         const prevJie = lunar.getPrevJie();
         const pjSolar = prevJie.getSolar();
