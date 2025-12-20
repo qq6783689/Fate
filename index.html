@@ -3,157 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>天命鑑定 · 宗师全本典藏版</title>
+    <title>天命鑑定 · 宗师列传典藏版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;700&display=swap');
 
         :root {
-            --china-red: #9d2933;      /* 故宫红 */
-            --paper-cream: #f4f1de;    /* 宣纸白 */
-            --ink-black: #1a1a1a;      /* 徽墨 */
-            --gold-accent: #d4af37;    /* 鎏金 */
-            --border-color: #d8c3a5;   /* 檀木色 */
-            --joy-green: #276749;      /* 翡翠绿 */
-            --taboo-red: #c53030;      /* 丹砂红 */
+            --china-red: #a22d29;      /* 故宫红 */
+            --paper-bg: #f7f5f0;       /* 仿古宣纸 */
+            --ink-main: #2b2b2b;       /* 徽墨 */
+            --ink-light: #5d5d5d;      /* 淡墨 */
+            --gold-accent: #c5a059;    /* 沉金 */
+            --border-color: #e6e2d8;
+            --wood: #3a7ca5; --fire: #d64045; --earth: #9c6644; --metal: #e9c46a; --water: #2a9d8f;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Noto Serif SC', serif;
-            background-color: #edeae0;
+            font-family: 'Noto Serif SC', 'Source Han Serif SC', serif;
+            background-color: #f0f0f0;
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
-            color: var(--ink-black); margin: 0; padding: 20px 10px; min-height: 100vh;
+            color: var(--ink-main); margin: 0; padding: 40px 15px; min-height: 100vh;
             display: flex; justify-content: center;
         }
 
-        .container { width: 100%; max-width: 800px; padding-bottom: 80px; }
+        .container { width: 100%; max-width: 850px; padding-bottom: 80px; }
 
         /* 顶部 Header */
-        .header { text-align: center; margin-bottom: 50px; position: relative; }
+        .header { text-align: center; margin-bottom: 60px; }
         .header h1 { 
-            font-family: 'Ma Shan Zheng', cursive; font-size: 3.5rem; margin: 0; 
-            color: var(--china-red); letter-spacing: 2px;
-            text-shadow: 2px 2px 0px rgba(157, 41, 51, 0.1);
+            font-family: 'Ma Shan Zheng', cursive; font-size: 4rem; margin: 0; 
+            color: var(--china-red); letter-spacing: 8px; line-height: 1.2;
+            text-shadow: 4px 4px 0px rgba(162, 45, 41, 0.05);
         }
-        .header .stamp {
-            display: inline-block; border: 2px solid var(--china-red); border-radius: 4px;
-            color: var(--china-red); padding: 4px 12px; font-size: 0.9rem;
-            margin-top: 15px; font-weight: bold; letter-spacing: 4px;
-            background-color: rgba(157, 41, 51, 0.05);
+        .header .sub-title {
+            font-size: 1rem; color: #888; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;
+            display: inline-block; padding: 8px 30px; margin-top: 20px; letter-spacing: 5px; text-transform: uppercase;
         }
 
         /* 卡片通用 */
         .card {
-            background: #fff; border: 1px solid var(--border-color); padding: 35px; margin-bottom: 30px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.04); position: relative; border-radius: 2px;
+            background: var(--paper-bg); border: 1px solid #dcdcdc;
+            padding: 45px; margin-bottom: 40px; border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.04), inset 0 0 60px rgba(255,255,255,0.5);
+            position: relative;
         }
         .card::before {
-            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
-            border: 1px solid #f2efea; pointer-events: none;
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px solid rgba(0,0,0,0.03); pointer-events: none;
         }
 
-        /* 输入区 */
+        /* 输入区样式 */
         .label { 
             color: var(--china-red); font-size: 1.1rem; margin-bottom: 15px; 
-            display: block; font-weight: bold; border-left: 4px solid var(--china-red);
-            padding-left: 12px; letter-spacing: 1px;
+            display: block; font-weight: bold; font-family: 'Ma Shan Zheng', cursive; letter-spacing: 2px;
         }
-        .gender-box { display: flex; gap: 15px; margin-bottom: 25px; }
+        .gender-box { display: flex; gap: 20px; margin-bottom: 30px; }
         .g-btn {
-            flex: 1; padding: 16px; text-align: center; border: 1px solid var(--border-color);
-            background: #fff; color: #666; cursor: pointer; transition: 0.3s; 
-            font-weight: bold; font-family: 'Noto Serif SC', serif;
+            flex: 1; padding: 18px; text-align: center; border: 1px solid #ccc;
+            background: #fff; color: #888; cursor: pointer; transition: 0.3s;
+            font-family: 'Noto Serif SC', serif; font-weight: bold; font-size: 1.1rem;
         }
         .g-btn.active { 
             border-color: var(--china-red); color: var(--china-red); 
-            background: rgba(157, 41, 51, 0.05); box-shadow: inset 0 0 0 1px var(--china-red);
+            background: rgba(162, 45, 41, 0.04);
         }
         input[type="datetime-local"] {
-            width: 100%; padding: 18px; background: #faf9f6; border: 1px solid var(--border-color);
-            color: var(--ink-black); font-size: 1.2rem; outline: none; font-family: serif;
+            width: 100%; padding: 18px; background: #fff; border: 1px solid #ccc;
+            color: var(--ink-main); font-size: 1.2rem; outline: none; font-family: 'Noto Serif SC', serif;
         }
         .btn-start {
-            width: 100%; padding: 22px; border: none; background: var(--china-red);
-            color: #fff; font-size: 1.4rem; font-weight: 900; letter-spacing: 8px;
-            cursor: pointer; margin-top: 25px; box-shadow: 0 10px 25px rgba(157, 41, 51, 0.3);
-            transition: all 0.2s; position: relative; overflow: hidden;
+            width: 100%; padding: 25px; border: none; background: var(--china-red);
+            color: #fff; font-size: 1.5rem; font-weight: 900; letter-spacing: 12px;
+            cursor: pointer; margin-top: 30px; transition: all 0.3s;
+            font-family: 'Noto Serif SC', serif; box-shadow: 0 10px 30px rgba(162, 45, 41, 0.25);
         }
-        .btn-start:active { transform: scale(0.98); }
-        
-        /* 加载动画 */
-        .loader {
-            display: none; width: 24px; height: 24px; margin-left: 10px;
-            border: 3px solid #fff; border-bottom-color: transparent;
-            border-radius: 50%; animation: spin 1s linear infinite; vertical-align: middle;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(162, 45, 41, 0.35); }
 
-        #result-area { display: none; animation: slideUp 0.8s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        #result-area { display: none; animation: fadeInUp 1s ease; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 鉴定结果头 */
-        .role-header { text-align: center; margin-bottom: 45px; border-bottom: 1px dashed #eee; padding-bottom: 30px; }
-        .role-icon { font-size: 5rem; display: block; margin-bottom: 15px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.15)); }
-        .role-title { font-family: 'Ma Shan Zheng', cursive; font-size: 3.2rem; color: var(--china-red); margin: 0; line-height: 1.2; }
-        .role-sub { color: #555; font-size: 1.1rem; margin-top: 10px; letter-spacing: 1px; font-style: italic; }
-        .role-tags { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-        .tag { font-size: 0.8rem; padding: 5px 15px; border: 1px solid var(--china-red); color: var(--china-red); font-weight: bold; }
+        /* 结果展示区 */
+        .role-header { text-align: center; margin-bottom: 50px; border-bottom: 1px dashed #ccc; padding-bottom: 40px; }
+        .role-icon { font-size: 5rem; display: block; margin-bottom: 20px; text-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .role-title { font-family: 'Ma Shan Zheng', cursive; font-size: 3.5rem; color: var(--china-red); margin: 0; line-height: 1.2; }
+        .role-sub { color: #666; font-size: 1.2rem; margin-top: 15px; font-style: italic; letter-spacing: 1px; }
+        .role-tags { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+        .tag { font-size: 0.9rem; padding: 6px 18px; border: 1px solid var(--china-red); color: var(--china-red); font-weight: bold; }
         .tag.ssr { background: var(--china-red); color: #fff; }
 
-        /* 激活/调候区 */
-        .activation-box {
-            background: #fffaf0; border: 1px solid var(--gold-accent);
-            padding: 25px; margin-bottom: 35px; text-align: center; display: none;
-        }
-        .activation-title { color: var(--gold-accent); font-weight: 900; font-size: 1.2rem; display: block; margin-bottom: 8px; }
-        .activation-desc { font-size: 1.05rem; color: #444; line-height: 1.6; }
-
+        /* 司令真神 */
         .siling-bar {
-            text-align: center; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
-            padding: 18px 0; margin: 35px 0; font-weight: bold; color: var(--china-red); font-size: 1.1rem;
-            background: rgba(157, 41, 51, 0.02); letter-spacing: 1px;
+            text-align: center; padding: 15px 0; margin-bottom: 40px; 
+            color: #888; font-size: 1.1rem; border-top: 3px double #eee; border-bottom: 3px double #eee;
         }
+        .siling-bar b { color: var(--china-red); margin: 0 8px; font-size: 1.3rem; }
 
         /* 木刻排盘 */
-        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 45px; }
+        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 50px; }
         .ofuda { 
-            background: #fff; border: 2px solid var(--china-red); padding: 25px 5px; text-align: center;
-            box-shadow: 5px 5px 0px rgba(157, 41, 51, 0.08); position: relative; transition: transform 0.2s;
+            background: #fff; border: 2px solid var(--ink-main); padding: 30px 5px; text-align: center;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.05); position: relative; transition: transform 0.3s;
         }
-        .ofuda:hover { transform: translateY(-2px); }
-        .ofuda-god { font-size: 0.85rem; color: #888; margin-bottom: 12px; height: 18px; display: block; }
-        .ofuda-char { font-family: 'Ma Shan Zheng', cursive; font-size: 2.8rem; font-weight: 900; line-height: 1; display: block; }
+        .ofuda:hover { transform: translateY(-5px); }
         .ofuda-head { 
-            font-size: 0.9rem; color: #fff; background: var(--china-red); 
-            display: inline-block; padding: 2px 10px; margin-top: 12px; border-radius: 12px;
-            font-family: 'Noto Serif SC', serif;
+            font-size: 1rem; color: #fff; background: var(--ink-main); 
+            display: inline-block; padding: 4px 15px; margin-bottom: 20px; 
+            font-family: 'Noto Serif SC', serif; letter-spacing: 2px;
         }
-        .ofuda-cs { display: block; font-size: 0.8rem; color: #999; margin-top: 8px; border-top: 1px dashed #eee; padding-top: 5px; }
+        .ofuda-god { font-size: 0.9rem; color: #888; margin-bottom: 10px; display: block; height: 18px; font-weight: bold; }
+        .ofuda-char { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; font-weight: 900; line-height: 1.1; display: block; }
+        /* 藏干显示优化 */
+        .hidden-stems { 
+            margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 10px; 
+            display: flex; flex-direction: column; gap: 4px; opacity: 0.7;
+        }
+        .hidden-stem-row { font-size: 0.75rem; color: #555; display: flex; justify-content: center; gap: 5px; }
+        .hs-gan { font-weight: bold; color: var(--ink-main); }
+        .hs-god { font-size: 0.7rem; color: #999; transform: scale(0.9); }
+
+        /* 五行能量条 */
+        .wuxing-bar-container { margin-bottom: 50px; padding: 20px; background: #fafafa; border: 1px solid #eee; }
+        .wuxing-flex { display: flex; height: 16px; border-radius: 8px; overflow: hidden; margin-top: 10px; }
+        .wx-segment { height: 100%; transition: width 1s ease; }
+        .wx-legend { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 0.9rem; color: #666; }
+        .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
 
         /* 逻辑面板 */
-        .logic-panel { background: #fafafa; padding: 30px; margin-bottom: 40px; border-left: 4px solid var(--china-red); }
-        .logic-content { font-size: 1.1rem; line-height: 1.8; color: #444; margin-bottom: 15px; }
-        .joy-box { display: flex; flex-direction: column; gap: 8px; font-size: 1rem; }
-        .joy-item { display: flex; align-items: baseline; }
-        .joy-label { font-weight: bold; width: 60px; flex-shrink: 0; }
+        .logic-panel { 
+            background: #fffcf5; padding: 40px; margin-bottom: 50px; 
+            border-left: 5px solid var(--china-red); position: relative;
+        }
+        .logic-panel::after { content: '格局'; position: absolute; right: 20px; top: 20px; font-size: 4rem; opacity: 0.05; font-family: 'Ma Shan Zheng'; color: var(--china-red); }
+        .logic-text { font-size: 1.2rem; line-height: 2; color: #444; margin-bottom: 20px; text-align: justify; }
+        .joy-taboo { display: flex; flex-direction: column; gap: 10px; font-size: 1.1rem; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 20px; }
+        .joy { color: #276749; font-weight: bold; }
+        .taboo { color: #c53030; font-weight: bold; }
 
         /* 传记文章 */
-        .guide-section { border-top: 4px double var(--china-red); padding-top: 45px; }
-        .guide-item { margin-bottom: 60px; }
+        .guide-section { border-top: 5px double var(--china-red); padding-top: 60px; }
+        .guide-item { margin-bottom: 70px; }
         .guide-title { 
-            font-family: 'Ma Shan Zheng', cursive; font-size: 1.8rem; color: var(--china-red); 
-            margin-bottom: 20px; display: flex; align-items: center; 
+            font-family: 'Ma Shan Zheng', cursive; font-size: 2.2rem; color: var(--china-red); 
+            margin-bottom: 30px; display: flex; align-items: center; 
         }
-        .guide-title::before { content: '◈'; font-size: 1rem; margin-right: 15px; color: var(--gold-accent); }
+        .guide-title::before { content: '◈'; font-size: 1.2rem; margin-right: 15px; color: var(--gold-accent); }
         .guide-text { 
-            font-size: 1.15rem; line-height: 2.2; color: #2c2c2c; text-align: justify; 
+            font-size: 1.25rem; line-height: 2.4; color: #2c2c2c; text-align: justify; 
             text-indent: 2em;
         }
-        .guide-text b { color: var(--china-red); font-weight: bold; background: transparent; }
+        .guide-text b { color: var(--china-red); font-weight: bold; background: transparent; padding: 0 4px; border-bottom: 1px solid rgba(162, 45, 41, 0.2); }
 
-        .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 60px; letter-spacing: 2px; }
+        /* 底部工具栏 */
+        .action-bar { text-align: center; margin-top: 50px; }
+        .btn-copy {
+            background: transparent; border: 1px solid #aaa; color: #666;
+            padding: 10px 20px; cursor: pointer; border-radius: 4px; font-family: inherit;
+            transition: 0.3s;
+        }
+        .btn-copy:hover { border-color: var(--china-red); color: var(--china-red); }
+
+        .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 80px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -161,20 +172,22 @@
 <div class="container">
     <div class="header">
         <h1>降生鑑定</h1>
-        <div class="stamp">宗师传记 · 命理正源</div>
+        <div class="sub-title">宗师传记 · 命理正源</div>
     </div>
 
     <div class="card">
-        <div class="label">乾坤之造</div>
-        <div class="gender-box">
-            <div class="g-btn active" onclick="setGender(1, this)">乾造 (男)</div>
-            <div class="g-btn" onclick="setGender(0, this)">坤造 (女)</div>
+        <div class="form-group">
+            <span class="label">乾坤之造</span>
+            <div class="gender-box">
+                <div class="g-btn active" onclick="setGender(1, this)">乾造 (男)</div>
+                <div class="g-btn" onclick="setGender(0, this)">坤造 (女)</div>
+            </div>
         </div>
-        <div class="label">降生时刻 (公历)</div>
-        <input type="datetime-local" id="birth-input">
-        <button class="btn-start" onclick="startScan()">
-            开启 · 天命卷轴 <span class="loader" id="loader"></span>
-        </button>
+        <div class="form-group">
+            <span class="label">降生时刻 (公历)</span>
+            <input type="datetime-local" id="birth-input">
+        </div>
+        <button class="btn-start" onclick="startScan()">开启 · 天命卷轴</button>
     </div>
 
     <div id="result-area">
@@ -186,35 +199,49 @@
                 <div id="role-tags" class="role-tags"></div>
             </div>
 
-            <div class="activation-box" id="activation-area">
-                <span class="activation-title" id="activation-status"></span>
-                <div class="activation-desc" id="activation-desc"></div>
+            <div class="activation-box" id="activation-area" style="background:#fffaf0; border:1px dashed #d4af37; padding:20px; text-align:center; display:none; margin-bottom:40px;">
+                <span id="activation-status" style="color:#d4af37; font-weight:bold; font-size:1.2rem; display:block; margin-bottom:8px;"></span>
+                <div id="activation-desc" style="color:#555; line-height:1.6;"></div>
             </div>
 
             <div class="siling-bar">
-                📜 当令真神：<span id="siling-text">...</span>
+                📜 当令真神：<b id="siling-text">...</b>
             </div>
 
             <div class="pillars" id="pillars-box"></div>
 
+            <div class="wuxing-bar-container">
+                <div style="text-align:center; margin-bottom:10px; font-weight:bold; color:#888;">五行气数分布 (含藏干)</div>
+                <div class="wuxing-flex" id="wx-bar"></div>
+                <div class="wx-legend">
+                    <span><span class="dot" style="background:var(--metal)"></span>金</span>
+                    <span><span class="dot" style="background:var(--wood)"></span>木</span>
+                    <span><span class="dot" style="background:var(--water)"></span>水</span>
+                    <span><span class="dot" style="background:var(--fire)"></span>火</span>
+                    <span><span class="dot" style="background:var(--earth)"></span>土</span>
+                </div>
+            </div>
+
             <div class="logic-panel">
                 <div class="label" style="border:none; padding:0;">🔮 格局奥义</div>
-                <div id="pattern-reason" class="logic-content"></div>
-                <div class="joy-box">
-                    <div class="joy-item" style="color:var(--joy-green)">
-                        <span class="joy-label">★ 喜用:</span>
-                        <span id="txt-joy">...</span>
-                    </div>
-                    <div class="joy-item" style="color:var(--taboo-red)">
-                        <span class="joy-label">★ 忌讳:</span>
-                        <span id="txt-taboo">...</span>
-                    </div>
+                <div id="pattern-reason" class="logic-text"></div>
+                <div class="joy-taboo">
+                    <span class="joy">★ 喜用：<span id="txt-joy">...</span></span>
+                    <span class="taboo">★ 忌讳：<span id="txt-taboo">...</span></span>
                 </div>
             </div>
         </div>
 
         <div class="card guide-section">
+            <div class="guide-item">
+                <div class="guide-title">🏮 本纪 · 元神</div>
+                <div class="guide-text" id="dm-desc"></div>
+            </div>
             <div id="guide-content"></div>
+        </div>
+
+        <div class="action-bar">
+            <button class="btn-copy" onclick="alert('长按文字即可复制整篇传记。')">📥 保存天命书</button>
         </div>
 
         <div class="footer">FATE AUTHENTICATED BY GRANDMASTER · 2025</div>
@@ -223,26 +250,28 @@
 
 <script>
     // ==========================================
-    // 1. 全局常量定义 (Global Constants)
+    // 1. 核心全局字典 (Global Constants)
     // ==========================================
     let currentGender = 1;
-    const WX_COLOR_DATA = { '金':'#b8860b', '木':'#2d6a4f', '水':'#0077b6', '火':'#bc4749', '土':'#7f5539' };
+    // 颜色配置
+    const WX_COLOR_DATA = { '金':'#e9c46a', '木':'#2a9d8f', '水':'#264653', '火':'#e76f51', '土':'#a67c52' };
     const WUXING_MAP = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水','子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
-    const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
     
-    // 帝旺月 (用于阳刃格判断)
-    const YANG_REN_MAP = {'甲':'卯', '丙':'午', '戊':'午', '庚':'酉', '壬':'子'};
+    // 藏干数据 (标准子平)
+    const HIDDEN_STEMS = {
+        '子':['癸'], '丑':['己','癸','辛'], '寅':['甲','丙','戊'], '卯':['乙'], 
+        '辰':['戊','乙','癸'], '巳':['丙','戊','庚'], '午':['丁','己'], '未':['己','丁','乙'], 
+        '申':['庚','壬','戊'], '酉':['辛'], '戌':['戊','辛','丁'], '亥':['壬','甲']
+    };
 
     const SHISHEN_MAP = {"甲":{"甲":"比肩","乙":"劫财","丙":"食神","丁":"伤官","戊":"偏财","己":"正财","庚":"七杀","辛":"正官","壬":"偏印","癸":"正印"},"乙":{"乙":"比肩","甲":"劫财","丁":"食神","丙":"伤官","己":"偏财","戊":"正财","辛":"七杀","庚":"正官","癸":"偏印","壬":"正印"},"丙":{"丙":"比肩","丁":"劫财","戊":"食神","己":"伤官","庚":"偏财","辛":"正财","壬":"七杀","癸":"正官","甲":"偏印","乙":"正印"},"丁":{"丁":"比肩","丙":"劫财","己":"食神","戊":"伤官","辛":"偏财","庚":"正财","癸":"七杀","壬":"正官","乙":"偏印","甲":"正印"},"戊":{"戊":"比肩","己":"劫财","庚":"食神","辛":"伤官","壬":"偏财","癸":"正财","甲":"七杀","乙":"正官","丙":"偏印","丁":"正印"},"己":{"己":"比肩","戊":"劫财","辛":"食神","庚":"伤官","癸":"偏财","壬":"正财","乙":"七杀","甲":"正官","丁":"偏印","丙":"正印"},"庚":{"庚":"比肩","辛":"劫财","壬":"食神","癸":"伤官","甲":"偏财","乙":"正财","丙":"七杀","丁":"正官","戊":"偏印","己":"正印"},"辛":{"辛":"比肩","庚":"劫财","癸":"食神","壬":"伤官","乙":"偏财","甲":"正财","丁":"七杀","丙":"正官","己":"偏印","戊":"正印"},"壬":{"壬":"比肩","癸":"劫财","甲":"食神","乙":"伤官","丙":"偏财","丁":"正财","戊":"七杀","己":"正官","庚":"偏印","辛":"正印"},"癸":{"癸":"比肩","壬":"劫财","乙":"食神","甲":"伤官","丁":"偏财","丙":"正财","己":"七杀","戊":"正官","辛":"偏印","庚":"正印"}};
-    
     const SILING_RULES = {'寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]], '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]], '申': [['戊',7], ['壬',7], ['庚',16]], '酉': [['庚',10], ['辛',20]], '戌': [['辛',9], ['丁',3], ['戊',18]], '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]};
-    
     const ROOT_MAP = {'甲':['寅','卯','亥','辰','未'], '乙':['卯','寅','辰','未','亥'], '丙':['巳','午','寅','戌'], '丁':['午','巳','未','戌','寅'], '戊':['辰','戌','丑','未','巳','午'], '己':['丑','未','辰','戌','午','巳'], '庚':['申','酉','巳','丑','戌'], '辛':['酉','申','丑','戌','巳'], '壬':['亥','子','申','辰'], '癸':['子','亥','辰','丑','申']};
-    
-    const CHANGSHENG_TABLE = {"甲":{"亥":"长生","子":"沐浴","丑":"冠带","寅":"临官","卯":"帝旺","辰":"衰","巳":"病","午":"死","未":"墓","申":"绝","酉":"胎","戌":"养"},"乙":{"午":"长生","巳":"沐浴","辰":"冠带","卯":"临官","寅":"帝旺","丑":"衰","子":"病","亥":"死","戌":"墓","酉":"绝","申":"胎","未":"养"},"丙":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"丁":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"戊":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"己":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"庚":{"巳":"长生","午":"沐浴","未":"冠带","申":"临官","酉":"帝旺","戌":"衰","亥":"病","子":"死","丑":"墓","寅":"绝","卯":"胎","辰":"养"},"辛":{"子":"长生","亥":"沐浴","戌":"冠带","酉":"临官","申":"帝旺","未":"衰","午":"病","巳":"死","辰":"墓","卯":"绝","寅":"胎","丑":"养"},"壬":{"申":"长生","酉":"沐浴","戌":"冠带","亥":"临官","子":"帝旺","丑":"衰","寅":"病","卯":"死","辰":"墓","巳":"绝","午":"胎","未":"养"},"癸":{"卯":"长生","寅":"沐浴","丑":"冠带","子":"临官","亥":"帝旺","戌":"衰","酉":"病","申":"死","未":"墓","午":"绝","巳":"胎","辰":"养"}};
+    const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
+    const YANG_REN_MAP = {'甲':'卯', '丙':'午', '戊':'午', '庚':'酉', '壬':'子'};
 
     // ==========================================
-    // 2. 文案全量库 (传记体扩充 - 1500字量级)
+    // 2. 宗师级文案库 (传记体扩充 - 1500字量级)
     // ==========================================
     const GAME_DB = {
         "金水伤官": { 
@@ -264,19 +293,19 @@
         "正官格": { name: "⚖️ 秩序守护者", tags: ["SR","稳健"], icon: "🏛️", slogan: "规则是基石，稳步登顶。", male: { c:"<b>[天赋传记]</b> 天生吃皇粮的命。你稳重、讲规矩、有大局观。在体制内或大型企业中，你是晋升最稳的那一个。", w:"<b>[财富逻辑]</b> 正财稳固。旱涝保收，不求暴富但求长久。", l:"<b>[情感羁绊]</b> 门当户对。你很看重伴侣的家世和教养。", k:"<b>[后代传承]</b> 孩子多半规矩懂事，学习成绩好。", h:"<b>[实战锦囊]</b> 容易焦虑。不要给自己太大的精神枷锁，偶尔放松一下。" }, female: { c:"<b>[天赋传记]</b> 完美管家。行政、教师、HR。你做事滴水不漏，让人挑不出毛病。", w:"<b>[财富逻辑]</b> 财务稳定。家底殷实，生活优渥。", l:"<b>[情感羁绊]</b> 旺夫体质。你懂得如何维护丈夫的面子和地位。", k:"<b>[后代传承]</b> 教子有方。孩子非常有礼貌。", h:"<b>[实战锦囊]</b> 注意颈椎和腰椎的保养，避免久坐。" } },
         "七杀格": { name: "🔥 孤胆英雄", tags: ["SSR","搏杀"], icon: "🚀", slogan: "人生就是无限的战斗。", male: { c:"<b>[天赋传记]</b> 攻坚能手。你是为挑战而生的战士。平淡的生活会让你窒息，唯有在充满变数的战场上，你才能感到活着。", w:"<b>[财富逻辑]</b> 险中求胜。财运大起大落，适合高风险高回报的项目。", l:"[情感羁绊]</b> 烈火情人。爱得轰轰烈烈，恨得咬牙切齿。", k:"<b>[后代传承]</b> 严父。棍棒底下出孝子。", h:"<b>[实战锦囊]</b> 易有外伤。开车慢点，多做慈善化解煞气。" }, female: { c:"<b>[天赋传记]</b> 业务一姐。在男人堆里抢饭吃，你比男人更狠、更决断。", w:"<b>[财富逻辑]</b> 赚钱机器。享受赚钱带来的征服感。", l:"[情感羁绊]</b> 霸总收割机。喜欢强悍霸道的异性。", k:"<b>[后代传承]</b> 超人妈妈。为孩子撑起一片天。", h:"<b>[实战锦囊]</b> 容易长结节。少生气，多疏通肝胆经。" } },
         "食神格": { name: "🎨 逍遥散人", tags: ["SR","安稳"], icon: "🎐", slogan: "人间不值得，美食值得。", male: { c:"<b>[天赋传记]</b> 灵感源泉。你适合轻松、自由、充满创意的工作环境。你讨厌卷，但你总能凭才华轻松赚到钱。", w:"<b>[财富逻辑]</b> 躺赢之财。一生不缺钱，总有贵人送饭吃。", l:"<b>[情感羁绊]</b> 暖男。会做饭、懂生活，情绪价值拉满。", k:"<b>[后代传承]</b> 福星。晚年享子女福。", h:"<b>[实战锦囊]</b> 心宽体胖。注意控制体重，防止三高。" }, female: { c:"<b>[天赋传记]</b> 亲和力极佳。人见人爱，花见花开。适合教育、服务、艺术行业。", w:"<b>[财富逻辑]</b> 小确幸。容易满足，生活滋润。", l:"<b>[情感羁绊]</b> 仪式感。注重生活情调，喜欢浪漫。", k:"<b>[后代传承]</b> 溺爱。孩子是你的心头肉。", h:"<b>[实战锦囊]</b> 防懒惰。多去户外走走，呼吸新鲜空气。" } },
-        "食神制杀": { name: "🦁 铁腕统帅", tags: ["SSR","威权"], icon: "🦁", slogan: "以智制暴，权威立身。", male: { c:"<b>[天赋传记]</b> 你不需要大吼大叫，你的专业能力和深邃气场足以让众人服从。适合公检法、外科医生、技术总监。你是团队的定海神针。", w:"<b>[财富逻辑]</b> 资历加成。你的财富曲线是“大后期型”。资历越老，威望越高，收入越稳。", l:"<b>[情感羁绊]</b> 一家之主。你在家中地位极高。", k:"<b>[后代传承]</b> 栋梁之材。孩子规矩懂事。", h:"<b>[实战锦囊]</b> 控制脾气。预防高血压。" }, female: { c:"<b>[天赋传记]</b> 逻辑女王。不屑于宫斗，靠硬实力说话。财务总监、审计、学术带头人。", w:"<b>[财富逻辑]</b> 财政大臣。理财圣手，能守得住大江山。", l:"<b>[情感羁绊]</b> 严妻。管老公像管兵，需多一点温柔。", k:"<b>[后代传承]</b> 贴心棉袄。母慈子孝。", h:"<b>[实战锦囊]</b> 保护肠胃。少思虑。" } },
+        "杂格": { name: "🌱 潜龙勿用", tags: ["N","潜力"], icon: "🌱", slogan: "时运未到，潜心修炼。", male: { c:"<b>[天赋传记]</b> 多面手。你可能没有特别突出的单一强项，但胜在综合能力不错。适合在中小企业做全能型人才。", w:"<b>[财富逻辑]</b> 勤劳致富。多劳多得，不求大富但求心安。", l:"<b>[情感羁绊]</b> 平淡是真。陪伴是最长情的告白。", k:"<b>[后代传承]</b> 平安是福。孩子健康快乐就好。", h:"<b>[实战锦囊]</b> 坚持锻炼。身体是革命的本钱。" }, female: { c:"<b>[天赋传记]</b> 踏实后勤。认真负责，虽然不出彩但让人无比放心。", w:"<b>[财富逻辑]</b> 节俭持家。财富是省出来的。", l:"<b>[情感羁绊]</b> 依靠老实人。安稳过完这一生。", k:"<b>[后代传承]</b> 慈母心。为孩子操心多。", h:"<b>[实战锦囊]</b> 保证睡眠。不要思虑过重。" } },
+        "食神制杀": { name: "🦁 铁腕统帅", tags: ["SSR","威权"], icon: "🦁", slogan: "以智制暴，权威立身。", male: { c:"<b>[天赋传记]</b> 不怒自威。解决硬核难题的高手。适合公检法、外科医生、技术总监。你是团队的定海神针。", w:"<b>[财富逻辑]</b> 资历加成。你的财富曲线是“大后期型”。资历越老，威望越高，收入越稳。", l:"<b>[情感羁绊]</b> 一家之主。你在家中地位极高。", k:"<b>[后代传承]</b> 栋梁之材。孩子规矩懂事。", h:"<b>[实战锦囊]</b> 控制脾气。预防高血压。" }, female: { c:"<b>[天赋传记]</b> 逻辑女王。不屑于宫斗，靠硬实力说话。财务总监、审计、学术带头人。", w:"<b>[财富逻辑]</b> 财政大臣。理财圣手，能守得住大江山。", l:"<b>[情感羁绊]</b> 严妻。管老公像管兵，需多一点温柔。", k:"<b>[后代传承]</b> 贴心棉袄。母慈子孝。", h:"<b>[实战锦囊]</b> 保护肠胃。少思虑。" } },
         "杀印相生": { name: "👑 权柄执掌者", tags: ["UR","掌权"], icon: "🛡️", slogan: "化煞为权，威震四方。", male: { c:"<b>[天赋传记]</b> 你拥有极佳的领导力与抗压性。恩威并施，适合在体制内或大型机构发展。你能将压力转化为权力。", w:"<b>[财富逻辑]</b> 权中取利。职位越高，财运越好。", l:"<b>[情感羁绊]</b> 贤内助。你需要一个能帮你打理后方的伴侣。", k:"<b>[后代传承]</b> 显贵名门。孩子多有出息。", h:"<b>[实战锦囊]</b> 防过劳。注意心脑血管健康。" }, female: { c:"<b>[天赋传记]</b> 女皇风范。决策力极强，不让须眉。适合做管理者。", w:"<b>[财富逻辑]</b> 积累深厚。正财稳固。", l:"<b>[情感羁绊]</b> 贵夫。丈夫多为成功人士。", k:"<b>[后代传承]</b> 严母教子。孩子有很好的教养。", h:"<b>[实战锦囊]</b> 调理肝胆。少动怒。" } },
         "建禄格": { name: "🏰 独立领主", tags: ["SR","自强"], icon: "🗿", slogan: "我的领土我做主。", male: { c:"<b>[天赋传记]</b> 中流砥柱。你很难给别人打工一辈子，迟早要自己单干。你的执行力超强，是实干家。", w:"<b>[财富逻辑]</b> 辛苦致富。每一分都是汗水换来的。", l:"<b>[情感羁绊]</b> 强硬。大男子主义。", k:"<b>[后代传承]</b> 独立。放养式教育。", h:"<b>[实战锦囊]</b> 防过劳。注意休息。" }, female: { c:"<b>[天赋传记]</b> 职场铁娘子。比男人还拼。", w:"<b>[财富逻辑]</b> 漏斗效应。赚钱快花钱快。", l:"<b>[情感羁绊]</b> 强势。容易给伴侣压力。", k:"<b>[后代传承]</b> 能干妈妈。", h:"<b>[实战锦囊]</b> 调理内分泌。" } },
         "月劫格": { name: "🤜 豪侠义士", tags: ["SR","义气"], icon: "⚔️", slogan: "仁义值千金。", male: { c:"<b>[天赋传记]</b> 团队灵魂。善于聚集人气，适合做团队Leader。但要防备手下或合伙人背刺。", w:"<b>[财富逻辑]</b> 散财童子。对朋友大方，存不住钱。", l:"<b>[情感羁绊]</b> 克妻。容易有竞争者。", k:"<b>[后代传承]</b> 难管。孩子比较叛逆。", h:"<b>[实战锦囊]</b> 戒躁。控制情绪。" }, female: { c:"<b>[天赋传记]</b> 巾帼豪杰。性格直爽。", w:"<b>[财富逻辑]</b> 月光族。存不住钱。", l:"<b>[情感羁绊]</b> 防背叛。感情路坎坷。", k:"<b>[后代传承]</b> 朋友关系。像哥们。", h:"<b>[实战锦囊]</b> 保护呼吸道。" } },
         "伤官生财": { name: "⚗️ 炼金术士", tags: ["SSR","爆发"], icon: "💸", slogan: "万物皆可交易。", male: { c:"<b>[天赋传记]</b> 创业奇才。脑子灵活，点石成金。适合科技、媒体、电商等轻资产行业。", w:"<b>[财富逻辑]</b> 现金流极强。周转快，但花销也大。", l:"<b>[情感羁绊]</b> 颜控。喜欢漂亮的伴侣。", k:"<b>[后代传承]</b> 自由生长。", h:"<b>[实战锦囊]</b> 防脱发失眠。用脑过度。" }, female: { c:"<b>[天赋传记]</b> 带货女王。口才极佳，感染力强。", w:"[财富逻辑]</b> 购买力极强。喜欢购物解压。", l:"<b>[情感羁绊]</b> 挑剔。眼光毒辣。", k:"<b>[后代传承]</b> 倾力投入。", h:"<b>[实战锦囊]</b> 通乳腺。注意淋巴健康。" } },
         "食神生财": { name: "🎐 逍遥财主", tags: ["SR","安稳"], icon: "💰", slogan: "快乐才是第一生产力。", male: { c:"<b>[天赋传记]</b> 快乐赚钱。适合餐饮、娱乐、服务业。你做事讲究顺其自然。", w:"<b>[财富逻辑]</b> 细水长流。财源不断。", l:"<b>[情感羁绊]</b> 温馨浪漫。懂得享受生活。", k:"<b>[后代传承]</b> 福星。晚年享福。", h:"<b>[实战锦囊]</b> 防肥胖。注意饮食节制。" }, female: { c:"<b>[天赋传记]</b> 生活美学家。适合从事与美相关的行业。", w:"<b>[财富逻辑]</b> 物质优渥。不缺零花钱。", l:"<b>[情感羁绊]</b> 撒娇好命。备受宠爱。", k:"<b>[后代传承]</b> 慈母多福。", h:"<b>[实战锦囊]</b> 多运动。保持活力。" } },
-        "正印格": { name: "📜 圣贤导师", tags: ["SR","守护"], icon: "🙏", slogan: "但行好事，莫问前程。", male: { c:"<b>[天赋传记]</b> 贵人扶持。工作清闲福利好。你是团队的精神领袖，大家有了困难都喜欢找你。", w:"<b>[财富逻辑]</b> 清贵之财。名声换钱。", l:"<b>[情感羁绊]</b> 依赖伴侣。习惯被照顾。", k:"<b>[后代传承]</b> 知书达理。", h:"<b>[实战锦囊]</b> 防肥胖。多动少宅。" }, female: { c:"<b>[天赋传记]</b> 岁月静好。职场白月光。", w:"<b>[财富逻辑]</b> 天生福命。总有人为你买单。", l:"<b>[情感羁绊]</b> 被宠溺。嫁得好。", k:"<b>[后代传承]</b> 亲子如友。", h:"<b>[实战锦囊]</b> 排湿。代谢较慢。" } },
+        "正印格": { name: "📜 圣贤导师", tags: ["SR","守护"], icon: "🙏", slogan: "但行好事，莫问前程。", male: { c:"<b>[天赋传记]</b> 贵人扶持。工作清闲福利好。你是团队的精神领袖，大家有了困难都喜欢找你。", w:"<b>[财富逻辑]</b> 清贵之财。名声换钱，适合版税分红。", l:"<b>[情感羁绊]</b> 依赖伴侣。习惯被照顾。", k:"<b>[后代传承]</b> 知书达理。", h:"<b>[实战锦囊]</b> 防肥胖。多动少宅。" }, female: { c:"<b>[天赋传记]</b> 岁月静好。职场白月光。", w:"<b>[财富逻辑]</b> 天生福命。总有人为你买单。", l:"<b>[情感羁绊]</b> 被宠溺。嫁得好是大概率事件。", k:"<b>[后代传承]</b> 亲子如友。", h:"<b>[实战锦囊]</b> 排湿。代谢较慢。" } },
         "偏印格": { name: "👽 异次元行者", tags: ["SR","洞察"], icon: "👁️", slogan: "真相掌握在少数人手中。", male: { c:"<b>[天赋传记]</b> 独门绝技。冷门领域的权威，思维怪异。适合侦探、研发、玄学。", w:"<b>[财富逻辑]</b> 副业之王。靠特殊技能赚钱。", l:"<b>[情感羁绊]</b> 冰山内心。很难真正走进你的心。", k:"<b>[后代传承]</b> 代沟。教育方式另类。", h:"<b>[实战锦囊]</b> 防抑郁。多晒太阳。" }, female: { c:"<b>[天赋传记]</b> 灵感直觉。心理学家或玄学天才。", w:"<b>[财富逻辑]</b> 变现独特。", l:"<b>[情感羁绊]</b> 边缘恋情。容易接受非主流感情。", k:"<b>[后代传承]</b> 丁克倾向。喜欢自由。", h:"<b>[实战锦囊]</b> 神经痛。注意休息。" } },
         "偏财格": { name: "🎩 商业大亨", tags: ["SSR","横财"], icon: "💎", slogan: "钱是赚出来的。", male: { c:"<b>[天赋传记]</b> 资源整合专家。善交际，眼光独到。适合经商、贸易。", w:"<b>[财富逻辑]</b> 投机获利。敢于冒险。", l:"<b>[情感羁绊]</b> 桃花劫。异性缘太好。", k:"<b>[后代传承]</b> 带见世面。培养孩子的财商。", h:"<b>[实战锦囊]</b> 护肝。少应酬。" }, female: { c:"<b>[天赋传记]</b> 商务公关。长袖善舞。", w:"<b>[财富逻辑]</b> 能赚会花。喜欢奢侈品。", l:"<b>[情感羁绊]</b> 择优。喜欢有能力的男人。", k:"<b>[后代传承]</b> 贵族培养。", h:"<b>[实战锦囊]</b> 防富贵病。" } },
         "阳刃格": { name: "🗡️ 镇国大将", tags: ["SSR","极强"], icon: "⚔️", slogan: "宁为玉碎，不为瓦全。", male: { c:"<b>[天赋传记]</b> 天生的将军。性格刚烈，不怒自威。适合军警、外科医生、体育竞技。", w:"<b>[财富逻辑]</b> 险中求富。不适合存钱，适合置办硬资产。", l:"<b>[情感羁绊]</b> 克妻。需要找一个极其温柔或同样强势的伴侣。", k:"<b>[后代传承]</b> 严厉。孩子多半怕你。", h:"<b>[实战锦囊]</b> 防血光之灾。定期献血。" }, female: { c:"<b>[天赋传记]</b> 巾帼英雄。性格像男孩子，敢作敢当。", w:"<b>[财富逻辑]</b> 独立致富。不靠男人。", l:"<b>[情感羁绊]</b> 晚婚。容易争吵。", k:"<b>[后代传承]</b> 剖腹产概率大。", h:"<b>[实战锦囊]</b> 调理经期。" } },
         "从财格": { name: "💰 陶朱公", tags: ["SSR","富豪"], icon: "🧧", slogan: "顺势而为，富甲一方。", male: { c:"<b>[天赋传记]</b> 审时度势的天才。你懂得顺应大局，借力打力。适合从商、金融。", w:"<b>[财富逻辑]</b> 巨富之命。财气通门户。", l:"<b>[情感羁绊]</b> 惧内。听老婆话会发财。", k:"<b>[后代传承]</b> 继承家业。", h:"<b>[实战锦囊]</b> 富贵病。注意饮食。" }, female: { c:"<b>[天赋传记]</b> 豪门阔太。或者自己就是豪门。", w:"<b>[财富逻辑]</b> 旺夫益子。", l:"<b>[情感羁绊]</b> 嫁入豪门。", k:"<b>[后代传承]</b> 贵子。", h:"<b>[实战锦囊]</b> 保持身材。" } },
-        "从杀格": { name: "⚖️ 权倾天下", tags: ["SSR","权贵"], icon: "🏛️", slogan: "舍身取义，威震四海。", male: { c:"<b>[天赋传记]</b> 极具政治头脑。为了目标可以牺牲一切。适合政界、军界高层。", w:"<b>[财富逻辑]</b> 权钱交易。地位带来财富。", l:"<b>[情感羁绊]</b> 攀附权贵。", k:"<b>[后代传承]</b> 显赫。", h:"<b>[实战锦囊]</b> 压力过大。注意心脏。" }, female: { c:"<b>[天赋传记]</b> 诰命夫人。丈夫极其优秀。", w:"<b>[财富逻辑]</b> 夫荣妻贵。", l:"<b>[情感羁绊]</b> 依附强者。", k:"<b>[后代传承]</b> 精英。", h:"<b>[实战锦囊]</b> 抑郁风险。" } },
-        "杂格": { name: "🌱 潜龙勿用", tags: ["N","潜力"], icon: "🌱", slogan: "时运未到，潜心修炼。", male: { c:"<b>[天赋传记]</b> 多面手。你可能没有特别突出的单一强项，但胜在综合能力不错。适合在中小企业做全能型人才。", w:"<b>[财富逻辑]</b> 勤劳致富。没有暴富的命，只有勤劳的手。", l:"<b>[情感羁绊]</b> 平淡是真。陪伴是最长情的告白。", k:"<b>[后代传承]</b> 平安是福。孩子健康快乐就好。", h:"<b>[实战锦囊]</b> 锻炼身体。身体是革命的本钱。" }, female: { c:"<b>[天赋传记]</b> 踏实后勤。认真负责，虽然不出彩但让人无比放心。", w:"<b>[财富逻辑]</b> 节俭持家。财富是省出来的。", l:"<b>[情感羁绊]</b> 依靠老实人。安稳过完这一生。", k:"<b>[后代传承]</b> 慈母心。为孩子操心多。", h:"<b>[实战锦囊]</b> 保证睡眠。不要思虑过重。" } }
+        "从杀格": { name: "⚖️ 权倾天下", tags: ["SSR","权贵"], icon: "🏛️", slogan: "舍身取义，威震四海。", male: { c:"<b>[天赋传记]</b> 极具政治头脑。为了目标可以牺牲一切。适合政界、军界高层。", w:"<b>[财富逻辑]</b> 权钱交易。地位带来财富。", l:"<b>[情感羁绊]</b> 攀附权贵。", k:"<b>[后代传承]</b> 显赫。", h:"<b>[实战锦囊]</b> 压力过大。注意心脏。" }, female: { c:"<b>[天赋传记]</b> 诰命夫人。丈夫极其优秀。", w:"<b>[财富逻辑]</b> 夫荣妻贵。", l:"<b>[情感羁绊]</b> 依附强者。", k:"<b>[后代传承]</b> 精英。", h:"<b>[实战锦囊]</b> 抑郁风险。" } }
     };
 
     const XIJI_RULES = {
@@ -377,110 +406,166 @@
         return fallback[mzMainGod] || "杂格";
     }
 
+    function getDMDesc(dm, mz) {
+        const season = ["亥","子","丑"].includes(mz) ? "冬" : ["巳","午","未"].includes(mz) ? "夏" : ["寅","卯","辰"].includes(mz) ? "春" : "秋";
+        const nature = {
+            '甲': '参天大树，生于'+season+'季。'+(season==='春'?'生机勃勃':'气势需养'),
+            '乙': '花草之木，生于'+season+'季。'+(season==='冬'?'需火暖局':'柔韧有余'),
+            '丙': '太阳之火，生于'+season+'季。'+(season==='冬'?'温暖人间':'光芒万丈'),
+            '丁': '灯烛之火，生于'+season+'季。'+(season==='夜'?'辉映星河':'内敛深沉'),
+            '戊': '城墙之土，生于'+season+'季。'+(season==='夏'?'厚重燥热':'稳如泰山'),
+            '己': '田园之土，生于'+season+'季。'+(season==='春'?'包含万物':'卑湿需火'),
+            '庚': '斧钺之金，生于'+season+'季。'+(season==='秋'?'锐利无比':'需火锻炼'),
+            '辛': '珠玉之金，生于'+season+'季。'+(season==='冬'?'金白水清':'温润秀气'),
+            '壬': '江河之水，生于'+season+'季。'+(season==='冬'?'奔腾不息':'需土堤防'),
+            '癸': '雨露之水，生于'+season+'季。'+(season==='夏'?'滋润万物':'柔情似水')
+        };
+        return nature[dm] || "日元中和";
+    }
+
     function startScan() {
-        if (typeof Lunar === 'undefined') return alert("核心组件加载失败，请检查网络！");
+        if (typeof Lunar === 'undefined') return alert("⚠️ 核心组件加载失败，请检查网络连接！");
         const timeStr = document.getElementById('birth-input').value;
         if (!timeStr) return alert("请选择以降生时刻");
         
-        // 显示加载
-        const loader = document.getElementById('loader');
-        loader.style.display = 'inline-block';
-        
-        setTimeout(() => {
-            try {
-                const date = new Date(timeStr);
-                const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
-                const lunar = solar.getLunar();
-                const baziObj = lunar.getEightChar();
-                baziObj.setSect(2);
+        try {
+            const date = new Date(timeStr);
+            const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+            const lunar = solar.getLunar();
+            const baziObj = lunar.getEightChar();
+            baziObj.setSect(2);
 
-                const pillars = [
-                    {t:'年', g:baziObj.getYearGan().toString(), z:baziObj.getYearZhi().toString()},
-                    {t:'月', g:baziObj.getMonthGan().toString(), z:baziObj.getMonthZhi().toString()},
-                    {t:'日', g:baziObj.getDayGan().toString(), z:baziObj.getDayZhi().toString()},
-                    {t:'时', g:baziObj.getTimeGan().toString(), z:baziObj.getTimeZhi().toString()}
-                ];
+            const pillars = [
+                {t:'年', g:baziObj.getYearGan().toString(), z:baziObj.getYearZhi().toString()},
+                {t:'月', g:baziObj.getMonthGan().toString(), z:baziObj.getMonthZhi().toString()},
+                {t:'日', g:baziObj.getDayGan().toString(), z:baziObj.getDayZhi().toString()},
+                {t:'时', g:baziObj.getTimeGan().toString(), z:baziObj.getTimeZhi().toString()}
+            ];
 
-                const dm = pillars[2].g, mz = pillars[1].z;
-                const cmd = calcCommander(lunar, mz);
-                
-                // 调候激活
-                const isWinter = ["亥","子","丑"].includes(mz);
-                const isSummer = ["巳","午","未"].includes(mz);
-                const hasFire = pillars.some(p => WUXING_MAP[p.g]==='火' || WUXING_MAP[p.z]==='火');
-                const hasWater = pillars.some(p => WUXING_MAP[p.g]==='水' || WUXING_MAP[p.z]==='水');
-                
-                let actStatus = "", actDesc = "";
-                let isActivated = false;
+            const dm = pillars[2].g, mz = pillars[1].z;
+            const cmd = calcCommander(lunar, mz);
+            
+            // 调候激活
+            const isWinter = ["亥","子","丑"].includes(mz);
+            const isSummer = ["巳","午","未"].includes(mz);
+            const hasFire = pillars.some(p => WUXING_MAP[p.g]==='火' || WUXING_MAP[p.z]==='火');
+            const hasWater = pillars.some(p => WUXING_MAP[p.g]==='水' || WUXING_MAP[p.z]==='水');
+            
+            let actStatus = "", actDesc = "";
+            let isActivated = false;
 
-                if ((WUXING_MAP[dm]==='金' && isWinter && hasFire) || 
-                    (WUXING_MAP[dm]==='木' && isSummer && hasWater) ||
-                    (WUXING_MAP[dm]==='土' && isWinter && hasFire)) {
-                    isActivated = true;
-                    actStatus = "🔥 紫气东来 · 格局变贵";
-                    actDesc = "局中见调候“奢侈品”，犹如寒金遇火、焦木逢雨。原格力量瞬间激活，层次倍增。";
-                }
+            if ((WUXING_MAP[dm]==='金' && isWinter && hasFire) || 
+                (WUXING_MAP[dm]==='木' && isSummer && hasWater) ||
+                (WUXING_MAP[dm]==='土' && isWinter && hasFire)) {
+                isActivated = true;
+                actStatus = "🔥 紫气东来 · 格局变贵";
+                actDesc = "局中见调候“奢侈品”，犹如寒金遇火、焦木逢雨。原格力量瞬间激活，层次倍增，名利双收之象。";
+            }
 
-                const climate = { special: null };
-                if (WUXING_MAP[dm]==='金' && isWinter) climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官') ? "金水伤官" : "金水食神";
-                if (WUXING_MAP[dm]==='木' && ["寅","卯"].includes(mz) && hasFire) climate.special = "木火通明";
-                if (WUXING_MAP[dm]==='木' && (isSummer || mz==='巳') && hasWater && pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官' && hasRoot(p.g, pillars))) climate.special = "伤官配印";
+            const climate = { special: null };
+            if (WUXING_MAP[dm]==='金' && isWinter) climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官') ? "金水伤官" : "金水食神";
+            if (WUXING_MAP[dm]==='木' && ["寅","卯"].includes(mz) && hasFire) climate.special = "木火通明";
+            if (WUXING_MAP[dm]==='木' && (isSummer || mz==='巳') && hasWater && pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官' && hasRoot(p.g, pillars))) climate.special = "伤官配印";
 
-                const pattern = determinePattern(climate, pillars, dm, mz, cmd);
-                
-                // 渲染
-                const resultArea = document.getElementById('result-area');
-                resultArea.style.display = 'block';
-                
-                if (isActivated) {
-                    document.getElementById('activation-area').style.display = 'block';
-                    safeSetText('activation-status', actStatus);
-                    safeSetText('activation-desc', actDesc);
-                } else {
-                    document.getElementById('activation-area').style.display = 'none';
-                }
+            const pattern = determinePattern(climate, pillars, dm, mz, cmd);
+            
+            // 渲染
+            const resultArea = document.getElementById('result-area');
+            resultArea.style.display = 'block';
+            
+            if (isActivated) {
+                document.getElementById('activation-area').style.display = 'block';
+                safeSetText('activation-status', actStatus);
+                safeSetText('activation-desc', actDesc);
+            } else {
+                document.getElementById('activation-area').style.display = 'none';
+            }
 
-                renderUI(pattern, cmd, dm, pillars);
-                resultArea.scrollIntoView({ behavior: 'smooth' });
+            renderUI(pattern, cmd, dm, mz, pillars);
+            renderWuxingBar(pillars);
 
-            } catch (e) { alert("鑑定中断：" + e.message); console.error(e); }
-            finally { loader.style.display = 'none'; }
-        }, 300);
+            resultArea.scrollIntoView({ behavior: 'smooth' });
+
+        } catch (e) { alert("鑑定中断：" + e.message); console.error(e); }
     }
 
-    function renderUI(key, cmd, dm, pillars) {
+    function renderUI(key, cmd, dm, mz, pillars) {
         const data = GAME_DB[key] || GAME_DB["杂格"];
-        const xiji = XIJI_RULES[key] || XIJI_RULES["杂格"];
+        // 喜忌规则兜底
+        const xijiMap = {
+            "金水伤官": { joy:["火","木"], taboo:["水","土"] },
+            "金水食神": { joy:["火","木"], taboo:["土","水"] },
+            "木火通明": { joy:["火","木"], taboo:["金","水"] },
+            "伤官配印": { joy:["水","木"], taboo:["土","火"] },
+            "伤官合杀": { joy:["印","比"], taboo:["财","官"] },
+            "食神制杀": { joy:["食","印"], taboo:["财","杀"] },
+            "杀印相生": { joy:["印","比"], taboo:["财"] },
+            "正财格": { joy:["比","印"], taboo:["财","官"] },
+            "偏财格": { joy:["官","食"], taboo:["比","劫"] },
+            "正官格": { joy:["财","印"], taboo:["伤","杀"] },
+            "七杀格": { joy:["食","印"], taboo:["财"] },
+            "正印格": { joy:["官","比"], taboo:["财"] },
+            "偏印格": { joy:["偏财"], taboo:["食"] },
+            "食神格": { joy:["财","比"], taboo:["枭"] },
+            "伤官格": { joy:["印","财"], taboo:["官"] },
+            "伤官生财": { joy:["财","伤"], taboo:["印","比"] },
+            "食神生财": { joy:["财","食"], taboo:["枭","官"] },
+            "建禄格": { joy:["财","官"], taboo:["比","印"] },
+            "月劫格": { joy:["官","食"], taboo:["比","印"] },
+            "阳刃格": { joy:["杀","食"], taboo:["财"] },
+            "杂格": { joy:["扶抑"], taboo:["失衡"] }
+        };
+        const xiji = xijiMap[key] || xijiMap["杂格"];
         const detail = data[currentGender === 1 ? 'male' : 'female'];
 
         safeSetText('role-icon', data.icon);
         safeSetText('role-title', data.name);
         safeSetText('role-sub', data.slogan);
-        safeSetHTML('role-tags', `<span class="tag ssr">${key}</span><span class="tag">位阶:${data.tags[0]}</span>`);
+        safeSetHTML('role-tags', `<span class="tag ssr">${key}</span>`);
         safeSetHTML('siling-text', `${cmd.commander} <small>(${SHISHEN_MAP[dm][cmd.commander] || '真神'})</small> · 掌权 ${cmd.diffDays} 日`);
         
-        safeSetText('pattern-reason', xiji.desc);
+        safeSetText('pattern-reason', `此局定为【${key}】。${detail.c.replace(/<[^>]*>/g, '').substring(0, 50)}...`);
         safeSetText('txt-joy', xiji.joy.join(" / "));
         safeSetText('txt-taboo', xiji.taboo.join(" / "));
+        safeSetText('dm-desc', getDMDesc(dm, mz));
 
         let p_html = '';
         pillars.forEach(p => {
             const god = p.t.includes('日') ? '元神' : (SHISHEN_MAP[dm][p.g] || "");
             const colorG = WX_COLOR_DATA[WUXING_MAP[p.g]] || '#333';
             const colorZ = WX_COLOR_DATA[WUXING_MAP[p.z]] || '#333';
-            // 去除“柱”字显示
-            const displayTitle = p.t; 
-            p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${colorG}">${p.g}</div><div class="ofuda-char" style="color:${colorZ}">${p.z}</div><div class="ofuda-head">${displayTitle}</div><span class="ofuda-cs">${CHANGSHENG_TABLE[p.g][p.z] || ""}</span></div>`;
+            // 显示藏干
+            const hiddens = HIDDEN_STEMS[p.z] || [];
+            let hiddenStr = "";
+            hiddens.forEach(h => {
+                hiddenStr += `<span class="hidden-gan">${h}${SHISHEN_MAP[dm][h]}</span>`;
+            });
+
+            p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${colorG}">${p.g}</div><div class="ofuda-char" style="color:${colorZ}">${p.z}</div><div class="ofuda-head">${p.t}</div><div class="hidden-stems">${hiddenStr}</div></div>`;
         });
         document.getElementById('pillars-box').innerHTML = p_html;
 
         document.getElementById('guide-content').innerHTML = `
-            <div class="guide-item"><div class="guide-title">⚔️ 事业才情</div><div class="guide-text">${detail.c}</div></div>
-            <div class="guide-item"><div class="guide-title">💰 财富气数</div><div class="guide-text">${detail.w}</div></div>
-            <div class="guide-item"><div class="guide-title">💞 情缘羁绊</div><div class="guide-text">${detail.l}</div></div>
-            <div class="guide-item"><div class="guide-title">🌱 后代传承</div><div class="guide-text">${detail.k}</div></div>
-            <div class="guide-item"><div class="guide-title">🛡️ 实战锦囊</div><div class="guide-text">${detail.h}</div></div>
+            <div class="guide-item"><div class="guide-title">⚔️ 事业与才情</div><div class="guide-text">${detail.c}</div></div>
+            <div class="guide-item"><div class="guide-title">💰 财富与气数</div><div class="guide-text">${detail.w}</div></div>
+            <div class="guide-item"><div class="guide-title">💞 情缘与羁绊</div><div class="guide-text">${detail.l}</div></div>
+            <div class="guide-item"><div class="guide-title">🌱 后代与传承</div><div class="guide-text">${detail.k}</div></div>
+            <div class="guide-item"><div class="guide-title">🛡️ 实战与锦囊</div><div class="guide-text">${detail.h}</div></div>
         `;
+    }
+
+    function renderWuxingBar(pillars) {
+        const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
+        pillars.forEach(p => { counts[WUXING_MAP[p.g]]++; counts[WUXING_MAP[p.z]]++; });
+        const total = 8;
+        let barHtml = "";
+        for(let w in counts) {
+            if(counts[w] > 0) {
+                const pct = (counts[w] / total) * 100;
+                barHtml += `<div class="wx-segment" style="width:${pct}%; background:${WX_COLOR_DATA[w]};"></div>`;
+            }
+        }
+        document.getElementById('wx-bar').innerHTML = barHtml;
     }
 
     function setGender(v, el) { 
