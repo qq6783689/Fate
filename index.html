@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap');
 
         :root {
-            --china-red: #a22d29;      /* 朱砂暖红 */
+            --china-red: #a22d29;      /* 朱砂红 */
             --paper-cream: #f4f1de;    /* 宣纸淡黄 */
             --ink-black: #1a1a1a;      /* 浓墨 */
             --gold-accent: #b8860b;    /* 描金 */
@@ -39,10 +39,6 @@
             content: '鑑定'; position: absolute; right: -55px; top: 10px;
             font-size: 0.9rem; background: var(--china-red); color: #fff;
             padding: 4px 6px; border-radius: 2px; line-height: 1; font-family: sans-serif;
-        }
-        .sys-badge { 
-            font-size: 0.8rem; color: var(--china-red); border: 1px solid var(--china-red);
-            padding: 2px 15px; margin-top: 15px; display: inline-block; letter-spacing: 2px;
         }
 
         /* 国风卡片 */
@@ -81,7 +77,7 @@
 
         #result-area { display: none; }
 
-        /* 鉴定报告样式 */
+        /* 鉴定头 */
         .role-header { text-align: center; margin-bottom: 40px; }
         .role-icon { font-size: 4.5rem; display: block; margin-bottom: 15px; }
         .role-title { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; color: var(--china-red); margin: 0; }
@@ -121,6 +117,7 @@
             font-family: 'Ma Shan Zheng', cursive; font-size: 1.8rem; color: var(--china-red); 
             margin-bottom: 20px; display: flex; align-items: center; gap: 15px;
         }
+        .guide-title::before { content: '🏮'; font-size: 1.2rem; }
         .guide-text { font-size: 1.15rem; line-height: 2.2; color: #333; text-align: justify; }
         .guide-text b { color: var(--china-red); background: rgba(162, 45, 41, 0.05); padding: 0 4px; }
 
@@ -131,7 +128,7 @@
 
 <div class="container">
     <div class="header">
-        <h1>天命鉴定</h1><br>
+        <h1>降生鑑定</h1><br>
         <div class="sys-badge">格局为体 · 调候为用</div>
     </div>
 
@@ -165,7 +162,7 @@
             </div>
 
             <div class="siling-bar">
-                📜 当令真神：<span id="siling-text">...</span>
+                🏮 当令真神：<span id="siling-text">...</span>
             </div>
 
             <div class="pillars" id="pillars-box"></div>
@@ -192,18 +189,39 @@
 
 <script>
     let currentGender = 1;
-    const WX_GAME_COLOR = { '金':'#b8860b', '木':'#2d6a4f', '水':'#0077b6', '火':'#bc4749', '土':'#7f5539' };
+    const WX_COLOR_DATA = { '金':'#b8860b', '木':'#2d6a4f', '水':'#0077b6', '火':'#bc4749', '土':'#7f5539' };
     const WUXING_MAP = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水','子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
     const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
     
-    // --- 文案全量恢复 (800字+深度解析) ---
+    const SILING_RULES = {
+        '寅': [['戊',7], ['丙',7], ['甲',16]], '卯': [['甲',10], ['乙',20]], '辰': [['乙',9], ['癸',3], ['戊',18]],
+        '巳': [['戊',5], ['庚',9], ['丙',16]], '午': [['丙',10], ['己',9], ['丁',11]], '未': [['丁',9], ['乙',3], ['己',18]],
+        '申': [['戊',7], ['壬',7], ['庚',16]], '酉': [['庚',10], ['辛',20]], '戌': [['辛',9], ['丁',3], ['戊',18]],
+        '亥': [['戊',7], ['甲',5], ['壬',18]], '子': [['壬',10], ['癸',20]], '丑': [['癸',9], ['辛',3], ['己',18]]
+    };
+
+    const ROOT_MAP = {'甲':['寅','卯','亥','辰','未'], '乙':['卯','寅','辰','未','亥'], '丙':['巳','午','寅','戌'], '丁':['午','巳','未','戌','寅'], '戊':['辰','戌','丑','未','巳','午'], '己':['丑','未','辰','戌','午','巳'], '庚':['申','酉','巳','丑','戌'], '辛':['酉','申','丑','戌','巳'], '壬':['亥','子','申','辰'], '癸':['子','亥','辰','丑','申']};
+
+    // --- 文案全量库 ---
     const GAME_DB = {
         "金水伤官": { name: "❄️ 寒冰剑仙", tags: ["SSR","权谋"], icon: "🗡️", slogan: "金寒水冷，唯火暖心。", male: { c:"[天赋] 权谋洞察。你拥有极高的智商，思维如冰刀切开复杂核心。适合政治、高管。局中见火即为显贵。", w:"[财富] 随位而生。财运伴随地位。切忌贪腐，水清易察。", l:"[羁绊] 需暖阳伴侣。对方开朗大方方能融化你的冰冷。", k:"[传承] 严父。孩子多精英。", h:"[锦囊] 必用火。多晒太阳。" }, female: { c:"[天赋] 冰山美人。适合外交、演艺。才华需被看见。", w:"[财富] 夫荣妻贵。火为夫星亦为喜，成就丈夫即成就自己。", l:"[羁绊] 独喜官星。外表高冷挑剔，内心极其渴望宠爱。", k:"[传承] 贵子。生孩子能显著提升运势。", h:"[锦囊] 暖宫驱寒，少吃生冷。" } },
         "金水食神": { name: "🌊 灵动智者", tags: ["SSR","清贵"], icon: "🌊", slogan: "金白水清，才思泉涌。", male: { c:"[天赋] 内秀乾坤。学术或创作天才。才华内敛，成就于深耕。见火则名扬天下。", w:"[财富] 技艺生财。靠不可替代的专业壁垒致富。", l:"[羁绊] 灵魂知己。追求精神高度契合。", k:"[传承] 聪慧麒麟。父子如友。", h:"[锦囊] 补火暖局。" }, female: { c:"[天赋] 脱俗白月光。在文化、教育行业能自成大家。", w:"[财富] 小确幸不断。一生衣食无忧。", l:"[羁绊] 寒谷回春。温柔是终极杀器。", k:"[传承] 子女孝顺。晚年福厚。", h:"[锦囊] 保持心情愉快。" } },
-        "伤官配印": { name: "🔮 智者神启", tags: ["UR","智慧"], icon: "📜", slogan: "烈火烹油，深水静流。", male: { c:"<b>[天赋核心：文理兼修]</b><br>你拥有爆发性的才华和深厚的底蕴。适合学术、传媒高层。你是能把冲动转化为动力，把直觉升华为理论的顶级人才。在团队中你是定海神针。", w:"<b>[财富逻辑：名望变现]</b><br>财富是靠“养”出来的。最适合靠名声、知识产权获利。忌土贪财，保持专业高度则财富自追。你的财富层次取决于你的名气高度。", l:"<b>[情感羁绊：精神支持]</b><br>伴侣是你的救命稻草，能在焦躁时让你冷静。婚姻是“既济”之美，彼此成就。对方多为有文化、懂你内心的知己。", k:"<b>[后代传承]</b><br>孩子聪明贵气，多在科技界有所成就。", h:"<b>[实战锦囊]</b><br>防心火过旺导致失眠。保持平和，是你通往巅峰的唯一路径。" }, female: { c:"<b>[天赋核心：贵气才女]</b><br>兼具灵气与稳重。你是那种能在高压中保持优雅的女性。适合管理、策划或教育，具备极强的社会地位潜力。", w:"<b>[财富逻辑：贵人财]</b><br>一辈子贵人运极强。不建议投机，适合长线和品牌经营。生活质量随年龄持续提升。你是典型的“越老越尊贵”。", l:"<b>[情感羁绊：帮夫运]</b><br>你能平衡事业与家庭，帮夫运极强。伴侣多为儒雅君子。由于你自身的高要求，家庭通常具有极高的社会声望。", k:"<b>[后代传承]</b><br>孩子灵气逼人，母子关系不仅是血缘，更是灵魂导师。", h:"<b>[实战锦囊]</b><br>滋阴调理，少熬夜。心情平和是最好的美容。" } },
+        "伤官配印": { 
+            name: "🔮 智者神启 (Oracle)", tags: ["UR","智慧","水火既济"], icon: "📜", slogan: "烈火烹油，深水静流。", 
+            male: { c:"<b>[天赋核心：降维打击]</b><br>你拥有爆发性的才华和深厚的底蕴。你是能把冲动转化为动力，把直觉升华为理论的顶级人才。适合战略咨询、科研、或文化领袖。由于印星的存在，你比普通的伤官格更有分寸感，做事有始有终。", w:"<b>[财富逻辑：知识致富]</b><br>你的财富来自于你的名望、专利、或不可替代的智力劳动。忌贪财坏印。只要你能守住底线，保持在专业领域的高度，财富会随着名气自动追随你。", l:"<b>[情感羁绊：精神知音]</b><br>你需要一个能接住你“梗”且能给你情绪兜底的伴侣。对方通常儒雅有礼。婚姻是你的能量补充站，良好的感情能激发你更大的创作欲。", k:"<b>[后代传承]</b><br>书香门第，孩子聪明且早慧。你会更注重培养孩子的逻辑与修养。", h:"<b>[实战锦囊]</b><br>注意预防神经衰弱。思虑过重是你的弱点，建议多进行冥想。多接触水源，能平复体内的燥气。" }, 
+            female: { c:"<b>[天赋核心：才女底蕴]</b><br>伤官佩印的女命，气质极为高贵。你既有灵动的才华，又有含蓄的修养。在职场上，你是那种不显山露水但掌握核心权力的人。由于调候得力，你比常人更懂得如何化解冲突。", w:"<b>[财富逻辑：贵人财]</b><br>你一生贵人缘极佳，总是在关键时刻有人提携。不建议投机，适合长线和品牌经营。你的生活质量会随着年龄持续提升，属于典型的“越老越尊贵”。", l:"<b>[情感羁绊：帮夫运]</b><br>你能很好地平衡事业与家庭，帮夫运极强。由于你的睿智，伴侣会非常听从你的建议。婚姻生活通常处于一种高度的精神默契中。", k:"<b>[后代传承]</b><br>子女灵气逼人，善解人意。你不仅是他们的母亲，更是他们的人生导师。", h:"<b>[实战锦囊]</b><br>保养秘诀在于“滋阴”。多补水，保持心态平和，就是最好的美容方式。注意眼部和头部的压力缓解。" } 
+        },
+        "正财格": { name: "🧱 勤勉筑梦师", tags: ["R+","稳健"], icon: "🧱", slogan: "一砖一瓦，聚沙成塔。", male: { c:"[天赋] 踏实实干家。不信暴富信努力，实业中坚。", w:"[财富] 复利致富。靠时间滚雪球，晚年富足。", l:"[羁绊] 宠妻狂魔。工资上交，模范丈夫。", k:"[传承] 朴实正直。教导节约。", h:"[锦囊] 防劳损，别透支身体。" }, female: { c:"[天赋] 精细管家。细节控，老板放心的定海神针。", w:"[财富] 理财极稳。家庭的CFO，存款是安全感。", l:"[羁绊] 贤惠。偶尔需要制造一点浪漫。", k:"[传承] 学业抓得紧。防压力过大。", h:"[锦囊] 多温补，防气血虚。" } },
         "伤官合杀": { name: "⚡ 危机终结者", tags: ["SSR","权谋"], icon: "🗡️", slogan: "混乱是阶梯，权谋是利刃。", male: { c:"[天赋] 天生危机公关专家。在极端环境下展现统治力。", w:"[财富] 爆发力强。通过整合资源和解决棘手问题获利。", l:"[羁绊] 相爱相杀。伴侣多为有主见的玫瑰。", k:"[传承] 叛逆天才。教育宜导不宜堵。", h:"[锦囊] 预防偏头痛，多去水边。" }, female: { c:"[天赋] 铁娘子气场。职场大女主，靠实力拼出权威。", w:"[财富] 名气提款机。适合置办不动产长治久安。", l:"[羁绊] 慕强。喜欢比自己强的硬汉。", k:"[传承] 精英。孩子多能继承家业。", h:"[锦囊] 少生气，护肝胆。" } },
-        "正财格": { name: "🐜 勤勉筑梦师", tags: ["R+","稳健"], icon: "🧱", slogan: "一砖一瓦，聚沙成塔。", male: { c:"[天赋] 踏实实干家。不信暴富信努力，实业中坚。", w:"[财富] 复利致富。靠时间滚雪球，晚年富足。", l:"[羁绊] 宠妻狂魔。工资上交，模范丈夫。", k:"[传承] 朴实正直。教导节约。", h:"[锦囊] 防劳损，别透支身体。" }, female: { c:"[天赋] 精细管家。细节控，老板放心的定海神针。", w:"[财富] 理财极稳。家庭的CFO，存款是安全感。", l:"[羁绊] 贤惠。偶尔需要制造一点浪漫。", k:"[传承] 学业抓得紧。防压力过大。", h:"[锦囊] 多温补，防气血虚。" } },
         "杂格": { name: "🌱 潜龙勿用", tags: ["N","潜力"], icon: "🌱", slogan: "时运未到，潜心修炼。", male: { c:"[天赋] 综合平衡。大器晚成，适合在稳定机构深耕。", w:"[财富] 勤劳小康。靠专业手艺过日子。", l:"[羁绊] 平淡是真。生活波澜不惊。", k:"[传承] 健康平安是最大的福。", h:"[锦囊] 坚持锻炼身体。" }, female: { c:"[天赋] 踏实后勤。认真负责让人放心。", w:"[财富] 省出来的财富。持家有道。", l:"[羁绊] 依靠老实人。安稳一生。", k:"[传承] 慈母。为孩子操心多。", h:"[锦囊] 保证充足睡眠。" } }
+    };
+
+    const XIJI_RULES = {
+        "金水伤官": { desc: "冬金寒冷，必见火暖局。喜官杀、财星。忌金水过旺加寒。", joy: ["🔥 火 (调候)","🌲 木 (财星)"], taboo: ["💧 水 (伤官)","⛰️ 土 (埋金)"] },
+        "金水食神": { desc: "金白水清，才华内敛。喜火调候，忌土克食。水冷金寒需火救。", joy: ["🔥 火 (暖局)","🌲 木 (通关)"], taboo: ["⛰️ 土 (夺食)","💧 水 (沉沦)"] },
+        "伤官配印": { desc: "此局伤官有力且见水印护身。犹如利剑入鞘，文武兼备。印星不仅制伤，更起调候之功，使格局由浊变清。", joy: ["💧 水 (印星)","🌲 木 (帮身)"], taboo: ["⛰️ 土 (坏印)","🔥 火 (燥热)"] },
+        "正财格": { desc: "财星当令。身强任财，身弱喜印比。步步为营之富。", joy: ["💪 比劫","📜 印星"], taboo: ["💰 财 (身弱)","🗡️ 官杀"] },
+        "杂格": { desc: "格局未清，五行杂居。全凭扶抑调候，需看日主底蕴。", joy: ["扶助用神"], taboo: ["克害用神"] }
     };
 
     // --- 算法核心 ---
@@ -212,9 +230,12 @@
         return pillars.some(p => roots.includes(p.z));
     }
 
+    // 修复后的司令计算函数
     function calcCommander(lunar, mz) {
         const pj = lunar.getPrevJie();
-        const diff = Math.floor((lunar.getSolar().getCalendar().getTime() - pj.getSolar().getCalendar().getTime()) / (1000 * 60 * 60 * 24));
+        const birthDate = lunar.getSolar().getCalendar(); // 获取JS Date对象
+        const jieDate = pj.getSolar().getCalendar();
+        const diff = Math.floor((birthDate.getTime() - jieDate.getTime()) / (1000 * 60 * 60 * 24));
         const rules = SILING_RULES[mz];
         let commander = rules[rules.length-1][0]; 
         let sum = 0;
@@ -227,7 +248,7 @@
         const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
         const gods = stems.map(s => SHISHEN_MAP[dm][s]);
 
-        // 1. 杀星制化组合优先
+        // 1. 杀星优先
         if (gods.includes("七杀")) {
             if (gods.includes("伤官")) return "伤官合杀";
             if (gods.includes("食神") && stems.some(s => SHISHEN_MAP[dm][s]==="食神" && hasRoot(s, pillars))) return "食神制杀";
@@ -256,7 +277,7 @@
 
     function startScan() {
         const timeStr = document.getElementById('birth-input').value;
-        if (!timeStr) return alert("请选择时刻");
+        if (!timeStr) return alert("请选择以降生时刻");
         try {
             const date = new Date(timeStr);
             const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
@@ -265,37 +286,38 @@
             baziObj.setSect(2);
 
             const pillars = [
-                {t:'年', g:baziObj.getYearGan().toString(), z:baziObj.getYearZhi().toString()},
-                {t:'月', g:baziObj.getMonthGan().toString(), z:baziObj.getMonthZhi().toString()},
-                {t:'日', g:baziObj.getDayGan().toString(), z:baziObj.getDayZhi().toString()},
-                {t:'时', g:baziObj.getTimeGan().toString(), z:baziObj.getTimeZhi().toString()}
+                {t:'年柱', g:baziObj.getYearGan().toString(), z:baziObj.getYearZhi().toString()},
+                {t:'月柱', g:baziObj.getMonthGan().toString(), z:baziObj.getMonthZhi().toString()},
+                {t:'日柱', g:baziObj.getDayGan().toString(), z:baziObj.getDayZhi().toString()},
+                {t:'时柱', g:baziObj.getTimeGan().toString(), z:baziObj.getTimeZhi().toString()}
             ];
 
             const dm = pillars[2].g, mz = pillars[1].z;
             const cmd = calcCommander(lunar, mz);
             
-            // 调候判定 (体用核心)
+            // 调候判定与力量激活
             const isWinter = ["亥","子","丑"].includes(mz);
             const isSummer = ["巳","午","未"].includes(mz);
             const hasFire = pillars.some(p => WUXING_MAP[p.g]==='火' || WUXING_MAP[p.z]==='火');
             const hasWater = pillars.some(p => WUXING_MAP[p.g]==='水' || WUXING_MAP[p.z]==='水');
             
-            let actStatus = "原格支撑 · 气场稳固";
-            let actDesc = "格局基本功扎实，需后天努力引动潜能。";
+            let actStatus = "原格支撑 · 稳固中和";
+            let actDesc = "格局基本功扎实，虽无特殊激活，但胜在平稳长久。";
 
             if ((WUXING_MAP[dm]==='金' && isWinter && hasFire) || 
                 (WUXING_MAP[dm]==='木' && isSummer && hasWater) ||
                 (WUXING_MAP[dm]==='土' && isWinter && hasFire)) {
-                actStatus = "🔥 调候得力 · 格局变贵";
-                actDesc = "局中见调候真神，如金器遇火、焦木逢雨，原格被瞬间激活，属于“自带加持”的顶级配置。";
+                actStatus = "🔥 调候大成 · 激活显贵";
+                actDesc = "局中见调候奢侈品，如寒金遇火炼、焦木逢雨润，原格力量瞬间跃迁，主社会层次极高。";
             } else if ((isWinter || isSummer) && !hasFire && !hasWater) {
-                actStatus = "⚠️ 调候缺失 · 格局受限";
-                actDesc = "原格虽成，但气象偏枯（寒湿或焦燥），犹如明珠蒙尘，需火暖或水润方能破局。";
+                actStatus = "⚠️ 调候缺失 · 明珠蒙尘";
+                actDesc = "原格虽成，但气象偏枯（寒湿或焦燥），需后天环境强力补齐火水之气方能完全破局。";
             }
 
-            const climate = { special: null, advice: null };
+            const climate = { special: null };
             if (WUXING_MAP[dm]==='金' && isWinter) climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官') ? "金水伤官" : "金水食神";
-            if (WUXING_MAP[dm]==='木' && mz === '巳' && hasWater) climate.special = "伤官配印";
+            // 夏木配印逻辑：
+            if (WUXING_MAP[dm]==='木' && isSummer && hasWater && pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官' && hasRoot(p.g, pillars))) climate.special = "伤官配印";
 
             const pattern = determinePattern(climate, pillars, dm, mz, cmd);
             
@@ -305,7 +327,7 @@
             renderUI(pattern, cmd, dm, pillars);
             drawChart(pillars);
             document.getElementById('result-area').scrollIntoView({ behavior: 'smooth' });
-        } catch (e) { alert("中断：" + e.message); }
+        } catch (e) { console.error(e); alert("中断报告：" + e.message); }
     }
 
     function renderUI(key, cmd, dm, pillars) {
@@ -315,9 +337,9 @@
 
         document.getElementById('role-icon').innerText = data.icon;
         document.getElementById('role-title').innerText = data.name;
-        document.getElementById('role-slogan').innerText = data.slogan;
+        document.getElementById('role-sub').innerText = data.slogan;
         document.getElementById('role-tags').innerHTML = `<span class="tag ssr">${key}</span><span class="tag">阶位:${data.tags[0]}</span>`;
-        document.getElementById('siling-text').innerText = `${cmd.commander} (${SHISHEN_MAP[dm][cmd.commander]}) · 掌权 ${cmd.diffDays} 日`;
+        document.getElementById('siling-text').innerText = `${cmd.commander} (${SHISHEN_MAP[dm][cmd.commander]}) · 执政 ${cmd.diffDays} 日`;
         
         document.getElementById('pattern-reason').innerText = xiji.desc;
         document.getElementById('txt-joy').innerText = xiji.joy.join(" ");
@@ -326,12 +348,12 @@
         let p_html = '';
         pillars.forEach(p => {
             const god = p.t.includes('日') ? '元神' : (SHISHEN_MAP[dm][p.g] || "");
-            p_html += `<div class="ofuda"><div class="ofuda-head">${p.t}</div><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${WX_GAME_COLOR[WUXING_MAP[p.g]]}">${p.g}</div><div class="ofuda-char" style="color:${WX_GAME_COLOR[WUXING_MAP[p.z]]}">${p.z}</div><span class="ofuda-cs">${CHANGSHENG_TABLE[p.g][p.z] || ""}</span></div>`;
+            p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${WX_COLOR_DATA[WUXING_MAP[p.g]]}">${p.g}</div><div class="ofuda-char" style="color:${WX_COLOR_DATA[WUXING_MAP[p.z]]}">${p.z}</div><div class="ofuda-head">${p.t}</div><span class="ofuda-cs">${CHANGSHENG_TABLE[p.g][p.z] || ""}</span></div>`;
         });
         document.getElementById('pillars-box').innerHTML = p_html;
 
         document.getElementById('guide-content').innerHTML = `
-            <div class="guide-item"><div class="guide-title">⚔️ 事业与天赋</div><div class="guide-text">${detail.c}</div></div>
+            <div class="guide-item"><div class="guide-title">🏮 事业与天赋</div><div class="guide-text">${detail.c}</div></div>
             <div class="guide-item"><div class="guide-title">💰 财富与逻辑</div><div class="guide-text">${detail.w}</div></div>
             <div class="guide-item"><div class="guide-title">💞 情感与羁绊</div><div class="guide-text">${detail.l}</div></div>
             <div class="guide-item"><div class="guide-title">🌱 后代与传承</div><div class="guide-text">${detail.k}</div></div>
