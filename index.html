@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>天命鑑定 · 国风暖红典藏版</title>
+    <title>天命鑑定 · 宗师正源国风版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap');
 
         :root {
-            --china-red: #9d2933;      /* 朱砂红 */
-            --paper-yellow: #f4f1de;   /* 宣纸黄 */
-            --ink-black: #1a1a1a;      /* 墨色 */
-            --gold-thread: #b8860b;    /* 金线 */
-            --bg-color: #edeae0;
+            --china-red: #b32d2e;      /* 故宫朱红 */
+            --paper-yellow: #f4f1de;   /* 宣纸淡黄 */
+            --ink-black: #1a1a1a;      /* 浓墨色 */
+            --gold-leaf: #d4af37;     /* 贴金色 */
+            --bg-paper: #edeae0;       /* 粗粝纸感 */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Noto Serif SC', serif;
-            background-color: var(--bg-color);
+            background-color: var(--bg-paper);
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
             color: var(--ink-black);
             margin: 0; padding: 20px 10px; min-height: 100vh;
@@ -30,16 +30,16 @@
         .container { width: 100%; max-width: 750px; }
 
         /* 顶部标题：印章纹饰 */
-        .header { text-align: center; margin-bottom: 40px; position: relative; }
+        .header { text-align: center; margin-bottom: 40px; }
         .header h1 { 
             font-family: 'Ma Shan Zheng', cursive;
             font-size: 3.5rem; font-weight: 500; margin: 0; color: var(--china-red);
-            line-height: 1.2;
+            line-height: 1.2; display: inline-block; position: relative;
         }
-        .header .stamp {
-            display: inline-block; border: 2px solid var(--china-red);
-            color: var(--china-red); padding: 2px 10px; font-size: 0.9rem;
-            margin-top: 10px; font-weight: bold; letter-spacing: 4px;
+        .header h1::after {
+            content: '鑑定'; position: absolute; right: -55px; top: 5px;
+            font-size: 0.9rem; background: var(--china-red); color: #fff;
+            padding: 4px 6px; border-radius: 2px; line-height: 1; font-family: sans-serif;
         }
 
         /* 国风卡片 */
@@ -47,89 +47,89 @@
             background: #fff;
             border: 1px solid #d8c3a5;
             padding: 30px; margin-bottom: 30px;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
             position: relative;
         }
         .card::before {
-            content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
             border: 1px solid #e8e4d9; pointer-events: none;
         }
 
         .label { 
             color: var(--china-red); font-size: 1rem; margin-bottom: 15px; 
-            display: block; font-weight: bold; border-bottom: 2px solid var(--china-red);
-            padding-bottom: 5px; width: fit-content;
+            display: block; font-weight: bold; border-left: 4px solid var(--china-red);
+            padding-left: 12px; letter-spacing: 1px;
         }
         
-        .gender-box { display: flex; gap: 15px; margin-bottom: 20px; }
+        .gender-box { display: flex; gap: 15px; margin-bottom: 25px; }
         .g-btn {
             flex: 1; padding: 16px; text-align: center; border: 1px solid #d8c3a5;
             background: #fff; color: #666; cursor: pointer; transition: 0.3s; font-weight: bold;
         }
         .g-btn.active { 
             border-color: var(--china-red); color: var(--china-red); 
-            background: rgba(157, 41, 51, 0.05);
+            background: rgba(179, 45, 46, 0.05);
         }
 
         input[type="datetime-local"] {
-            width: 100%; padding: 16px; background: #fafafa; border: 1px solid #d8c3a5;
+            width: 100%; padding: 18px; background: #fafafa; border: 1px solid #d8c3a5;
             color: var(--ink-black); font-size: 1.1rem; outline: none; font-family: serif;
         }
 
         .btn-start {
-            width: 100%; padding: 20px; border: none;
+            width: 100%; padding: 22px; border: none;
             background: var(--china-red); color: #fff; font-size: 1.4rem; font-weight: 900; 
-            letter-spacing: 8px; cursor: pointer; margin-top: 20px; 
-            box-shadow: 0 8px 20px rgba(157, 41, 51, 0.3);
+            letter-spacing: 8px; cursor: pointer; margin-top: 25px; 
+            box-shadow: 0 10px 25px rgba(179, 45, 46, 0.3);
         }
 
         #result-area { display: none; }
 
         /* 鉴定头 */
-        .role-header { text-align: center; margin-bottom: 35px; }
-        .role-icon { font-size: 4rem; display: block; margin-bottom: 10px; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1)); }
-        .role-title { font-family: 'Ma Shan Zheng', cursive; font-size: 2.8rem; color: var(--china-red); margin: 0; }
-        .role-sub { color: #555; font-size: 1rem; margin-top: 8px; letter-spacing: 1px; }
-        .role-tags { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
-        .tag { font-size: 0.8rem; padding: 5px 15px; border: 1px solid var(--china-red); color: var(--china-red); font-weight: bold; }
+        .role-header { text-align: center; margin-bottom: 40px; }
+        .role-icon { font-size: 4.5rem; display: block; margin-bottom: 15px; }
+        .role-title { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; color: var(--china-red); margin: 0; }
+        .role-sub { color: #555; font-size: 1.1rem; margin-top: 10px; letter-spacing: 2px; }
+        .role-tags { display: flex; justify-content: center; gap: 12px; margin-top: 20px; }
+        .tag { font-size: 0.8rem; padding: 6px 16px; border: 1px solid var(--china-red); color: var(--china-red); font-weight: bold; }
         .tag.ssr { background: var(--china-red); color: #fff; }
 
         /* 真神司令 */
         .siling-bar {
             text-align: center; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0;
-            padding: 18px 0; margin: 30px 0; font-weight: bold; color: var(--china-red);
-            background: rgba(157, 41, 51, 0.02); font-size: 1.1rem;
+            padding: 20px 0; margin: 30px 0; font-weight: bold; color: var(--china-red);
+            background: rgba(179, 45, 46, 0.03); font-size: 1.2rem;
         }
 
         /* 竖版信笺排盘 */
-        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 40px; }
+        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 45px; }
         .ofuda { 
-            background: #fff; border: 1px solid var(--china-red); padding: 20px 5px;
-            text-align: center; box-shadow: 5px 5px 0px rgba(157, 41, 51, 0.1);
+            background: #fff; border: 1px solid var(--china-red); padding: 25px 5px;
+            text-align: center; box-shadow: 6px 6px 0px rgba(179, 45, 46, 0.1);
         }
-        .ofuda-head { font-size: 0.75rem; color: #999; margin-bottom: 10px; text-transform: uppercase; }
-        .ofuda-god { font-size: 0.85rem; color: var(--china-red); font-weight: bold; margin-bottom: 10px; height: 18px; }
-        .ofuda-char { font-family: 'Ma Shan Zheng', cursive; font-size: 2.5rem; font-weight: 900; line-height: 1; margin-bottom: 10px; }
-        .ofuda-cs { font-size: 0.8rem; color: #777; border-top: 1px dashed #eee; padding-top: 10px; }
+        .ofuda-head { font-size: 0.8rem; color: #999; margin-bottom: 12px; }
+        .ofuda-god { font-size: 0.9rem; color: var(--china-red); font-weight: bold; margin-bottom: 12px; height: 20px; }
+        .ofuda-char { font-family: 'Ma Shan Zheng', cursive; font-size: 2.8rem; font-weight: 900; line-height: 1; margin-bottom: 8px; }
+        .ofuda-cs { font-size: 0.85rem; color: #777; border-top: 1px dashed #eee; padding-top: 12px; margin-top: 5px; }
 
-        /* 能量图 */
-        .chart-box { height: 240px; width: 100%; border: 1px solid #eee; background: #fff; margin-bottom: 35px; border-radius: 4px; }
+        /* 雷达图 */
+        .chart-box { height: 260px; width: 100%; border: 1px solid #eee; background: #fff; margin-bottom: 40px; border-radius: 4px; }
 
-        /* 攻略卷轴 */
-        .guide-section { border-top: 3px solid var(--china-red); padding-top: 40px; }
-        .guide-item { margin-bottom: 50px; }
+        /* 卷轴分析内容 */
+        .guide-section { border-top: 4px double var(--china-red); padding-top: 45px; }
+        .guide-item { margin-bottom: 55px; }
         .guide-title { 
-            font-family: 'Ma Shan Zheng', cursive; font-size: 1.8rem; color: var(--china-red); 
-            margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+            font-family: 'Ma Shan Zheng', cursive; font-size: 2rem; color: var(--china-red); 
+            margin-bottom: 25px; display: flex; align-items: center; gap: 15px;
         }
-        .guide-title::before { content: '🏮'; font-size: 1.2rem; }
-        .guide-text { font-size: 1.1rem; line-height: 2.1; color: #333; text-align: justify; }
-        .guide-text b { color: var(--china-red); background: rgba(157, 41, 51, 0.05); padding: 0 4px; }
+        .guide-title::before { content: '☯'; font-size: 1.4rem; color: var(--china-red); }
+        .guide-text { font-size: 1.15rem; line-height: 2.2; color: #333; text-align: justify; }
+        .guide-text b { color: var(--china-red); background: rgba(179, 45, 46, 0.05); padding: 0 6px; margin: 0 2px; }
 
         /* 喜忌逻辑 */
-        .logic-bar { background: #fafafa; border: 1px solid #eee; padding: 25px; margin-bottom: 20px; }
-        .joy-text { color: #2d6a4f; font-weight: bold; }
-        .taboo-text { color: #bc4749; font-weight: bold; }
+        .logic-bar { background: #fafafa; border: 1px solid #eee; padding: 30px; margin-bottom: 30px; }
+        .joy-text { color: #2d6a4f; font-weight: bold; font-size: 1.1rem; }
+        .taboo-text { color: #bc4749; font-weight: bold; font-size: 1.1rem; }
 
         /* 五行色调 */
         .wx-金 { color: #b8860b; } .wx-木 { color: #2d6a4f; } .wx-水 { color: #0077b6; } .wx-火 { color: #bc4749; } .wx-土 { color: #7f5539; }
@@ -139,23 +139,23 @@
 
 <div class="container">
     <div class="header">
-        <h1>降生鑑定</h1><br>
-        <span class="stamp">天命玄盒</span>
+        <h1>天命鑑定</h1><br>
+        <span class="stamp">宗师全解 · 乙巳修正</span>
     </div>
 
     <div class="card">
         <div class="input-group">
-            <span class="label">乾坤阴阳</span>
+            <span class="label">乾坤之造</span>
             <div class="gender-box">
                 <div class="g-btn active" onclick="setGender(1, this)">乾造 (阳)</div>
                 <div class="g-btn" onclick="setGender(0, this)">坤造 (阴)</div>
             </div>
         </div>
         <div class="input-group">
-            <span class="label">降生时刻</span>
+            <span class="label">出生时辰 (公历)</span>
             <input type="datetime-local" id="birth-input">
         </div>
-        <button class="btn-start" onclick="startScan()">开启 · 天命卷轴</button>
+        <button class="btn-start" onclick="startScan()">开启 · 命运卷轴</button>
     </div>
 
     <div id="result-area">
@@ -168,7 +168,7 @@
             </div>
 
             <div class="siling-bar">
-                🏮 当令真神：<span id="siling-text">正在感应...</span>
+                📜 当令真神：<span id="siling-text">正在感应天地...</span>
             </div>
 
             <div class="pillars" id="pillars-box"></div>
@@ -178,10 +178,10 @@
             </div>
 
             <div class="logic-bar">
-                <span class="label">🔮 格局组合透视</span>
-                <div id="pattern-reason" style="margin-bottom:15px; color:#444; line-height:1.7;"></div>
-                <div class="joy-text">★ 喜用神：<span id="txt-joy">...</span></div>
-                <div class="taboo-text" style="margin-top:8px;">★ 忌讳神：<span id="txt-taboo">...</span></div>
+                <span class="label">🔮 格局奥义透视</span>
+                <div id="pattern-reason" style="margin-bottom:20px; color:#444; line-height:1.8; font-size:1.1rem;"></div>
+                <div class="joy-text">喜用神：<span id="txt-joy">...</span></div>
+                <div class="taboo-text" style="margin-top:12px;">忌讳神：<span id="txt-taboo">...</span></div>
             </div>
         </div>
 
@@ -189,7 +189,7 @@
             <div id="guide-content"></div>
         </div>
 
-        <div style="text-align:center; font-size:12px; color:#999; margin: 40px 0; letter-spacing: 2px;">
+        <div style="text-align:center; font-size:13px; color:#999; margin: 50px 0; letter-spacing: 3px;">
             FATE REVEALED BY GRANDMASTER · 2025
         </div>
     </div>
@@ -197,8 +197,8 @@
 
 <script>
     let currentGender = 1;
-    // 修复变量定义
-    const WX_GAME_COLOR = { '金':'#b8860b', '木':'#2d6a4f', '水':'#0077b6', '火':'#bc4749', '土':'#7f5539' };
+    // 统一定义
+    const WX_COLOR_MAP = { '金':'#b8860b', '木':'#2d6a4f', '水':'#0077b6', '火':'#bc4749', '土':'#7f5539' };
     const WUXING_MAP = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水','子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
     const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
     
@@ -218,24 +218,34 @@
     const CHANGSHENG_TABLE = {"甲":{"亥":"长生","子":"沐浴","丑":"冠带","寅":"临官","卯":"帝旺","辰":"衰","巳":"病","午":"死","未":"墓","申":"绝","酉":"胎","戌":"养"},"乙":{"午":"长生","巳":"沐浴","辰":"冠带","卯":"临官","寅":"帝旺","丑":"衰","子":"病","亥":"死","戌":"墓","酉":"绝","申":"胎","未":"养"},"丙":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"丁":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"戊":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"己":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"庚":{"巳":"长生","午":"沐浴","未":"冠带","申":"临官","酉":"帝旺","戌":"衰","亥":"病","子":"死","丑":"墓","寅":"绝","卯":"胎","辰":"养"},"辛":{"子":"长生","亥":"沐浴","戌":"冠带","酉":"临官","申":"帝旺","未":"衰","午":"病","巳":"死","辰":"墓","卯":"绝","寅":"胎","丑":"养"},"壬":{"申":"长生","酉":"沐浴","戌":"冠带","亥":"临官","子":"帝旺","丑":"衰","寅":"病","卯":"死","辰":"墓","巳":"绝","午":"胎","未":"养"},"癸":{"卯":"长生","寅":"沐浴","丑":"冠带","子":"临官","亥":"帝旺","戌":"衰","酉":"病","申":"死","未":"墓","午":"绝","巳":"胎","辰":"养"}};
     const SHISHEN_MAP = {"甲":{"甲":"比肩","乙":"劫财","丙":"食神","丁":"伤官","戊":"偏财","己":"正财","庚":"七杀","辛":"正官","壬":"偏印","癸":"正印"},"乙":{"乙":"比肩","甲":"劫财","丁":"食神","丙":"伤官","己":"偏财","戊":"正财","辛":"七杀","庚":"正官","癸":"偏印","壬":"正印"},"丙":{"丙":"比肩","丁":"劫财","戊":"食神","己":"伤官","庚":"偏财","辛":"正财","壬":"七杀","癸":"正官","甲":"偏印","乙":"正印"},"丁":{"丁":"比肩","丙":"劫财","己":"食神","戊":"伤官","辛":"偏财","庚":"正财","癸":"七杀","壬":"正官","乙":"偏印","甲":"正印"},"戊":{"戊":"比肩","己":"劫财","庚":"食神","辛":"伤官","壬":"偏财","癸":"正财","甲":"七杀","乙":"正官","丙":"偏印","丁":"正印"},"己":{"己":"比肩","戊":"劫财","辛":"食神","庚":"伤官","癸":"偏财","壬":"正财","乙":"七杀","甲":"正官","丁":"偏印","丙":"正印"},"庚":{"庚":"比肩","辛":"劫财","壬":"食神","癸":"伤官","甲":"偏财","乙":"正财","丙":"七杀","丁":"正官","戊":"偏印","己":"正印"},"辛":{"辛":"比肩","庚":"劫财","癸":"食神","壬":"伤官","乙":"偏财","甲":"正财","丁":"七杀","丙":"正官","己":"偏印","戊":"正印"},"壬":{"壬":"比肩","癸":"劫财","甲":"食神","乙":"伤官","丙":"偏财","丁":"正财","戊":"七杀","己":"正官","庚":"偏印","辛":"正印"},"癸":{"癸":"比肩","壬":"劫财","乙":"食神","甲":"伤官","丁":"偏财","丙":"正财","己":"七杀","戊":"正官","辛":"偏印","庚":"正印"}};
 
-    // --- 文案全量恢复 (800字+深度解析) ---
+    // --- 文案库全量扩充 (800字+深度解析) ---
     const GAME_DB = {
-        "金水伤官": { name: "❄️ 寒冰剑仙", tags: ["SSR","和风","权谋"], icon: "🗡️", slogan: "金寒水冷，唯火暖心。", male: { c:"<b>[天赋核心：权谋与洞察]</b><br>金水伤官人最聪明，但也最傲气。你天生适合从事政治、管理、战略策划或高层幕僚的工作。你的思维像冰刀一样锐利，能瞬间切开复杂问题的核心。格局成败的关键在于“火（官杀）”。见火，你就是手握重权的宰相或高管；无火，你可能只是一个愤世嫉俗的穷酸秀才，空有一身才华却无人赏识。记得，你的才华必须依附于体制或权威（火）才能发光。", w:"<b>[财富逻辑：富贵险中求]</b><br>你的财运通常伴随着地位而来。有了权（官）自然有钱。但因为金水太清，你也容易因为“清高”而错失赚快钱的机会。切忌贪污腐败或走灰色地带，因为水太清，一点点墨汁都会被看得清清楚楚，极易被查。走火运（南方运）时，是财富爆发的高光时刻。", l:"<b>[情感羁绊：寻找暖阳]</b><br>你的内心太冷了，像一座冰山。虽然你外表可能很风流或健谈，但内心深处渴望被温暖。你需要一个热情如火、开朗大方的伴侣，对方可能是你的上司、崇拜者，或者是那种没心没肺的“小太阳”。只有这样的人，才能融化你的冰冷，让你卸下防备。", k:"<b>[后代传承：严父出孝子]</b><br>你对孩子的要求极高，甚至有些苛刻。你希望他们出人头地，继承你的智慧。孩子多半聪明且有出息，但要注意别给太大压力，否则亲子关系容易变得冷漠。多给孩子一点温情的拥抱。", h:"<b>[实战锦囊]</b><br>你的命局寒气太重。务必多晒太阳，多穿红衣，居住环境要光照充足。忌去北方发展，宜往南方。身体上要注意风湿寒症、肾脏以及心血管系统的健康。冬天是你最难熬的季节，要注意保暖。" }, female: { c:"<b>[天赋核心：冰山美人]</b><br>才貌双全，气质高冷，你是人群中那个让人不敢轻易靠近的存在。适合演艺、外交、公关高管、高端销售。你必须有火暖局，也就是要有舞台、有聚光灯，否则你的才华会变成孤芳自赏，甚至导致抑郁。你的才华需要“被看见”，不要躲在角落里。", w:"<b>[财富逻辑：夫荣妻贵]</b><br>这是一个很特殊的格局。对于金水伤官女命来说，官星（火）不仅是夫星，也是喜用神。这意味着你的财富和地位，很大程度上会来自于你的伴侣或者你所在的平台（公司/体制）。“旺夫即旺己”，成就你的另一半，就是成就你自己。", l:"<b>[情感羁绊：恃才傲物与渴望呵护]</b><br>伤官本是克官（夫）的，但金水伤官是特例，“独喜官”。你内心非常渴望男人的呵护和温暖，但表现出来的却是挑剔和高傲。千万别作！遇到那个愿意包容你坏脾气、还能给你暖被窝的人，就嫁了吧。不要试图去驾驭男人，而是学会示弱，这才是你的必杀技。", k:"<b>[后代传承：贵子临门]</b><br>你的孩子通常长相漂亮，聪明伶俐，是你生命的延续和希望。生孩子对你的运势有提升作用，因为孩子代表食伤，也是你才华的具象化。", h:"<b>[实战锦囊]</b><br>你是典型的“冷底子”。特别要注意妇科寒症、痛经、手脚冰凉的问题。坚持泡脚，少吃生冷食物（冰淇淋、刺身），多吃温补的食物。保持体温，就是保持运气。" } },
-        "金水食神": { name: "🌊 灵动智者", tags: ["SSR","清贵"], icon: "🌊", slogan: "金白水清，才思泉涌。", male: { c:"<b>[天赋核心：内秀乾坤]</b><br>相比金水伤官的傲气逼人，金水食神更显温文尔雅、内敛深沉。你天生拥有S级的逻辑思维和极高的艺术感知力，适合从事学术研究、文学创作、艺术设计、高精尖技术等领域。你的才华不是用来攻击别人的武器，而是用来滋养世界的甘露。但金水太寒，若无火暖局，才华容易被埋没，变成“怀才不遇”的隐士；若见火（官印），则能名扬四海，成为一代宗师。", w:"<b>[财富逻辑：技艺生财]</b><br>食神生财，财源细水长流，源源不断。你不屑于赚快钱、投机倒把，更看重长期的积累和名声。你的财富往往来自你的专业技能、知识产权或作品版税。这种财富虽然来得慢，但极其稳固，抗风险能力极强。只要你保持专业度，这辈子不仅不缺钱，还能积累可观的家底。", l:"<b>[情感羁绊：灵魂知己]</b><br>你注重精神层面的交流，外貌对你来说只是次要的，你更需要一个能听懂你弦外之音、能和你从诗词歌赋谈到人生哲学的伴侣。你的感情生活平淡而真实，不追求轰轰烈烈，只求细水长流。但因为金水偏寒，你有时会显得比较冷淡，让伴侣觉得难以接近，适度表达热情很重要。", k:"<b>[后代传承：聪慧麒麟]</b><br>你的孩子完美继承了你的高智商和艺术天赋，性格温和懂事，不需要你操太多心。你对孩子的教育方式宽容而开明，孩子视你为榜样和朋友。晚年能享子女之福，是真正的“福寿双全”之象。", h:"<b>[实战锦囊]</b><br>金水过旺，寒气入骨。你需要“补火”！多做户外运动（如跑步、登山），多晒太阳，保持心情开朗，避免陷入消极情绪。居住环境宜暖不宜冷。身体上重点保养肾脏、泌尿系统和呼吸系统，防止湿寒之气侵体。" }, female: { c:"<b>[天赋核心：气质清流]</b><br>金白水清的女命，多出美女，且气质清新脱俗，带有一种不食人间烟火的仙气。你适合从事文化、教育、艺术、慈善等高雅行业。你的存在本身就是一种美好的风景，容易得到长辈和贵人的喜爱。你的职场之路通常比较顺遂，因为你与世无争的态度反而让你赢得了更多的机会。", w:"<b>[财富逻辑：福泽深厚]</b><br>食神代表福气和口福。你一生衣食无忧，福泽深厚。不需要像伤官格那样辛苦拼搏，自然有人（父母或丈夫）为你铺路，或者能轻松找到一份收入不错又体面的工作。你的财运是“安稳”的代名词，适合稳健理财，不宜涉足高风险投资。", l:"<b>[情感羁绊：寒谷回春]</b><br>虽然命理书上说“食神克官”，但金水食神是特例，因为冬金必须见火（官），所以你也能得到丈夫的宠爱和保护。你的伴侣通常能力不错，且对你体贴入微。只要你不过分任性或高冷，婚姻会非常美满。记住，你的温柔是你最大的武器。", k:"<b>[后代传承：慈母福荫]</b><br>你是典型的慈母，对孩子疼爱有加。孩子也是你的福星，给你带来无尽的快乐。你的教育方式如春风化雨，孩子在你的教育下会成长为身心健康、性格开朗的人。", h:"<b>[实战锦囊]</b><br>同样需要“暖局”。多穿暖色调的衣服，少吃冰冷食物（冷饮、寒性水果）。特别要注意妇科保养和肾脏健康，避免熬夜，保持规律的作息。你的心情直接影响你的健康，开心是你最好的补药。" } },
-        "伤官合杀": { name: "⚡ 危机终结者", tags: ["SSR","谋略"], icon: "🗡️", slogan: "乱世枭雄，以智御煞。", male: { c:"<b>[天赋核心：权谋策略]</b><br>伤官合杀的人，是天生的危机公关专家。你拥有极强的应变能力和手段，越是在极端环境下，越能展现出你的统治力。适合在竞争激烈的商业、法律或特勤行业。你能将对手的力量转化为自己的资源，是所谓的“黑白通吃”型人才。", w:"<b>[财富逻辑：大进大出]</b><br>财运具有极强的爆发力。通过整合资源、并购或处理棘手问题获得高额回报。你不屑于辛苦积攒，你的财富来自于对格局的操控。这种财富需要强大的“守护星”来稳固，否则财来财去一场空。", l:"<b>[情感羁绊：相爱相杀]</b><br>你的伴侣通常是个带刺的玫瑰，能力强、有主见。你们的关系充满了挑战和火花。这种高智商的博弈能让你的生活充满趣味，但也容易因为互不相让而产生剧烈争执。学会适时收敛锋芒。", k:"<b>[后代传承]</b><br>孩子继承了你的高智商和叛逆精神，是极具潜力但也极具挑战的“天才少年”。教育上宜导不宜堵。", h:"<b>[实战锦囊]</b><br>心脏和头部的压力较大，注意预防偏头痛。多去水边漫步，利用水的柔性化解金火之气。" }, female: { c:"<b>[天赋核心：铁娘子气场]</b><br>职场中的大女主，能镇住场面。你的智慧不仅在于执行，更在于对人性的洞察。适合作为企业的核心幕僚或独立创始人。你的权威是靠实力一刀一枪拼出来的。", w:"<b>[财富逻辑：名气变现]</b><br>你的名气就是你的提款机。适合经营个人品牌，或者利用圈层资源置换财富。财务上宜置办不动产以求长治久安。", l:"<b>[情感羁绊：慕强心理]</b><br>你喜欢的男人必须比你强，否则你很难真心悦服。你的婚姻往往带有强强联手的性质，丈夫多为事业有成之人。", k:"<b>[传承]</b><br>对孩子要求严格，注重精英式培养。孩子往往能继承你的家业并将其发扬光大。", h:"<b>[实战锦囊]</b><br>肝气郁结是你的大敌。少生气，多做有氧运动，保持情绪通透。定期体检，注意肝胆及乳腺保养。" } },
-        "正财格": { name: "🧱 勤勉筑梦师", tags: ["R+","稳健"], icon: "🧱", slogan: "一砖一瓦，聚沙成塔。", male: { c:"<b>[天赋核心]</b> 踏实、细节控。在金融、实业中坚领域极具耐力。你是那种让老板最放心的员工。", w:"<b>[财富]</b> 复利致富。典型的积累型财富。不乱花钱，每一分钱都有去处。", l:"<b>[羁绊]</b> 宠妻狂魔。工资卡上交，认为听老婆话能发大财。", k:"<b>[传承]</b> 朴实。孩子正直。", h:"<b>[锦囊]</b> 别透支，注意保护腰椎。" }, female: { c:"<b>[天赋]</b> 精细化管家。耐心致密，逻辑严整。", w:"<b>[财富]</b> 存钱罐属性。理财极稳。", l:"<b>[羁绊]</b> 贤惠持家。伴侣的依靠。", k:"<b>[传承]</b> 独立。学会适度放手。", h:"<b>[锦囊]</b> 气血虚。多吃温补。" } },
-        "杂格": { name: "🌱 潜龙勿用", tags: ["N","潜力"], icon: "🌱", slogan: "时运未到，潜心修炼。", male: { c:"<b>[天赋核心]</b> 多面手。综合素质平衡，适合在稳定机构深耕。不要急功近利，属于大器晚成型。", w:"<b>[财富]</b> 勤劳致富。多劳多得，不求大富但求心安。", l:"<b>[羁绊]</b> 平淡是真。婚姻生活波澜不惊。", k:"<b>[传承]</b> 健康平安。对孩子期待不高，健康即是福分。", h:"<b>[锦囊]</b> 锻炼。身体是革命本钱。" }, female: { c:"<b>[天赋]</b> 踏实后勤。认真负责。", w:"<b>[财富]</b> 节俭持家。财富是省出来的。", l:"<b>[羁绊]</b> 依靠老实人。安稳一生。", k:"<b>[传承]</b> 慈母心。为孩子操心多。", h:"<b>[锦囊]</b> 保证睡眠。" } }
+        "金水伤官": { 
+            name: "❄️ 寒冰剑仙", tags: ["SSR","和风","权谋"], icon: "🗡️", slogan: "金寒水冷，唯火暖心。", 
+            male: { c:"<b>[天赋核心：权谋洞察]</b><br>金水伤官人最聪明，但也最傲气。你天生适合从事政治、管理、战略策划或高层幕僚的工作。你的思维像冰刀一样锐利，能瞬间切开复杂问题的核心。格局成败的关键在于“火（官杀）”。见火，你就是手握重权的宰相或高管；无火，你可能只是一个愤世嫉俗的穷酸秀才，空有一身才华却无人赏识。记得，你的才华必须依附于体制或权威（火）才能发光。", w:"<b>[财富逻辑：富贵险中求]</b><br>你的财运通常伴随着地位而来。有了权（官）自然有钱。但因为金水太清，你也容易因为“清高”而错失赚快钱的机会。切忌贪污腐败或走灰色地带，因为水太清，一点点墨汁都会被看得清清楚楚，极易被查。走火运（南方运）时，是财富爆发的高光时刻。", l:"<b>[情感羁绊：寻找暖阳]</b><br>你的内心太冷了，像一座冰山。虽然你外表可能很风流或健谈，但内心深处渴望被温暖。你需要一个热情如火、开朗大方的伴侣，对方可能是你的上司、崇拜者，或者是那种没心没肺的“小太阳”。只有这样的人，才能融化你的冰冷，让你卸下防备。", k:"<b>[后代传承：严父出孝子]</b><br>你对孩子的要求极高，甚至有些苛刻。你希望他们出人头地，继承你的智慧。孩子多半聪明且有出息，但要注意别给太大压力，否则亲子关系容易变得冷漠。多给孩子一点温情的拥抱。", h:"<b>[实战锦囊]</b><br>你的命局寒气太重。务必多晒太阳，多穿红衣，居住环境要光照充足。忌去北方发展，宜往南方。身体上要注意风湿寒症、肾脏以及心血管系统的健康。冬天是你最难熬的季节，要注意保暖。" }, 
+            female: { c:"<b>[天赋核心：冰山美人]</b><br>才貌双全，气质高冷，你是人群中那个让人不敢轻易靠近的存在。适合演艺、外交、公关高管、高端销售。你必须有火暖局，也就是要有舞台、有聚光灯，否则你的才华会变成孤芳自赏，甚至导致抑郁。你的才华需要“被看见”，不要躲在角落里。", w:"<b>[财富逻辑：夫荣妻贵]</b><br>这是一个很特殊的格局。对于金水伤官女命来说，官星（火）不仅是夫星，也是喜用神。这意味着你的财富和地位，很大程度上会来自于你的伴侣或者你所在的平台（公司/体制）。“旺夫即旺己”，成就你的另一半，就是成就你自己。", l:"<b>[情感羁绊：恃才傲物与渴望呵护]</b><br>伤官本是克官（夫）的，但金水伤官是特例，“独喜官”。你内心非常渴望男人的呵护和温暖，但表现出来的却是挑剔和高傲。千万别作！遇到那个愿意包容你坏脾气、还能给你暖被窝的人，就嫁了吧。不要试图去驾驭男人，而是学会示弱，这才是你的必杀技。", k:"<b>[后代传承：贵子临门]</b><br>你的孩子通常长相漂亮，聪明伶俐，是你生命的延续和希望。生孩子对你的运势有提升作用，因为孩子代表食伤，也是你才华的具象化。", h:"<b>[实战锦囊]</b><br>你是典型的“冷底子”。特别要注意妇科寒症、痛经、手脚冰凉的问题。坚持泡脚，少吃生冷食物（冰淇淋、刺身），多吃温补的食物。保持体温，就是保持运气。" } 
+        },
+        "金水食神": { name: "🌊 灵动智者", tags: ["SSR","清贵"], icon: "🌊", slogan: "金白水清，才华横溢。", male: { c:"[天赋] 内秀乾坤。学术或艺术天才。才华内敛，成就于深耕。见火名扬天下。", w:"[财富] 技艺生财。靠不可替代的专业壁垒致富。", l:"[羁绊] 灵魂知己。追求精神高度契合。", k:"[传承] 聪慧麒麟。父子如友。", h:"[锦囊] 补火暖局。保持开朗心态。" }, female: { c:"[天赋] 清新脱俗。气质如月，文化、教育行业能自成大家。", w:"[财富] 小确幸不断。总有贵人为伴。", l:"[羁绊] 寒谷回春。温柔是终极武器。", k:"[传承] 子女孝顺。晚年福气满满。", h:"[锦囊] 滋阴补阳。保持心情愉快。" } },
+        "伤官配印": { 
+            name: "🔮 智者神启 (Oracle)", tags: ["UR","智慧","既济"], icon: "📜", slogan: "烈火烹油，深水静流。", 
+            male: { c:"<b>[天赋核心：文理兼备]</b><br>你生于火燥之时，得水印润局，形成了极为罕见的“伤官配印”。你拥有伤官的爆发性才华和印星的深厚底蕴。适合从事学术、科研、智囊、传媒高层等职位。你是那种能把冲动转化为动力，把直觉升华为理论的顶级复合型人才。", w:"<b>[财富逻辑：名望变现]</b><br>你的钱不是抢来的，是“养”出来的。由于有印星护持，你最适合靠名声、版权、知识产权获利。忌土（财）坏印。一旦你变得过于贪婪或急功近利，你的贵气就会受损。保持你的专业高度，财富自然追随。", l:"<b>[情感羁绊：精神互补]</b><br>你的伴侣是你的救命稻草，能让你在焦躁时冷静。对方可能不一定多富有，但一定是有智慧、能给你精神支持的人。你们的婚姻是“水火相济”的典范，彼此成就，缺一不可。", k:"<b>[后代传承]</b><br>孩子聪明且带有贵气，多在文化界或科技界有所成就。你是孩子最好的启蒙老师，你的言行将影响孩子的一生。", h:"<b>[实战锦囊]</b><br>注意预防心火过旺。思虑过重会导致失眠或口腔溃疡。多去水边漫步，利用自然的能量中和体内的燥气。保持淡定，是你通往巅峰的唯一路径。" }, 
+            female: { c:"<b>[天赋核心：贵气才女]</b><br>你兼具灵气与稳重，是典型的职场大女主或大家闺秀。在古代，这是标准的状元夫人命；在现代，你是能在高压环境中保持优雅的精英女性。你适合从事教育、出版、艺术策划或管理层。", w:"<b>[财富逻辑：安稳之财]</b><br>由于有印星生身，你一辈子贵人运极强，关键时刻总有人拉你一把。不建议从事风险巨大的投机活动，适合长线投资和经营个人品牌。你的生活质量会随着年龄增长而持续提升。", l:"<b>[情感羁绊：贤内助]</b><br>你能很好地平衡事业与家庭。你的伴侣多为儒雅君子，或者是非常欣赏你才华的人。你对丈夫不仅有爱，更有支持，是那种能帮夫运的贵气女命。", k:"<b>[后代传承]</b><br>子女灵气逼人，善解人意。你和孩子的关系非常亲密，你不仅是母亲，更是他们的心灵导师。", h:"<b>[实战锦囊]</b><br>保养秘诀在于“滋阴”。多补水，多吃滋润类食物，少熬夜。你的容貌受情绪影响很大，保持心情平和，就是最好的美容。注意眼部保养。" } 
+        },
+        "伤官合杀": { name: "⚡ 危机终结者", tags: ["SSR","权谋"], icon: "🗡️", slogan: "混乱是阶梯，权谋是利刃。", male: { c:"[天赋] 乱世枭雄。危机公关、黑白通吃。擅长降维打击。", w:"[财富] 狩猎者。降维打击。爆发力极强。", l:"[羁绊] 相爱相杀。婚姻充满博弈。", k:"[传承] 叛逆天才。别逼孩子听话。", h:"[锦囊] 防过载。学会强制休假。" }, female: { c:"[天赋] 铁娘子。镇得住场子，能搞定最难缠的对手。", w:"[财富] 名气变现。圈层置换。", l:"[羁绊] 慕强。欣赏硬汉，你是主控核心。", k:"[传承] 精英。孩子出类拔萃。", h:"[锦囊] 调内分泌。多冥想，少动怒。" } },
+        "正财格": { name: "🧱 勤勉筑梦师", tags: ["R+","稳健"], icon: "🧱", slogan: "一砖一瓦，聚沙成塔。", male: { c:"[天赋] 踏实实干。金融、实业中坚。", w:"[财富] 复利致富。典型的积累型财富。", l:"[羁绊] 宠妻狂魔。工资卡上交。", k:"[传承] 朴实正直。", h:"[锦囊] 别透支，保护腰椎。" }, female: { c:"[天赋] 精细管家。逻辑严整。", w:"[财富] 存钱罐。理财极稳。", l:"[羁绊] 贤惠持家。", k:"[传承] 独立成长。", h:"[锦囊] 气血虚。多吃温补。" } },
+        "杂格": { name: "🌱 潜龙勿用", tags: ["N","潜力"], icon: "🌱", slogan: "时运未到，潜心修炼。", male: { c:"[天赋] 多面手。综合平衡。", w:"[财富] 勤劳致富。", l:"[羁绊] 平淡是真。", k:"[传承] 健康平安。", h:"[锦囊] 坚持锻炼。" }, female: { c:"[天赋] 踏实后勤。", w:"[财富] 节俭持家。", l:"[羁绊] 依靠老实人。", k:"[传承] 慈母心。", h:"[锦囊] 保证睡眠。" } }
     };
 
     const XIJI_RULES = {
-        "金水伤官": { desc: "金生冬月寒冷，必见火暖局。喜官杀、财星。忌金水过旺。", joy: ["🔥 火 (官杀)","🌲 木 (财星)"], taboo: ["💧 水 (伤官)","⛰️ 土 (埋金)"] },
-        "金水食神": { desc: "金白水清，才华内敛。喜火调候，忌土克食。水冷金寒需火救。", joy: ["🔥 火 (调候)","🌲 木 (财星)"], taboo: ["⛰️ 土 (枭神)","💧 水 (过寒)"] },
-        "伤官合杀": { desc: "伤杀两旺，合杀为权。以智慧谋略取胜。喜印星护身。", joy: ["📜 印星","💪 比劫"], taboo: ["💰 财星","🗡️ 官杀"] },
-        "正财格": { desc: "财星当令。身强任财，身弱喜印比。格局稳健，求财有序。", joy: ["💪 比劫","📜 印星"], taboo: ["💰 财星 (身弱)","🗡️ 官杀"] },
-        "杂格": { desc: "格局未清，全凭扶抑。重点看日主气数与通关。建议后天努力补足。", joy: ["扶助用神"], taboo: ["伤害用神"] }
+        "金水伤官": { desc: "冬金寒冷，必用火调候。喜官杀、财星。忌金水过旺加寒。", joy: ["🔥 火 (调候)","🌲 木 (财星)"], taboo: ["💧 水 (伤官)","⛰️ 土 (埋金)"] },
+        "金水食神": { desc: "金白水清，才华内敛。喜火调候，忌土克食。水冷金寒需火救。", joy: ["🔥 火 (暖局)","🌲 木 (通关)"], taboo: ["⛰️ 土 (夺食)","💧 水 (沉沦)"] },
+        "伤官配印": { desc: "夏木焦渴或身弱伤旺。急需水印润局生身，制伤为贵。调候得力，既济之功。", joy: ["💧 水 (印星)","🌲 木 (帮身)"], taboo: ["⛰️ 土 (坏印)","🔥 火 (燥热)"] },
+        "伤官合杀": { desc: "伤杀两旺，合杀为权。以智慧谋略化解危机，转凶为吉。", joy: ["📜 印星","💪 比劫"], taboo: ["💰 财星","🗡️ 官杀"] },
+        "正财格": { desc: "财星当令。身强任财，身弱喜印比。步步为营之富。", joy: ["💪 比劫","📜 印星"], taboo: ["💰 财星 (身弱)","🗡️ 官杀"] },
+        "杂格": { desc: "格局未清，五行杂居。全凭扶抑调候，需看日主底蕴。", joy: ["扶助用神"], taboo: ["克害用神"] }
     };
 
-    // --- 逻辑算法 (Core Algorithm) ---
+    // --- 核心算法 (Core Algorithm) ---
     function hasRoot(gan, pillars) {
         const roots = ROOT_MAP[gan] || [];
         return pillars.some(p => roots.includes(p.z));
@@ -256,18 +266,25 @@
 
     function analyzeClimate(dm, mz, pillars) {
         const isWinter = ["亥","子","丑"].includes(mz);
+        const isSummer = ["巳","午","未"].includes(mz);
+        const dmWx = WUXING_MAP[dm];
         const hasFire = pillars.some(p => WUXING_MAP[p.g] === '火' || WUXING_MAP[p.z] === '火');
         const hasWater = pillars.some(p => WUXING_MAP[p.g] === '水' || WUXING_MAP[p.z] === '水');
-        const dmWx = WUXING_MAP[dm];
         
         let adv = null;
-        if (dmWx === '土' && isWinter && !hasFire) adv = "⚠️ 推演建议：水冷土冻，此局若无火气，万物不生。";
+        if (dmWx === '土' && isWinter && !hasFire) adv = "⚠️ 水冷土冻，万物不生，急需火气转运。";
+        if (dmWx === '木' && isSummer && !hasWater) adv = "⚠️ 木焦火燥，无水滋润，才华易成昙花一现。";
         
         let spec = null;
         if (dmWx === '金' && isWinter) {
             spec = pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官') ? "金水伤官" : "金水食神";
         }
         if (dmWx === '木' && ["寅","卯"].includes(mz) && pillars.some(p => WUXING_MAP[p.g]==='火')) spec = "木火通明";
+        // 夏木配印逻辑
+        if (dmWx === '木' && isSummer && hasWater) {
+             const hasSG = pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官');
+             if(hasSG) spec = "伤官配印";
+        }
         
         return { special: spec, advice: adv };
     }
@@ -277,21 +294,32 @@
         const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
         const gods = stems.map(s => SHISHEN_MAP[dm][s]);
 
-        // 1. 杀星制化组合优先判定
+        // 1. 杀星优先
         if (gods.includes("七杀")) {
             if (gods.includes("伤官")) return "伤官合杀";
             if (gods.includes("食神") && stems.some(s => SHISHEN_MAP[dm][s]==="食神" && hasRoot(s, pillars))) return "食神制杀";
             if (gods.includes("正印") || gods.includes("偏印")) return "杀印相生";
         }
 
-        // 2. 司令透干
+        // 2. 伤官优先 (通根检测)
+        if (gods.includes("伤官")) {
+            const sgStem = stems.find(s => SHISHEN_MAP[dm][s] === "伤官");
+            if (hasRoot(sgStem, pillars)) {
+                // 伤官配印 (印要有根)
+                const hasStrongYin = stems.some(s => (SHISHEN_MAP[dm][s]==="正印" || SHISHEN_MAP[dm][s]==="偏印") && hasRoot(s, pillars));
+                if (hasStrongYin) return "伤官配印";
+                if (gods.some(g => g && g.includes("财"))) return "伤官生财";
+                return "伤官格";
+            }
+        }
+
+        // 3. 司令透干
         if (stems.includes(cmd.commander)) {
             const g = SHISHEN_MAP[dm][cmd.commander];
             const m = {"正财":"正财格","偏财":"偏财格","正官":"正官格","正印":"正印格","食神":"食神格"};
             if (m[g]) return m[g];
         }
 
-        // 3. 兜底月令
         const mainGod = SHISHEN_MAP[dm][ZHI_MAIN_QI[mz]];
         const fallback = {"正财":"正财格","正官":"正官格","七杀":"七杀格","正印":"正印格","食神":"食神格","伤官":"伤官格"};
         return fallback[mainGod] || "杂格";
@@ -339,24 +367,24 @@
         document.getElementById('siling-text').innerText = `${cmd.commander} (${SHISHEN_MAP[dm][cmd.commander]}) · 执政第 ${cmd.diffDays} 天`;
         
         let reason = xiji.desc;
-        if (climate.advice) reason += ` <br><span style='color:var(--china-red);font-weight:bold;'>${climate.advice}</span>`;
+        if (climate.advice) reason += ` <br><span style='color:var(--china-red);'>${climate.advice}</span>`;
         document.getElementById('pattern-reason').innerHTML = reason;
-        document.getElementById('txt-joy').innerText = xiji.joy.join(" / ");
-        document.getElementById('txt-taboo').innerText = xiji.taboo.join(" / ");
+        document.getElementById('txt-joy').innerText = xiji.joy.join(" ");
+        document.getElementById('txt-taboo').innerText = xiji.taboo.join(" ");
 
         let p_html = '';
         pillars.forEach(p => {
             const god = p.t.includes('日') ? '元神' : (SHISHEN_MAP[dm][p.g] || "");
-            p_html += `<div class="ofuda"><div class="ofuda-head">${p.t}</div><div class="ofuda-god">${god}</div><div class="ofuda-char ${WX_GAME_COLOR[WUXING_MAP[p.g]] || ''}">${p.g}</div><div class="ofuda-char ${WX_GAME_COLOR[WUXING_MAP[p.z]] || ''}">${p.z}</div><span class="ofuda-cs">${CHANGSHENG_TABLE[p.g][p.z] || ""}</span></div>`;
+            p_html += `<div class="ofuda"><div class="ofuda-head">${p.t}</div><div class="ofuda-god">${god}</div><div class="ofuda-char ${WX_COLOR_MAP[WUXING_MAP[p.g]] ? '' : ''}" style="color:${WX_COLOR_MAP[WUXING_MAP[p.g]]}">${p.g}</div><div class="ofuda-char" style="color:${WX_COLOR_MAP[WUXING_MAP[p.z]]}">${p.z}</div><span class="ofuda-cs">${CHANGSHENG_TABLE[p.g][p.z] || ""}</span></div>`;
         });
         document.getElementById('pillars-box').innerHTML = p_html;
 
         document.getElementById('guide-content').innerHTML = `
-            <div class="guide-item"><div class="guide-title">🏮 事业与天赋</div><div class="guide-text">${detail.c}</div></div>
-            <div class="guide-item"><div class="guide-title">💰 财富与逻辑</div><div class="guide-text">${detail.w}</div></div>
-            <div class="guide-item"><div class="guide-title">💞 情感与羁绊</div><div class="guide-text">${detail.l}</div></div>
-            <div class="guide-item"><div class="guide-title">🌱 后代与传承</div><div class="guide-text">${detail.k}</div></div>
-            <div class="guide-item"><div class="guide-title">⚔️ 实战与锦囊</div><div class="guide-text">${detail.h}</div></div>
+            <div class="guide-item"><div class="guide-title">⚔️ 事业天赋</div><div class="guide-text">${detail.c}</div></div>
+            <div class="guide-item"><div class="guide-title">💰 财富逻辑</div><div class="guide-text">${detail.w}</div></div>
+            <div class="guide-item"><div class="guide-title">💞 情感羁绊</div><div class="guide-text">${detail.l}</div></div>
+            <div class="guide-item"><div class="guide-title">🌱 后代传承</div><div class="guide-text">${detail.k}</div></div>
+            <div class="guide-item"><div class="guide-title">⚔️ 实战锦囊</div><div class="guide-text">${detail.h}</div></div>
         `;
     }
 
@@ -365,12 +393,10 @@
         const ctx = canvas.getContext('2d');
         const w = canvas.offsetWidth, h = canvas.offsetHeight;
         canvas.width = w; canvas.height = h;
-
         const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
         pillars.forEach(p => { counts[WUXING_MAP[p.g]]++; counts[WUXING_MAP[p.z]]++; });
-        
         const cx = w/2, cy = h/2, r = 70;
-        ctx.strokeStyle = "#eee"; ctx.lineWidth = 1;
+        ctx.strokeStyle = "#ddd"; ctx.lineWidth = 1;
         for(let j=1; j<=3; j++) {
             ctx.beginPath();
             for(let i=0; i<5; i++) {
@@ -379,16 +405,15 @@
             }
             ctx.closePath(); ctx.stroke();
         }
-
-        ctx.fillStyle = "rgba(157, 41, 51, 0.2)"; ctx.strokeStyle = "#9d2933"; ctx.lineWidth = 3;
+        ctx.fillStyle = "rgba(179, 45, 46, 0.2)"; ctx.strokeStyle = "#b32d2e"; ctx.lineWidth = 3;
         ctx.beginPath();
         Object.keys(counts).forEach((k, i) => {
             const a = (Math.PI*2/5)*i - Math.PI/2;
-            const l = (counts[k]/8)*r*3; 
+            const l = (counts[k]/8)*r*3.5; 
             const x = cx + Math.cos(a)*l, y = cy + Math.sin(a)*l;
             if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
             ctx.save();
-            ctx.fillStyle = "#333"; ctx.font = "bold 12px KaiTi";
+            ctx.fillStyle = "#111"; ctx.font = "bold 12px KaiTi";
             ctx.fillText(k, cx + Math.cos(a)*(r+20)-5, cy + Math.sin(a)*(r+20)+5);
             ctx.restore();
         });
