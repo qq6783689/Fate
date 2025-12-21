@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>天命鑑定 · 宗师长生典藏版</title>
+    <title>天命鑑定 · 宗师完全版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;700&display=swap');
@@ -27,7 +27,7 @@
             display: flex; justify-content: center;
         }
 
-        .container { width: 100%; max-width: 850px; padding-bottom: 120px; }
+        .container { width: 100%; max-width: 900px; padding-bottom: 120px; }
 
         /* 顶部 Header */
         .header { text-align: center; margin-bottom: 60px; }
@@ -132,18 +132,20 @@
         .hs-gan { font-weight: bold; color: var(--ink-main); font-size: 0.9rem; }
         .hs-god { font-size: 0.75rem; color: #999; transform: scale(0.9); }
 
-        /* 长生状态 (New) */
-        .changsheng-box {
+        /* 自坐长生 */
+        .ofuda-cs {
             margin-top: 15px; padding-top: 10px; border-top: 2px solid var(--china-red);
             font-size: 0.9rem; color: var(--china-red); font-weight: bold; letter-spacing: 1px;
+            display: block;
         }
 
-        /* 五行能量条 */
-        .wuxing-bar-container { margin-bottom: 50px; padding: 25px; background: #fafafa; border: 1px solid #eee; }
-        .wuxing-flex { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 15px; }
-        .wx-segment { height: 100%; transition: width 1s ease; }
-        .wx-legend { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 0.9rem; color: #666; }
-        .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+        /* 调候激活区 */
+        .activation-box {
+            background: #fffbf0; border: 1px dashed var(--gold-accent);
+            padding: 25px; margin-bottom: 40px; text-align: center; display: none;
+        }
+        .activation-title { color: var(--gold-accent); font-weight: bold; font-size: 1.2rem; display: block; margin-bottom: 8px; }
+        .activation-desc { font-size: 1.05rem; color: #555; line-height: 1.6; }
 
         /* 逻辑面板 */
         .logic-panel { 
@@ -151,10 +153,21 @@
             border-left: 5px solid var(--china-red); position: relative;
         }
         .logic-panel::after { content: '奧義'; position: absolute; right: 20px; top: 20px; font-size: 5rem; opacity: 0.05; font-family: 'Ma Shan Zheng'; color: var(--china-red); }
-        .logic-text { font-size: 1.15rem; line-height: 2; color: #333; margin-bottom: 25px; text-align: justify; }
+        .logic-text { 
+            font-size: 1.15rem; line-height: 2; color: #333; margin-bottom: 25px; text-align: justify; 
+            /* 关键修复：允许长文本自动换行，不截断 */
+            white-space: pre-wrap; 
+        }
         .joy-taboo { display: flex; flex-direction: column; gap: 12px; font-size: 1.1rem; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 25px; }
         .joy { color: #276749; font-weight: bold; }
         .taboo { color: #c53030; font-weight: bold; }
+
+        /* 五行能量条 */
+        .wuxing-bar-container { margin-bottom: 50px; padding: 25px; background: #fafafa; border: 1px solid #eee; }
+        .wuxing-flex { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 15px; }
+        .wx-segment { height: 100%; transition: width 1s ease; }
+        .wx-legend { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 0.9rem; color: #666; }
+        .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
 
         /* 传记文章 */
         .guide-section { border-top: 5px double var(--china-red); padding-top: 60px; }
@@ -215,9 +228,9 @@
                 <div id="role-tags" class="role-tags"></div>
             </div>
 
-            <div class="activation-box" id="activation-area" style="background:#fffaf0; border:1px dashed #cfa972; padding:25px; text-align:center; display:none; margin-bottom:40px;">
-                <span id="activation-status" style="color:#cfa972; font-weight:bold; font-size:1.3rem; display:block; margin-bottom:10px;"></span>
-                <div id="activation-desc" style="color:#555; line-height:1.7;"></div>
+            <div class="activation-box" id="activation-area">
+                <span class="activation-title" id="activation-status"></span>
+                <div class="activation-desc" id="activation-desc"></div>
             </div>
 
             <div class="siling-bar">
@@ -269,6 +282,7 @@
     // 1. 核心全局字典 (Global Constants)
     // ==========================================
     let currentGender = 1;
+    // 🛡️ 防崩卫士：安全操作DOM
     function safeSetText(id, text) { const el = document.getElementById(id); if (el) el.innerText = text; }
     function safeSetHTML(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
     function safeSetStyle(id, prop, val) { const el = document.getElementById(id); if (el) el.style[prop] = val; }
@@ -285,16 +299,16 @@
     
     const ROOT_MAP = {'甲':['寅','卯','亥','辰','未'], '乙':['卯','寅','辰','未','亥'], '丙':['巳','午','寅','戌'], '丁':['午','巳','未','戌','寅'], '戊':['辰','戌','丑','未','巳','午'], '己':['丑','未','辰','戌','午','巳'], '庚':['申','酉','巳','丑','戌'], '辛':['酉','申','丑','戌','巳'], '壬':['亥','子','申','辰'], '癸':['子','亥','辰','丑','申']};
     
-    // 自坐长生表
+    // 长生表 (用于显示自坐状态)
     const CHANGSHENG_TABLE = {"甲":{"亥":"长生","子":"沐浴","丑":"冠带","寅":"临官","卯":"帝旺","辰":"衰","巳":"病","午":"死","未":"墓","申":"绝","酉":"胎","戌":"养"},"乙":{"午":"长生","巳":"沐浴","辰":"冠带","卯":"临官","寅":"帝旺","丑":"衰","子":"病","亥":"死","戌":"墓","酉":"绝","申":"胎","未":"养"},"丙":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"丁":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"戊":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"己":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"庚":{"巳":"长生","午":"沐浴","未":"冠带","申":"临官","酉":"帝旺","戌":"衰","亥":"病","子":"死","丑":"墓","寅":"绝","卯":"胎","辰":"养"},"辛":{"子":"长生","亥":"沐浴","戌":"冠带","酉":"临官","申":"帝旺","未":"衰","午":"病","巳":"死","辰":"墓","卯":"绝","寅":"胎","丑":"养"},"壬":{"申":"长生","酉":"沐浴","戌":"冠带","亥":"临官","子":"帝旺","丑":"衰","寅":"病","卯":"死","辰":"墓","巳":"绝","午":"胎","未":"养"},"癸":{"卯":"长生","寅":"沐浴","丑":"冠带","子":"临官","亥":"帝旺","戌":"衰","酉":"病","申":"死","未":"墓","午":"绝","巳":"胎","辰":"养"}};
 
     // ==========================================
-    // 2. 文案库 (传记体深度扩充)
+    // 2. 文案库 (传记体深度扩充 - 1500字量级)
     // ==========================================
     const GAME_DB = {
         "金水伤官": { 
             name: "❄️ 寒冰剑仙 (Frost Blade)", tags: ["SSR","极贵"], icon: "🗡️", slogan: "金寒水冷，唯火暖心。", 
-            male: { c:"<b>[天赋传记]</b> 金水伤官者，乃是天地间最锋利的“思考机器”。你的脑力如深渊般不可测，思维如冰刀切开复杂核心。你天生适合政治高层、战略策划、或高精尖技术领域。你的智慧不是温吞的，而是带有侵略性的、颠覆性的。局中若见丁火暖局，即为“金白水清，贵不可言”，主名动天下，异路功名。若无火气，则才华流于孤芳自赏，容易成为愤世嫉俗的隐士。", w:"<b>[财富逻辑]</b> 随位而生。你的财运通常伴随着你的社会地位而来。你对财富的眼光精准而毒辣，适合从事高净值理财、并购或危机公关。切忌走灰色地带，因为水清易察，一丁点墨汁都会让你陷入官非。走南方火运时，是你财富爆发的高光时刻。", l:"<b>[情感羁绊]</b> 内心如冰山，外表或健谈或风流，实则极难动情。你需要一个“小太阳”型的伴侣，对方的开朗与热情是你生命的救赎。对方多为你的崇拜者，能融化你的冰冷。你的婚姻带有很强的“宿命感”，要么孤独终老，要么遇到那个能点燃你灵魂的人。", k:"<b>[后代传承]</b> 孩子聪明过人，多为学霸精英。但由于你过于严厉和高标准，亲子关系可能稍显冷淡。建议多进行温情教育，不要把职场的一套带回家。孩子会继承你的高智商，但也可能继承你的冷漠。", h:"<b>[实战锦囊]</b> 必用火调候。多穿红衣，宜向南方发展。注意预防风湿、呼吸系统寒疾以及抑郁情绪。多晒太阳，保持内心的温度。你的身体需要温暖，你的灵魂更需要温暖。" }, 
+            male: { c:"<b>[天赋传记]</b> 金水伤官者，乃是天地间最锋利的“思考机器”。你的脑力如深渊般不可测，思维如冰刀切开复杂核心。你天生适合政治高层、战略策划、或高精尖技术领域。你的智慧不是温吞的，而是带有侵略性的、颠覆性的。局中若见丁火暖局，即为“金白水清，贵不可言”，主名动天下，异路功名。若无火气，则才华流于孤芳自赏，容易成为愤世嫉俗的隐士。你生来就是要打破旧秩序的，你的眼神中总带着审视和批判。", w:"<b>[财富逻辑]</b> 随位而生。你的财运通常伴随着你的社会地位而来。你对财富的眼光精准而毒辣，适合从事高净值理财、并购或危机公关。切忌走灰色地带，因为水清易察，一丁点墨汁都会让你陷入官非。走南方火运时，是你财富爆发的高光时刻。你的钱财往往来得快，去得也快，需要配置不动产来锁住财气。", l:"<b>[情感羁绊]</b> 内心如冰山，外表或健谈或风流，实则极难动情。你需要一个“小太阳”型的伴侣，对方的开朗与热情是你生命的救赎。对方多为你的崇拜者，能融化你的冰冷。你的婚姻带有很强的“宿命感”，要么孤独终老，要么遇到那个能点燃你灵魂的人。", k:"<b>[后代传承]</b> 孩子聪明过人，多为学霸精英。但由于你过于严厉和高标准，亲子关系可能稍显冷淡。建议多进行温情教育，不要把职场的一套带回家。孩子会继承你的高智商，但也可能继承你的冷漠。", h:"<b>[实战锦囊]</b> 必用火调候。多穿红衣，宜向南方发展。注意预防风湿、呼吸系统寒疾以及抑郁情绪。多晒太阳，保持内心的温度。你的身体需要温暖，你的灵魂更需要温暖。" }, 
             female: { c:"<b>[天赋传记]</b> 冰山美人。才貌双全，气质清冽脱俗。在公关、演艺或文化行业，你是不战而屈人之兵的女神。你的才华需要“舞台”来点亮，你的存在本身就是一种无言的压力。你适合走高冷路线，越是保持距离，越能吸引资源。", w:"<b>[财富逻辑]</b> 夫荣妻贵。火为夫星不仅是爱人，更是你的命中真神。成就伴侣的事业，能成倍反馈你的财富。典型的“贵妇”格局，生活品质极高。你适合掌管家庭财政大权，因为你冷静理智，不会乱花钱。", l:"<b>[情感羁绊]</b> 独喜官星呵护。外表高冷挑剔，内心极其渴望被强大的男人征服。遇到能包容你坏脾气的人，便是天作之合。不要试图驾驭对方，而是学会分享光芒。你的爱情是一场征服与被征服的游戏。", k:"<b>[传承]</b> 子女灵动秀气。生孩子对你的运势有“破冰”之功，能让你的性格变得柔软。孩子是你生命中的暖流。", h:"<b>[锦囊]</b> 暖宫驱寒，少食生冷。多泡脚，保持体温即是保住运势。你的身体比较寒凉，要注意气血的保养。多喝红糖姜茶，多做艾灸。" } 
         },
         "伤官配印": { 
@@ -560,6 +574,7 @@
             const god = p.t.includes('日') ? '元神' : (SHISHEN_MAP[dm][p.g] || "");
             const colorG = WX_COLOR_DATA[WUXING_MAP[p.g]] || '#333';
             const colorZ = WX_COLOR_DATA[WUXING_MAP[p.z]] || '#333';
+            
             // 显示藏干
             const hiddens = HIDDEN_STEMS[p.z] || [];
             let hiddenStr = "";
@@ -567,7 +582,10 @@
                 hiddenStr += `<div class="hs-row"><span class="hs-gan" style="color:${WX_COLOR_DATA[WUXING_MAP[h]]}">${h}</span><span class="hs-god">${SHISHEN_MAP[dm][h]}</span></div>`;
             });
 
-            p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${colorG}">${p.g}</div><div class="ofuda-char" style="color:${colorZ}">${p.z}</div><div class="ofuda-head">${p.t}</div><div class="hidden-stems">${hiddenStr}</div></div>`;
+            // 长生状态
+            const cs = CHANGSHENG_TABLE[p.g][p.z];
+
+            p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${colorG}">${p.g}</div><div class="ofuda-char" style="color:${colorZ}">${p.z}</div><div class="ofuda-head">${p.t}</div><div class="hidden-stems">${hiddenStr}</div><div class="ofuda-cs">自坐${cs}</div></div>`;
         });
         document.getElementById('pillars-box').innerHTML = p_html;
 
