@@ -3,194 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>天命鑑定 · 宗师全显典藏版</title>
+    <title>天命鑑定 · 宗师列传终极版</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;700&display=swap');
 
         :root {
             --china-red: #8e1818;      /* 故宫深红 */
-            --paper-bg: #f7f6f2;       /* 宣纸灰白 */
-            --ink-main: #2b2b2b;       /* 徽墨 */
+            --paper-bg: #fdfbf7;       /* 极品宣纸 */
+            --ink-main: #1a1a1a;       /* 浓墨 */
+            --ink-light: #555;         /* 淡墨 */
             --gold-accent: #cfa972;    /* 沉金 */
-            --border-color: #dcd6cb;
-            --wood: #3a7ca5; --fire: #d64045; --earth: #9c6644; --metal: #e9c46a; --water: #2a9d8f;
+            --border-color: #e0d6c9;
+            --wood: #2d6a4f; --fire: #c0392b; --earth: #a0522d; --metal: #d4ac0d; --water: #1f618d;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Noto Serif SC', serif;
+            font-family: 'Noto Serif SC', 'Source Han Serif SC', serif;
             background-color: #eee;
             background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
             color: var(--ink-main); margin: 0; padding: 40px 15px; min-height: 100vh;
             display: flex; justify-content: center;
+            line-height: 1.8;
         }
 
-        .container { width: 100%; max-width: 900px; padding-bottom: 120px; }
+        .container { width: 100%; max-width: 900px; padding-bottom: 150px; }
 
-        /* 顶部 Header */
-        .header { text-align: center; margin-bottom: 60px; }
+        /* ---------------- Header ---------------- */
+        .header { text-align: center; margin-bottom: 70px; }
         .header h1 { 
-            font-family: 'Ma Shan Zheng', cursive; font-size: 4rem; margin: 0; 
-            color: var(--china-red); letter-spacing: 8px; line-height: 1.2;
-            text-shadow: 2px 2px 0px rgba(142, 24, 24, 0.1);
+            font-family: 'Ma Shan Zheng', cursive; font-size: 4.5rem; margin: 0; 
+            color: var(--china-red); letter-spacing: 10px; line-height: 1.2;
+            text-shadow: 3px 3px 0px rgba(142, 24, 24, 0.05);
         }
         .header .sub-title {
-            font-size: 1rem; color: #888; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;
-            display: inline-block; padding: 8px 30px; margin-top: 20px; letter-spacing: 5px; 
+            font-size: 1.1rem; color: #888; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc;
+            display: inline-block; padding: 8px 30px; margin-top: 25px; letter-spacing: 6px; 
             text-transform: uppercase; font-weight: bold;
         }
 
-        /* 卡片通用 */
+        /* ---------------- Card ---------------- */
         .card {
             background: var(--paper-bg); border: 1px solid #dcdcdc;
-            padding: 40px; margin-bottom: 40px; border-radius: 2px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.04); position: relative;
+            padding: 50px; margin-bottom: 50px; border-radius: 4px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.05); position: relative;
         }
         .card::before {
-            content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px;
+            content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px;
             border: 1px solid rgba(0,0,0,0.05); pointer-events: none;
         }
 
-        /* 输入区 */
+        /* ---------------- Input ---------------- */
         .label { 
-            color: var(--china-red); font-size: 1.1rem; margin-bottom: 15px; 
+            color: var(--china-red); font-size: 1.2rem; margin-bottom: 15px; 
             display: block; font-weight: bold; font-family: 'Ma Shan Zheng', cursive; letter-spacing: 2px;
         }
-        .gender-box { display: flex; gap: 20px; margin-bottom: 30px; }
+        .gender-box { display: flex; gap: 20px; margin-bottom: 35px; }
         .g-btn {
-            flex: 1; padding: 18px; text-align: center; border: 1px solid #ccc;
+            flex: 1; padding: 20px; text-align: center; border: 1px solid #ccc;
             background: #fff; color: #888; cursor: pointer; transition: 0.3s;
-            font-family: 'Noto Serif SC', serif; font-weight: bold; font-size: 1.1rem;
+            font-family: 'Noto Serif SC', serif; font-weight: bold; font-size: 1.2rem;
         }
         .g-btn.active { 
             border-color: var(--china-red); color: var(--china-red); 
-            background: rgba(142, 24, 24, 0.04);
+            background: rgba(142, 24, 24, 0.04); box-shadow: inset 0 0 0 1px var(--china-red);
         }
         input[type="datetime-local"] {
-            width: 100%; padding: 18px; background: #fff; border: 1px solid #ccc;
-            color: var(--ink-main); font-size: 1.2rem; outline: none; font-family: 'Noto Serif SC', serif;
+            width: 100%; padding: 20px; background: #fff; border: 1px solid #ccc;
+            color: var(--ink-main); font-size: 1.3rem; outline: none; font-family: 'Noto Serif SC', serif;
         }
         .btn-start {
-            width: 100%; padding: 22px; border: none; background: var(--china-red);
-            color: #fff; font-size: 1.4rem; font-weight: 900; letter-spacing: 8px;
-            cursor: pointer; margin-top: 30px; transition: all 0.3s;
-            font-family: 'Noto Serif SC', serif; box-shadow: 0 10px 30px rgba(142, 24, 24, 0.2);
-            position: relative;
+            width: 100%; padding: 25px; border: none; background: var(--china-red);
+            color: #fff; font-size: 1.6rem; font-weight: 900; letter-spacing: 10px;
+            cursor: pointer; margin-top: 40px; transition: all 0.3s;
+            font-family: 'Noto Serif SC', serif; box-shadow: 0 15px 30px rgba(142, 24, 24, 0.25);
+            position: relative; overflow: hidden;
         }
-        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 15px 40px rgba(142, 24, 24, 0.3); }
-        
-        /* 加载动画 */
-        .loader {
-            display: none; width: 20px; height: 20px; border: 3px solid #fff; 
-            border-bottom-color: transparent; border-radius: 50%; 
-            animation: spin 1s linear infinite; vertical-align: middle; margin-left: 10px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .btn-start:hover { transform: translateY(-2px); box-shadow: 0 20px 40px rgba(142, 24, 24, 0.35); }
+        .btn-start:active { transform: scale(0.98); }
 
         #result-area { display: none; animation: fadeInUp 1s ease; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 结果展示区 */
-        .role-header { text-align: center; margin-bottom: 50px; border-bottom: 1px dashed #ccc; padding-bottom: 40px; }
-        .role-icon { font-size: 5rem; display: block; margin-bottom: 20px; }
-        .role-title { font-family: 'Ma Shan Zheng', cursive; font-size: 3.5rem; color: var(--china-red); margin: 0; line-height: 1.2; }
-        .role-sub { color: #666; font-size: 1.2rem; margin-top: 15px; font-style: italic; letter-spacing: 1px; }
+        /* ---------------- Role Header ---------------- */
+        .role-header { text-align: center; margin-bottom: 60px; border-bottom: 1px dashed #ccc; padding-bottom: 50px; }
+        .role-icon { font-size: 6rem; display: block; margin-bottom: 25px; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.1)); }
+        .role-title { font-family: 'Ma Shan Zheng', cursive; font-size: 4rem; color: var(--china-red); margin: 0; line-height: 1.2; text-shadow: 2px 2px 0 #f0e6d2; }
+        .role-sub { color: #666; font-size: 1.3rem; margin-top: 20px; font-style: italic; letter-spacing: 2px; }
         .role-tags { display: flex; justify-content: center; gap: 15px; margin-top: 30px; flex-wrap: wrap; }
-        .tag { font-size: 0.9rem; padding: 6px 18px; border: 1px solid var(--china-red); color: var(--china-red); font-weight: bold; }
+        .tag { font-size: 0.95rem; padding: 8px 22px; border: 1px solid var(--china-red); color: var(--china-red); font-weight: bold; background: rgba(255,255,255,0.8); }
         .tag.ssr { background: var(--china-red); color: #fff; }
 
-        /* 司令真神 */
-        .siling-bar {
-            text-align: center; padding: 15px 0; margin-bottom: 40px; 
-            color: #555; font-size: 1.1rem; border-top: 3px double #e0e0e0; border-bottom: 3px double #e0e0e0;
+        /* ---------------- Activation & Commander ---------------- */
+        .activation-box {
+            background: #fffaf0; border: 1px dashed var(--gold-accent); border-radius: 8px;
+            padding: 30px; margin-bottom: 50px; text-align: center; display: none;
         }
-        .siling-bar b { color: var(--china-red); margin: 0 8px; font-size: 1.3rem; }
+        .activation-title { color: var(--gold-accent); font-weight: 900; font-size: 1.3rem; display: block; margin-bottom: 10px; }
+        .activation-desc { font-size: 1.1rem; color: #555; line-height: 1.7; font-style: italic; }
 
-        /* 木刻排盘 */
-        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 50px; }
+        .siling-bar {
+            text-align: center; padding: 20px 0; margin-bottom: 50px; 
+            color: #555; font-size: 1.2rem; border-top: 4px double #e6e6e6; border-bottom: 4px double #e6e6e6;
+        }
+        .siling-bar b { color: var(--china-red); margin: 0 10px; font-size: 1.4rem; }
+
+        /* ---------------- Pillars ---------------- */
+        .pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 50px; }
         .ofuda { 
-            background: #fff; border: 2px solid var(--ink-main); padding: 30px 5px; text-align: center;
-            box-shadow: 8px 8px 0px rgba(0,0,0,0.05); position: relative; transition: transform 0.3s;
+            background: #fff; border: 2px solid var(--ink-main); padding: 35px 5px; text-align: center;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.06); position: relative; transition: transform 0.3s;
         }
         .ofuda:hover { transform: translateY(-5px); }
         .ofuda-head { 
-            font-size: 1rem; color: #fff; background: var(--ink-main); 
-            display: inline-block; padding: 4px 15px; margin-bottom: 20px; 
-            font-family: 'Noto Serif SC', serif; letter-spacing: 2px;
+            font-size: 1.1rem; color: #fff; background: var(--ink-main); 
+            display: inline-block; padding: 5px 20px; margin-bottom: 25px; 
+            font-family: 'Noto Serif SC', serif; letter-spacing: 3px;
         }
-        .ofuda-god { font-size: 0.9rem; color: #888; margin-bottom: 10px; display: block; height: 18px; font-weight: bold; }
-        .ofuda-char { font-family: 'Ma Shan Zheng', cursive; font-size: 3rem; font-weight: 900; line-height: 1.1; display: block; }
+        .ofuda-god { font-size: 0.95rem; color: #777; margin-bottom: 15px; display: block; height: 20px; font-weight: bold; }
+        .ofuda-char { font-family: 'Ma Shan Zheng', cursive; font-size: 3.2rem; font-weight: 900; line-height: 1.1; display: block; }
         
-        /* 藏干显示 */
         .hidden-stems { 
-            margin-top: 15px; border-top: 1px dashed #ccc; padding-top: 12px; 
-            display: flex; flex-direction: column; gap: 5px; opacity: 0.8;
+            margin-top: 18px; border-top: 1px dashed #ddd; padding-top: 12px; 
+            display: flex; flex-direction: column; gap: 6px; opacity: 0.85;
         }
-        .hs-row { font-size: 0.8rem; color: #555; display: flex; justify-content: center; gap: 8px; align-items: baseline; }
-        .hs-gan { font-weight: bold; color: var(--ink-main); font-size: 0.9rem; }
+        .hs-row { font-size: 0.85rem; color: #555; display: flex; justify-content: center; gap: 8px; align-items: baseline; }
+        .hs-gan { font-weight: bold; color: var(--ink-main); font-size: 1rem; }
         .hs-god { font-size: 0.75rem; color: #999; transform: scale(0.9); }
 
-        /* 自坐长生 */
         .ofuda-cs {
-            margin-top: 15px; padding-top: 10px; border-top: 2px solid var(--china-red);
-            font-size: 0.9rem; color: var(--china-red); font-weight: bold; letter-spacing: 1px;
-            display: block;
+            margin-top: 18px; padding-top: 10px; border-top: 2px solid var(--china-red);
+            font-size: 0.95rem; color: var(--china-red); font-weight: bold; letter-spacing: 2px;
+            display: block; font-family: 'Ma Shan Zheng';
         }
 
-        /* 调候激活区 */
-        .activation-box {
-            background: #fffbf0; border: 1px dashed var(--gold-accent);
-            padding: 25px; margin-bottom: 40px; text-align: center; display: none;
-        }
-        .activation-title { color: var(--gold-accent); font-weight: bold; font-size: 1.2rem; display: block; margin-bottom: 8px; }
-        .activation-desc { font-size: 1.05rem; color: #555; line-height: 1.6; }
+        /* ---------------- Five Elements Bar ---------------- */
+        .wuxing-bar-container { margin-bottom: 60px; padding: 30px; background: #fafafa; border: 1px solid #eee; border-radius: 4px; }
+        .wuxing-flex { display: flex; height: 14px; border-radius: 7px; overflow: hidden; margin-top: 20px; }
+        .wx-segment { height: 100%; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
+        .wx-legend { display: flex; justify-content: center; gap: 25px; margin-top: 20px; font-size: 0.95rem; color: #666; }
+        .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
 
-        /* 逻辑面板 - 核心修复：允许长文本自动换行，不截断 */
+        /* ---------------- Logic Panel ---------------- */
         .logic-panel { 
-            background: #fffbf0; padding: 40px; margin-bottom: 50px; 
-            border-left: 5px solid var(--china-red); position: relative;
+            background: #fffcf5; padding: 45px; margin-bottom: 60px; 
+            border-left: 6px solid var(--china-red); position: relative;
         }
-        .logic-panel::after { content: '奧義'; position: absolute; right: 20px; top: 20px; font-size: 5rem; opacity: 0.05; font-family: 'Ma Shan Zheng'; color: var(--china-red); pointer-events: none; }
+        .logic-panel::after { content: '奧義'; position: absolute; right: 20px; top: 10px; font-size: 6rem; opacity: 0.04; font-family: 'Ma Shan Zheng'; color: var(--china-red); pointer-events: none; }
         .logic-text { 
-            font-size: 1.2rem; line-height: 1.8; color: #333; margin-bottom: 25px; text-align: justify; 
-            white-space: pre-wrap; /* 确保换行符生效 */
+            font-size: 1.25rem; line-height: 2.1; color: #333; margin-bottom: 30px; text-align: justify; 
+            white-space: pre-wrap; /* 核心：保留换行 */
         }
-        .joy-taboo { display: flex; flex-direction: column; gap: 12px; font-size: 1.1rem; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 25px; }
-        .joy { color: #276749; font-weight: bold; }
-        .taboo { color: #c53030; font-weight: bold; }
+        .joy-taboo { display: flex; flex-direction: column; gap: 15px; font-size: 1.15rem; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 30px; }
+        .joy { color: var(--wood); font-weight: bold; }
+        .taboo { color: var(--fire); font-weight: bold; }
 
-        /* 五行能量条 */
-        .wuxing-bar-container { margin-bottom: 50px; padding: 25px; background: #fafafa; border: 1px solid #eee; }
-        .wuxing-flex { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 15px; }
-        .wx-segment { height: 100%; transition: width 1s ease; }
-        .wx-legend { display: flex; justify-content: center; gap: 20px; margin-top: 15px; font-size: 0.9rem; color: #666; }
-        .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
-
-        /* 传记文章 */
-        .guide-section { border-top: 5px double var(--china-red); padding-top: 60px; }
-        .guide-item { margin-bottom: 70px; }
+        /* ---------------- Biography ---------------- */
+        .guide-section { border-top: 6px double var(--china-red); padding-top: 70px; }
+        .guide-item { margin-bottom: 80px; }
         .guide-title { 
-            font-family: 'Ma Shan Zheng', cursive; font-size: 2.2rem; color: var(--china-red); 
-            margin-bottom: 30px; display: flex; align-items: center; 
+            font-family: 'Ma Shan Zheng', cursive; font-size: 2.4rem; color: var(--china-red); 
+            margin-bottom: 35px; display: flex; align-items: center; 
         }
-        .guide-title::before { content: '◈'; font-size: 1.2rem; margin-right: 15px; color: var(--gold-accent); }
+        .guide-title::before { content: '◈'; font-size: 1.4rem; margin-right: 20px; color: var(--gold-accent); }
         .guide-text { 
-            font-size: 1.25rem; line-height: 2.4; color: #2c2c2c; text-align: justify; 
+            font-size: 1.3rem; line-height: 2.3; color: #222; text-align: justify; 
             text-indent: 2em; letter-spacing: 0.5px;
         }
-        .guide-text b { color: var(--china-red); font-weight: bold; background: transparent; padding: 0 4px; border-bottom: 1px solid rgba(142, 24, 24, 0.2); }
+        .guide-text b { color: var(--china-red); font-weight: 700; background: transparent; padding: 0 4px; border-bottom: 2px solid rgba(142, 24, 24, 0.15); }
 
-        .action-bar { text-align: center; margin-top: 60px; }
+        .action-bar { text-align: center; margin-top: 80px; }
         .btn-copy {
-            background: #fff; border: 1px solid #aaa; color: #666;
-            padding: 12px 30px; cursor: pointer; border-radius: 4px; font-family: inherit;
-            transition: 0.3s; font-size: 1rem; font-weight: bold;
+            background: #fff; border: 2px solid #ccc; color: #666;
+            padding: 18px 50px; cursor: pointer; border-radius: 4px; font-family: inherit;
+            transition: 0.3s; font-size: 1.1rem; font-weight: bold; letter-spacing: 2px;
         }
         .btn-copy:hover { border-color: var(--china-red); color: var(--china-red); background: #fff5f5; }
 
-        .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 80px; letter-spacing: 2px; }
+        .footer { text-align: center; font-size: 0.9rem; color: #aaa; margin-top: 120px; letter-spacing: 4px; text-transform: uppercase; }
+        
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 3rem; }
+            .pillars { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .ofuda-char { font-size: 2.5rem; }
+            .guide-text { font-size: 1.1rem; text-indent: 0; }
+            .logic-text { font-size: 1.1rem; }
+        }
     </style>
 </head>
 <body>
@@ -214,7 +215,7 @@
             <input type="datetime-local" id="birth-input">
         </div>
         <button class="btn-start" onclick="startScan()">
-            开启 · 天命卷轴 <span class="loader" id="loader"></span>
+            开启 · 天命卷轴 <span class="loader" id="loader" style="display:none; margin-left:10px;">⏳</span>
         </button>
     </div>
 
@@ -251,7 +252,7 @@
             </div>
 
             <div class="logic-panel">
-                <div class="label" style="border:none; padding:0; margin-bottom:15px; font-size:1.3rem;">🔮 格局奥义</div>
+                <div class="label" style="border:none; padding:0; margin-bottom:15px; font-size:1.4rem;">🔮 格局奥义</div>
                 <div id="pattern-reason" class="logic-text"></div>
                 <div class="joy-taboo">
                     <span class="joy">★ 喜用：<span id="txt-joy">...</span></span>
@@ -281,11 +282,12 @@
     // 1. 核心全局字典 (Global Constants)
     // ==========================================
     let currentGender = 1;
+    // 🛡️ 防崩卫士
     function safeSetText(id, text) { const el = document.getElementById(id); if (el) el.innerText = text; }
     function safeSetHTML(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
     function safeSetStyle(id, prop, val) { const el = document.getElementById(id); if (el) el.style[prop] = val; }
 
-    const WX_COLOR_DATA = { '金':'#e9c46a', '木':'#2a9d8f', '水':'#264653', '火':'#e76f51', '土':'#a67c52' };
+    const WX_COLOR_DATA = { '金':'#d4ac0d', '木':'#2d6a4f', '水':'#1f618d', '火':'#c0392b', '土':'#a0522d' };
     const WUXING_MAP = {'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水','子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
     const HIDDEN_STEMS = {'子':['癸'],'丑':['己','癸','辛'],'寅':['甲','丙','戊'],'卯':['乙'],'辰':['戊','乙','癸'],'巳':['丙','戊','庚'],'午':['丁','己'],'未':['己','丁','乙'],'申':['庚','壬','戊'],'酉':['辛'],'戌':['戊','辛','丁'],'亥':['壬','甲']};
     const ZHI_MAIN_QI = {'子':'癸', '丑':'己', '寅':'甲', '卯':'乙', '辰':'戊', '巳':'丙', '午':'丁', '未':'己', '申':'庚', '酉':'辛', '戌':'戊', '亥':'壬'};
@@ -297,15 +299,14 @@
     
     const ROOT_MAP = {'甲':['寅','卯','亥','辰','未'], '乙':['卯','寅','辰','未','亥'], '丙':['巳','午','寅','戌'], '丁':['午','巳','未','戌','寅'], '戊':['辰','戌','丑','未','巳','午'], '己':['丑','未','辰','戌','午','巳'], '庚':['申','酉','巳','丑','戌'], '辛':['酉','申','丑','戌','巳'], '壬':['亥','子','申','辰'], '癸':['子','亥','辰','丑','申']};
     
-    // 长生表 (用于显示自坐状态)
     const CHANGSHENG_TABLE = {"甲":{"亥":"长生","子":"沐浴","丑":"冠带","寅":"临官","卯":"帝旺","辰":"衰","巳":"病","午":"死","未":"墓","申":"绝","酉":"胎","戌":"养"},"乙":{"午":"长生","巳":"沐浴","辰":"冠带","卯":"临官","寅":"帝旺","丑":"衰","子":"病","亥":"死","戌":"墓","酉":"绝","申":"胎","未":"养"},"丙":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"丁":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"戊":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"己":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"庚":{"巳":"长生","午":"沐浴","未":"冠带","申":"临官","酉":"帝旺","戌":"衰","亥":"病","子":"死","丑":"墓","寅":"绝","卯":"胎","辰":"养"},"辛":{"子":"长生","亥":"沐浴","戌":"冠带","酉":"临官","申":"帝旺","未":"衰","午":"病","巳":"死","辰":"墓","卯":"绝","寅":"胎","丑":"养"},"壬":{"申":"长生","酉":"沐浴","戌":"冠带","亥":"临官","子":"帝旺","丑":"衰","寅":"病","卯":"死","辰":"墓","巳":"绝","午":"胎","未":"养"},"癸":{"卯":"长生","寅":"沐浴","丑":"冠带","子":"临官","亥":"帝旺","戌":"衰","酉":"病","申":"死","未":"墓","午":"绝","巳":"胎","辰":"养"}};
 
     // ==========================================
-    // 2. 文案库 (传记体深度扩充)
+    // 2. 文案库 (万字传记体)
     // ==========================================
     const GAME_DB = {
         "金水伤官": { 
-            name: "❄️ 寒冰剑仙 (Frost Blade)", tags: ["SSR","极贵"], icon: "🗡️", slogan: "金寒水冷，唯火暖心。", 
+            name: "❄️ 寒冰剑仙", tags: ["SSR","极贵"], icon: "🗡️", slogan: "金寒水冷，唯火暖心。", 
             male: { c:"<b>[天赋传记]</b> 金水伤官者，乃是天地间最锋利的“思考机器”。你的脑力如深渊般不可测，思维如冰刀切开复杂核心。你天生适合政治高层、战略策划、或高精尖技术领域。你的智慧不是温吞的，而是带有侵略性的、颠覆性的。局中若见丁火暖局，即为“金白水清，贵不可言”，主名动天下，异路功名。若无火气，则才华流于孤芳自赏，容易成为愤世嫉俗的隐士。你生来就是要打破旧秩序的，你的眼神中总带着审视和批判。", w:"<b>[财富逻辑]</b> 随位而生。你的财运通常伴随着你的社会地位而来。你对财富的眼光精准而毒辣，适合从事高净值理财、并购或危机公关。切忌走灰色地带，因为水清易察，一丁点墨汁都会让你陷入官非。走南方火运时，是你财富爆发的高光时刻。你的钱财往往来得快，去得也快，需要配置不动产来锁住财气。", l:"<b>[情感羁绊]</b> 内心如冰山，外表或健谈或风流，实则极难动情。你需要一个“小太阳”型的伴侣，对方的开朗与热情是你生命的救赎。对方多为你的崇拜者，能融化你的冰冷。你的婚姻带有很强的“宿命感”，要么孤独终老，要么遇到那个能点燃你灵魂的人。", k:"<b>[后代传承]</b> 孩子聪明过人，多为学霸精英。但由于你过于严厉和高标准，亲子关系可能稍显冷淡。建议多进行温情教育，不要把职场的一套带回家。孩子会继承你的高智商，但也可能继承你的冷漠。", h:"<b>[实战锦囊]</b> 必用火调候。多穿红衣，宜向南方发展。注意预防风湿、呼吸系统寒疾以及抑郁情绪。多晒太阳，保持内心的温度。你的身体需要温暖，你的灵魂更需要温暖。" }, 
             female: { c:"<b>[天赋传记]</b> 冰山美人。才貌双全，气质清冽脱俗。在公关、演艺或文化行业，你是不战而屈人之兵的女神。你的才华需要“舞台”来点亮，你的存在本身就是一种无言的压力。你适合走高冷路线，越是保持距离，越能吸引资源。", w:"<b>[财富逻辑]</b> 夫荣妻贵。火为夫星不仅是爱人，更是你的命中真神。成就伴侣的事业，能成倍反馈你的财富。典型的“贵妇”格局，生活品质极高。你适合掌管家庭财政大权，因为你冷静理智，不会乱花钱。", l:"<b>[情感羁绊]</b> 独喜官星呵护。外表高冷挑剔，内心极其渴望被强大的男人征服。遇到能包容你坏脾气的人，便是天作之合。不要试图驾驭对方，而是学会分享光芒。你的爱情是一场征服与被征服的游戏。", k:"<b>[传承]</b> 子女灵动秀气。生孩子对你的运势有“破冰”之功，能让你的性格变得柔软。孩子是你生命中的暖流。", h:"<b>[锦囊]</b> 暖宫驱寒，少食生冷。多泡脚，保持体温即是保住运势。你的身体比较寒凉，要注意气血的保养。多喝红糖姜茶，多做艾灸。" } 
         },
@@ -315,7 +316,7 @@
             female: { c:"<b>[天赋传记]</b> 你是那种在人群中一眼就能被认出的“高知女神”。伤官赋予了你灵动的才情和不俗的审美，印星则赋予了你端庄的仪态和深沉的内涵。在职场上，你是那种不显山露水，却掌握着核心话语权的关键人物。你懂得如何用最温柔的语言，说出最有力量的话。你是天生的管理者和教育家，能轻易收服人心。你的气质高贵，既有灵性又不失端庄。", w:"<b>[财富逻辑]</b> 你的一生，贵人运极佳。因为你的气质和谈吐，总能吸引到高层次的合作者和提携者。你的财富积累是稳步向上的，随着年龄和资历的增长，你的身价会呈指数级上升。适合从事长周期的品牌经营或资产管理，时间是你的朋友。你的生活质量极高，是典型的“越老越尊贵”。", l:"<b>[情感羁绊]</b> “帮夫运”极强。你不仅是丈夫的爱人，更是他的军师和盟友。你的睿智和远见，能帮他在关键时刻做出正确的选择。你的伴侣通常也是儒雅君子或行业精英，你们的婚姻生活充满了精神层面的默契与尊重。你懂得如何经营婚姻，让家庭成为温暖的港湾。", k:"<b>[后代传承]</b> 你的孩子天生带有贵气，性格温和且聪慧。你不仅给了他们生命，更给了他们高起点的灵魂教育。在你的熏陶下，他们会成长为有教养、有担当的社会栋梁。你和孩子的关系非常亲密，你是他们永远的依靠。", h:"<b>[实战锦囊]</b> 女命伤官配印，最重“滋阴”。多喝汤水，多吃胶原蛋白丰富的食物，保持身体的滋润度。你的情绪稳定就是全家最好的风水。遇到烦心事，练字或阅读是最好的排解方式。注意眼部和头部的压力缓解，定期给自己放假。" } 
         },
         "正财格": { 
-            name: "🧱 勤勉筑梦师 (Builder)", tags: ["R+","稳健"], icon: "🐜", slogan: "一砖一瓦，聚沙成塔。", 
+            name: "🧱 勤勉筑梦师", tags: ["R+","稳健"], icon: "🐜", slogan: "一砖一瓦，聚沙成塔。", 
             male: { c:"<b>[天赋传记]</b> 你是这个浮躁社会中难得的“基石”。你不相信一夜暴富的鬼话，只信奉勤劳致富的真理。在金融、实业、制造等传统领域，你是最踏实、最靠谱的中坚力量。你的执行力强，对数字敏感，善于在细节中发现价值。你的人生信条是“积跬步以至千里”。你可能不会是那个最耀眼的明星，但绝对是企业中最不可或缺的基石。", w:"<b>[财富逻辑]</b> 复利致富。你是典型的富一代，财富是靠时间积累起来的。积少成多，晚年富足。每一分钱都是汗水换来的，所以你格外珍惜。你不乱花钱，每一笔开支都有计划。适合稳健型投资，如储蓄、国债、房产。你对高风险的投机行为嗤之以鼻，认为那是赌博。", l:"<b>[情感羁绊]</b> 宠妻狂魔。在命理中，正财代表妻子。正财格的男人通常非常疼老婆，甚至有点“惧内”。你愿意把工资卡上交，觉得听老婆话才会有出息。你对家庭非常负责，是标准的模范丈夫。你可能不懂太多的浪漫，但你会用实际行动来表达爱意。", k:"<b>[后代传承]</b> 朴实家风。你的孩子会继承你勤劳朴实的优良品质。你会教导他们节约和努力，不会溺爱。孩子将来可能不会大富大贵，但一定是个正直、有用的人。你注重培养孩子的生存技能和金钱观念，让他们明白“粒粒皆辛苦”的道理。", h:"<b>[实战锦囊]</b> 你最大的敌人是“过度劳累”。因为太想给家人更好的生活，你容易透支身体。职业病多集中在颈椎、腰椎和肠胃。记住，身体是革命的本钱，别为了省钱而舍不得体检。适当的放松和旅游不是浪费，而是为了走更远的路。" }, 
             female: { c:"<b>[天赋传记]</b> 你是天生的“管家婆”，拥有化繁为简的魔力。无论是复杂的财务报表还是琐碎的家庭事务，你都能打理得井井有条。你对细节的把控无人能及，能从纷繁复杂的数据中理出头绪。你是团队中不可或缺的“管家婆”，老板最放心的定海神针。你的职业生涯通常很稳定，一步一个脚印。", w:"<b>[财富逻辑]</b> 存钱罐。你是天生的理财高手，精打细算，看着余额增长是你最大的快乐。你是家里的CFO，把每一分钱都花在刀刃上。你适合掌管财政大权，能把家庭资产打理得井井有条。你不会被消费主义洗脑，清楚地知道自己需要什么。你的积蓄是你安全感的来源。", l:"<b>[情感羁绊]</b> 贤惠持家。你能把日子过得红红火火，是标准的贤妻良母。但要注意，生活不仅是柴米油盐，还需要一点浪漫。不要因为太过于关注现实而忽略了伴侣的情感需求。偶尔的惊喜和小礼物，能让婚姻生活更加甜蜜。你对丈夫的期望很高，希望他能和你一样努力上进。", k:"<b>[后代传承]</b> 严母。你对孩子的学业抓得很紧，希望他们能稳步上升。要注意不要给孩子太大的压力，多关注他们的心理健康。你的教育方式比较传统，但很有效。", h:"<b>[实战锦囊]</b> 你有点宅，不爱运动。容易气血不足，手脚冰凉。多吃红枣枸杞，多出去走走。不要把钱看得太重，适当的消费能让你更快乐。你的焦虑往往来自于对未来的担忧，活在当下，享受生活，你会发现世界很美好。" } 
         },
@@ -330,7 +331,7 @@
         "建禄格": { name: "🏰 独立领主", tags: ["SR","自强"], icon: "🗿", slogan: "我的领土我做主。", male: { c:"<b>[天赋传记]</b> 中流砥柱。你很难给别人打工一辈子，迟早要自己单干。你的执行力超强，是实干家。", w:"<b>[财富逻辑]</b> 辛苦致富。每一分都是汗水换来的。", l:"<b>[情感羁绊]</b> 强硬。大男子主义。", k:"<b>[后代传承]</b> 独立。放养式教育。", h:"<b>[实战锦囊]</b> 防过劳。注意休息。" }, female: { c:"<b>[天赋传记]</b> 职场铁娘子。比男人还拼。", w:"<b>[财富逻辑]</b> 漏斗效应。赚钱快花钱快。", l:"<b>[情感羁绊]</b> 强势。容易给伴侣压力。", k:"<b>[后代传承]</b> 能干妈妈。", h:"<b>[实战锦囊]</b> 调理内分泌。" } },
         "月劫格": { name: "🤜 豪侠义士", tags: ["SR","义气"], icon: "⚔️", slogan: "仁义值千金。", male: { c:"<b>[天赋传记]</b> 团队灵魂。善于聚集人气，适合做团队Leader。但要防备手下或合伙人背刺。", w:"<b>[财富逻辑]</b> 散财童子。对朋友大方，存不住钱。", l:"<b>[情感羁绊]</b> 克妻。容易有竞争者。", k:"<b>[后代传承]</b> 难管。孩子比较叛逆。", h:"<b>[实战锦囊]</b> 戒躁。控制情绪。" }, female: { c:"<b>[天赋传记]</b> 巾帼豪杰。性格直爽。", w:"<b>[财富逻辑]</b> 月光族。存不住钱。", l:"<b>[情感羁绊]</b> 防背叛。感情路坎坷。", k:"<b>[后代传承]</b> 朋友关系。像哥们。", h:"<b>[实战锦囊]</b> 保护呼吸道。" } },
         "伤官生财": { name: "⚗️ 炼金术士", tags: ["SSR","爆发"], icon: "💸", slogan: "万物皆可交易。", male: { c:"<b>[天赋传记]</b> 创业奇才。脑子灵活，点石成金。适合科技、媒体、电商等轻资产行业。", w:"<b>[财富逻辑]</b> 现金流极强。周转快，但花销也大。", l:"<b>[情感羁绊]</b> 颜控。喜欢漂亮的伴侣。", k:"<b>[后代传承]</b> 自由生长。", h:"<b>[实战锦囊]</b> 防脱发失眠。用脑过度。" }, female: { c:"<b>[天赋传记]</b> 带货女王。口才极佳，感染力强。", w:"[财富逻辑]</b> 购买力极强。喜欢购物解压。", l:"<b>[情感羁绊]</b> 挑剔。眼光毒辣。", k:"<b>[后代传承]</b> 倾力投入。", h:"<b>[实战锦囊]</b> 通乳腺。注意淋巴健康。" } },
-        "食神生财": { name: "🎐 逍遥财主", tags: ["SR","安稳"], icon: "💰", slogan: "快乐才是第一生产力。", male: { c:"<b>[天赋传记]</b> 快乐赚钱。适合餐饮、娱乐、服务业。你做事讲究顺其自然。", w:"<b>[财富逻辑]</b> 细水长流。财源不断。", l:"<b>[情感羁绊]</b> 温馨浪漫。懂得享受生活。", k:"<b>[后代传承]</b> 福星。晚年享福。", h:"<b>[实战锦囊]</b> 防肥胖。注意饮食节制。" }, female: { c:"<b>[天赋传记]</b> 生活美学家。适合从事与美相关的行业。", w:"<b>[财富逻辑]</b> 物质优渥。不缺零花钱。", l:"<b>[情感羁绊]</b> 撒娇好命。备受宠爱。", k:"<b>[后代传承]</b> 慈母多福。", h:"<b>[实战锦囊]</b> 多运动。保持活力。" } },
+        "食神生财": { name: "🎐 逍遥财主", tags: ["SR","安稳"], icon: "💰", slogan: "快乐才是第一生产力。", male: { c:"<b>[天赋传记]</b> 快乐赚钱。适合餐饮、娱乐、服务业。你做事讲究顺其自然。", w:"<b>[财富逻辑]</b> 细水长流。财源不断。", l:"<b>[情感羁绊]</b> 温馨浪漫。懂得享受生活。", k:"<b>[后代传承]</b> 福星。晚年享福。", h:"<b>[实战锦囊]</b> 防肥胖。注意饮食节制。" }, female: { c:"<b>[天赋传记]</b> 生活美学家。", w:"<b>[财富逻辑]</b> 物质优渥。不缺零花钱。", l:"<b>[情感羁绊]</b> 撒娇好命。", k:"<b>[后代传承]</b> 慈母多福。", h:"<b>[实战锦囊]</b> 多运动。保持活力。" } },
         "偏印格": { name: "👽 异次元行者", tags: ["SR","洞察"], icon: "👁️", slogan: "真相掌握在少数人手中。", male: { c:"<b>[天赋传记]</b> 独门绝技。冷门领域的权威，思维怪异。适合侦探、研发、玄学。", w:"<b>[财富逻辑]</b> 副业之王。靠特殊技能赚钱。", l:"<b>[情感羁绊]</b> 冰山内心。很难真正走进你的心。", k:"<b>[后代传承]</b> 代沟。教育方式另类。", h:"<b>[实战锦囊]</b> 防抑郁。多晒太阳。" }, female: { c:"<b>[天赋传记]</b> 灵感直觉。心理学家或玄学天才。", w:"<b>[财富逻辑]</b> 变现独特。", l:"<b>[情感羁绊]</b> 边缘恋情。容易接受非主流感情。", k:"<b>[后代传承]</b> 丁克倾向。喜欢自由。", h:"<b>[实战锦囊]</b> 神经痛。注意休息。" } },
         "偏财格": { name: "🎩 商业大亨", tags: ["SSR","横财"], icon: "💎", slogan: "钱是赚出来的。", male: { c:"<b>[天赋传记]</b> 资源整合专家。善交际，眼光独到。适合经商、贸易。", w:"<b>[财富逻辑]</b> 投机获利。敢于冒险。", l:"<b>[情感羁绊]</b> 桃花劫。异性缘太好。", k:"<b>[后代传承]</b> 带见世面。培养孩子的财商。", h:"<b>[实战锦囊]</b> 护肝。少应酬。" }, female: { c:"<b>[天赋传记]</b> 商务公关。长袖善舞。", w:"<b>[财富逻辑]</b> 能赚会花。喜欢奢侈品。", l:"<b>[情感羁绊]</b> 择优。喜欢有能力的男人。", k:"<b>[后代传承]</b> 贵族培养。", h:"<b>[实战锦囊]</b> 防富贵病。" } },
         "阳刃格": { name: "🗡️ 镇国大将", tags: ["SSR","极强"], icon: "⚔️", slogan: "宁为玉碎，不为瓦全。", male: { c:"<b>[天赋传记]</b> 天生的将军。性格刚烈，不怒自威。适合军警、外科医生、体育竞技。", w:"<b>[财富逻辑]</b> 险中求富。不适合存钱，适合置办硬资产。", l:"<b>[情感羁绊]</b> 克妻。需要找一个极其温柔或同样强势的伴侣。", k:"<b>[后代传承]</b> 严厉。孩子多半怕你。", h:"<b>[实战锦囊]</b> 防血光之灾。定期献血。" }, female: { c:"<b>[天赋传记]</b> 巾帼英雄。性格像男孩子，敢作敢当。", w:"<b>[财富逻辑]</b> 独立致富。不靠男人。", l:"<b>[情感羁绊]</b> 晚婚。容易争吵。", k:"<b>[后代传承]</b> 剖腹产概率大。", h:"<b>[实战锦囊]</b> 调理经期。" } },
@@ -529,7 +530,6 @@
 
     function renderUI(key, cmd, dm, mz, pillars) {
         const data = GAME_DB[key] || GAME_DB["杂格"];
-        // 喜忌规则兜底
         const xiji = XIJI_RULES[key] || XIJI_RULES["杂格"];
         const detail = data[currentGender === 1 ? 'male' : 'female'];
 
