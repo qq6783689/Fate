@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>天命鑑定 · 宗师列传（万字全解·终极版）</title>
+    <title>天命鑑定 · 宗师列传（天干气势优先版）</title>
     <script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;700&display=swap');
@@ -14,7 +14,6 @@
             --ink-main: #1a1a1a;       /* 浓墨 */
             --ink-light: #555;         /* 淡墨 */
             --gold-accent: #cfa972;    /* 沉金 */
-            --border-color: #e0d6c9;
             --wood: #2d6a4f; --fire: #c0392b; --earth: #8d6e63; --metal: #d4ac0d; --water: #1f618d;
         }
 
@@ -199,7 +198,7 @@
 <div class="container">
     <div class="header">
         <h1>降生鑑定</h1>
-        <div class="sub-title">宗师传记 · 万字全解版</div>
+        <div class="sub-title">宗师传记 · 极意完整版</div>
     </div>
 
     <div class="card">
@@ -629,8 +628,6 @@
             } 
         },
         
-        // ... (其他几个如建禄、月劫、阳刃等，也按上述风格进行了万字扩充，此处代码篇幅有限，核心逻辑已全部展示，实际运行时会调用完整DB) ...
-        
         "建禄格": { 
             name: "🏰 独立领主", tags: ["SR","自强"], icon: "🗿", slogan: "我的领土我做主。", 
             male: { 
@@ -706,7 +703,26 @@
         "伤官生财": { name: "⚗️ 炼金术士", tags: ["SSR","爆发"], icon: "💸", slogan: "万物皆可交易。", male: { c:"<b>[天赋传记]</b> 创业奇才。脑子灵活，点石成金。适合科技、媒体、电商等轻资产行业。", w:"<b>[财富逻辑]</b> 现金流极强。周转快，但花销也大。", l:"<b>[情感羁绊]</b> 颜控。喜欢漂亮的伴侣。", k:"<b>[后代传承]</b> 自由生长。", h:"<b>[实战锦囊]</b> 防脱发失眠。用脑过度。" }, female: { c:"<b>[天赋传记]</b> 带货女王。口才极佳，感染力强。", w:"[财富逻辑]</b> 购买力极强。喜欢购物解压。", l:"<b>[情感羁绊]</b> 挑剔。眼光毒辣。", k:"<b>[后代传承]</b> 倾力投入。", h:"<b>[实战锦囊]</b> 通乳腺。注意淋巴健康。" } },
         "食神生财": { name: "🎐 逍遥财主", tags: ["SR","安稳"], icon: "💰", slogan: "快乐才是第一生产力。", male: { c:"<b>[天赋传记]</b> 快乐赚钱。适合餐饮、娱乐、服务业。你做事讲究顺其自然。", w:"<b>[财富逻辑]</b> 细水长流。财源不断。", l:"<b>[情感羁绊]</b> 温馨浪漫。懂得享受生活。", k:"<b>[后代传承]</b> 福星。晚年享福。", h:"<b>[实战锦囊]</b> 防肥胖。注意饮食节制。" }, female: { c:"<b>[天赋传记]</b> 生活美学家。", w:"<b>[财富逻辑]</b> 物质优渥。不缺零花钱。", l:"<b>[情感羁绊]</b> 撒娇好命。", k:"<b>[后代传承]</b> 慈母多福。", h:"<b>[实战锦囊]</b> 多运动。保持活力。" } },
         "真从儿格": { name: "🌟 绝代才子 (真)", tags: ["SSR","名流"], icon: "🎨", slogan: "才华横溢，顺势流芳。", male: { c:"<b>[天赋传记]</b> 满盘食伤，日主无根。你是一代才子，才华如江河奔涌，不可遏止。适合艺术、演艺、学术。", w:"<b>[财富逻辑]</b> 技艺生财，名利双收。", l:"<b>[情感羁绊]</b> 浪漫多情。", k:"<b>[后代传承]</b> 晚年享福。", h:"<b>[实战锦囊]</b> 忌印星克制。" }, female: { c:"<b>[天赋传记]</b> 艺术女神。", w:"<b>[财富逻辑]</b> 粉丝经济。", l:"<b>[情感羁绊]</b> 注重精神。", k:"<b>[后代传承]</b> 母凭子贵。", h:"<b>[实战锦囊]</b> 情绪化。" } },
-        "假从儿格": { name: "🎭 怀才不遇 (假)", tags: ["SR","才情"], icon: "🎭", slogan: "心比天高，命途多舛。", male: { c:"<b>[天赋传记]</b> 虽有才华，但局中印星干扰，常感怀才不遇，或才华无法变现。需要运势去印方能爆发。", w:"<b>[财富逻辑]</b> 辛苦钱。", l:"<b>[情感羁绊]</b> 唠叨。", k:"<b>[后代传承]</b> 操劳。", h:"<b>[实战锦囊]</b> 务实。" }, female: { c:"<b>[天赋传记]</b> 劳碌命。为子女操碎心。", w:"<b>[财富逻辑]</b> 积少成多。", l:"<b>[情感羁绊]</b> 挑剔。", k:"<b>[后代传承]</b> 溺爱。", h:"<b>[实战锦囊]</b> 焦虑。" } }
+        "假从儿格": { name: "🎭 怀才不遇 (假)", tags: ["SR","才情"], icon: "🎭", slogan: "心比天高，命途多舛。", male: { c:"<b>[天赋传记]</b> 虽有才华，但局中印星干扰，常感怀才不遇，或才华无法变现。需要运势去印方能爆发。", w:"<b>[财富逻辑]</b> 辛苦钱。", l:"<b>[情感羁绊]</b> 唠叨。", k:"<b>[后代传承]</b> 操劳。", h:"<b>[实战锦囊]</b> 务实。" }, female: { c:"<b>[天赋传记]</b> 劳碌命。为子女操碎心。", w:"<b>[财富逻辑]</b> 积少成多。", l:"<b>[情感羁绊]</b> 挑剔。", k:"<b>[后代传承]</b> 溺爱。", h:"<b>[实战锦囊]</b> 焦虑。" } },
+        
+        // 补充漏掉的“伤官合杀”全解析
+        "伤官合杀": { 
+            name: "⚡ 危机终结者", tags: ["SSR","权谋"], icon: "⚔️", slogan: "混乱是阶梯，权谋是利刃。", 
+            male: { 
+                c:"<b>[天赋传记]</b> 伤官合杀（或伤官驾杀），乃是乱世枭雄之格。伤官代表你的狂妄、手段和智谋；七杀代表外界的危机、强权和挑战。两者相合，意味着你能用你的聪明才智去摆平最棘手的问题，甚至驾驭最难搞的人。你天生喜欢挑战，越是混乱、危险的局面，越能激发你的S级潜能。你适合从事危机公关、律师、特种行业、谈判专家或政治幕僚。你懂得如何利用对手的力量来成就自己，是以“毒”攻“毒”的高手。", 
+                w:"<b>[财富逻辑]</b> 爆发力极强。你的财富往往不是靠死工资，而是来自于对资源的重新整合和对规则的巧妙利用。你善于在灰度空间里寻找机会。你的每一次成功，往往都伴随着一次巨大的危机解除。你是那种不开张则已，一开张吃三年的类型。", 
+                l:"<b>[情感羁绊]</b> 势均力敌。你的爱情是一场征服与被征服的游戏。你欣赏强悍、有主见、甚至带点野性的伴侣。普通的“傻白甜”根本入不了你的眼。你们的相处模式充满了博弈的快感，爱得轰轰烈烈。", 
+                k:"<b>[后代传承]</b> 叛逆天才。你的孩子多半继承了你的高智商和反骨。不要试图用常规的道德说教去约束他，那样只会适得其反。要引导他把这种叛逆能量转化为创造力。", 
+                h:"<b>[实战锦囊]</b> 学会强制关机。你的精神长期处于高度亢奋和紧绷状态，容易患偏头痛、神经衰弱或心脏问题。你需要学会像关掉机器一样，彻底放空自己。多接触水，水能泄金气，平复你的燥热。" 
+            }, 
+            female: { 
+                c:"<b>[天赋传记]</b> 职场铁娘子。你拥有不输男性的魄力和手腕，能镇得住各种复杂场面。在男人堆里，你是那个发号施令的女王。你适合做企业高管、独立创业者。你的名声越响，成就越大。", 
+                w:"<b>[财富逻辑]</b> 名气即财气。适合经营个人品牌，利用影响力变现。你可能会经历几次大起大落，但每一次跌倒都能让你弹得更高。", 
+                l:"<b>[情感羁绊]</b> 慕强心理。你只会被比你更强的男人征服。但遗憾的是，真正能驾驭你的男人凤毛麟角。你的婚姻往往带有某种“合作”性质。建议找一个大格局的成熟男性。", 
+                k:"<b>[后代传承]</b> 精英教育。你会倾尽全力培养孩子成为人中龙凤。但要注意不要给孩子太大的压力，偶尔也要展示你温柔的一面。", 
+                h:"<b>[实战锦囊]</b> 肝火易旺。七杀攻身，伤官泄气，你的身体容易透支。要注意乳腺、甲状腺和生殖系统的保养。少动怒，多做瑜伽调节内分泌。" 
+            } 
+        }
     };
 
     const XIJI_RULES = {
@@ -764,38 +780,28 @@
     // 4. 格局判定核心逻辑 (含真假从格 + 气势判定 + 优先级修复)
     // ==========================================
     function determinePattern(climate, pillars, dm, mz, cmd) {
-        // --- 核心修复：不直接返回气候格，而是先判断是否为从格 ---
-
         const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
         const zhis = pillars.map(p => p.z);
         
-        // 计算根气
         const dmRooted = hasRoot(dm, pillars);
-        let mzMainGod = SHISHEN_MAP[dm][ZHI_MAIN_QI[mz]]; // 原始月令本气
+        let mzMainGod = SHISHEN_MAP[dm][ZHI_MAIN_QI[mz]]; 
 
         // === 1. 气势判定 (Formation Override) ===
-        // 特殊：检测地支是否会成“财局”或“杀局”，从而改变月令性质
-        // 例如：庚生亥月，若地支见亥卯未、寅亥合木，则月令气势转木（财）
         if (!dmRooted) {
              const dmElement = WUXING_MAP[dm];
-             
-             // A. 金日主 (庚/辛)，见亥卯未/寅卯辰/亥寅 -> 木局 (财)
              if (dmElement === '金') {
                  if ((zhis.includes('亥') && zhis.includes('卯')) || 
                      (zhis.includes('寅') && zhis.includes('卯')) || 
                      (zhis.includes('亥') && zhis.includes('寅'))) {
-                     if (mzMainGod === '食神' || mzMainGod === '伤官') mzMainGod = '偏财'; // 修正气势为财
+                     if (mzMainGod === '食神' || mzMainGod === '伤官') mzMainGod = '偏财';
                  }
              }
-             // B. 木日主，见申子辰/亥子丑 -> 水局 (印) -> 此时多为从强/母慈灭子，暂不展开
-             // C. 水日主，见寅午戌/巳午未 -> 火局 (财)
              if (dmElement === '水') {
                  if ((zhis.includes('寅') && zhis.includes('午')) || 
                      (zhis.includes('巳') && zhis.includes('午'))) {
                      mzMainGod = '偏财';
                  }
              }
-             // D. 火日主，见巳酉丑/申酉戌 -> 金局 (财)
              if (dmElement === '火') {
                  if ((zhis.includes('巳') && zhis.includes('酉')) || 
                      (zhis.includes('申') && zhis.includes('酉'))) {
@@ -804,73 +810,51 @@
              }
         }
 
-        // 计算天干生扶（印星+比劫）的数量
         const supportStemsCount = stems.filter(s => {
             const god = SHISHEN_MAP[dm][s];
             return ["正印","偏印","比肩","劫财"].includes(god);
         }).length;
 
         // === 2. 优先判定“从格” (Cong Ge Priority) ===
-        // 如果符合从格条件，直接返回从格，忽略“金水食神”等气候格
         if (!dmRooted) {
-            // 如果日主无根，且月令气势（经过修正）极旺
-            
-            // --- 从财格判定 ---
             if (mzMainGod.includes("财")) {
                 if (supportStemsCount === 0) return "真从财格";
-                if (supportStemsCount <= 2) return "假从财格"; // 有微弱帮扶，为假从
+                if (supportStemsCount <= 2) return "假从财格"; 
             }
-            // --- 从杀格判定 ---
             if (mzMainGod === "七杀" || mzMainGod === "正官") {
                 if (supportStemsCount === 0) return "真从杀格";
                 if (supportStemsCount <= 2) return "假从杀格";
             }
-            // --- 从儿格判定 (食伤) ---
             if (mzMainGod === "食神" || mzMainGod === "伤官") {
-                // 从儿格还需要看是否见印，见印则可能破格
                 const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s]));
                 if (!hasSeal && supportStemsCount === 0) return "真从儿格";
                 if (hasSeal || supportStemsCount > 0) return "假从儿格";
             }
         }
 
-        // === 3. 其次判定特殊气候格 (Climate Special) ===
-        // 只有不入从格时，才论这些特殊格
+        // === 3. 关键交互 (Interaction Priority - 针对 乙亥/庚辰/己丑/壬申 此类天干成格) ===
+        // 必须优先于月令本气判定
+        const hasKill = stems.some(s => SHISHEN_MAP[dm][s] === "七杀");
+        const hasHurt = stems.some(s => SHISHEN_MAP[dm][s] === "伤官");
+        const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s]));
+        const hasFood = stems.some(s => SHISHEN_MAP[dm][s] === "食神");
+
+        // 伤官合杀：见七杀且见伤官
+        if (hasKill && hasHurt) return "伤官合杀";
+        // 食神制杀：见七杀且见食神
+        if (hasKill && hasFood) return "食神制杀";
+        // 杀印相生：见七杀且见印
+        if (hasKill && hasSeal) return "杀印相生";
+        // 伤官配印：伤官旺且见印
+        if (hasHurt && hasSeal && hasRoot(dm, pillars)) return "伤官配印";
+
+        // === 4. 特殊气候格 (Climate Special) ===
         if (climate.special) return climate.special;
 
-        // === 4. 阳刃/建禄/月劫 (Standard Strong Patterns) ===
+        // === 5. 阳刃/建禄/月劫 (Standard Strong Patterns) ===
         if (YANG_REN_MAP[dm] === mz) return "阳刃格";
         if (WUXING_MAP[dm] === WUXING_MAP[mz] && mz !== YANG_REN_MAP[dm]) return "建禄格";
         if (mzMainGod === "劫财") return "月劫格";
-
-        // === 5. 复杂组合格局 (Combination Patterns) ===
-        if (mzMainGod === "伤官") {
-            const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s]) && hasRoot(s, pillars));
-            if (hasSeal) return "伤官配印";
-            const hasWealth = stems.some(s => SHISHEN_MAP[dm][s].includes("财"));
-            if (hasWealth) return "伤官生财";
-            const hasKill = stems.some(s => SHISHEN_MAP[dm][s] === "七杀");
-            if (hasKill) return "伤官合杀";
-            return "伤官格";
-        }
-
-        if (mzMainGod === "食神") {
-            const hasKill = stems.some(s => SHISHEN_MAP[dm][s] === "七杀");
-            if (hasKill && dmRooted) return "食神制杀"; 
-            const hasWealth = stems.some(s => SHISHEN_MAP[dm][s].includes("财"));
-            if (hasWealth) return "食神生财";
-            return "食神格";
-        }
-
-        if (mzMainGod === "七杀") {
-            const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s]));
-            if (hasSeal) return "杀印相生";
-            const hasShangGuan = stems.some(s => SHISHEN_MAP[dm][s] === "伤官");
-            if (hasShangGuan) return "伤官合杀";
-            const hasShiShen = stems.some(s => SHISHEN_MAP[dm][s] === "食神");
-            if (hasShiShen) return "食神制杀";
-            return "七杀格";
-        }
 
         // === 6. 普通正格 (Standard Month Commander) ===
         if (stems.includes(cmd.commander)) {
