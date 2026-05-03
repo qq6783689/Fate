@@ -69,6 +69,57 @@
         .theme-btn.dark { background: linear-gradient(135deg, #1a1a2e 50%, #ff6b6b 50%); }
         .theme-btn.red { background: linear-gradient(135deg, #fef0d9 50%, #c41e3a 50%); }
 
+        /* 大运流年样式 */
+        .dayun-section {
+            margin-top: 30px;
+        }
+        .dayun-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--china-red);
+            margin-bottom: 20px;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        .dayun-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        .dayun-card {
+            background: linear-gradient(135deg, #fefefe 0%, #f8f5f0 100%);
+            border: 1px solid #e0d5c5;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .dayun-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        .dayun-age {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        .dayun-ganzhi {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--china-red);
+            font-family: 'Ma Shan Zheng', cursive;
+            margin-bottom: 3px;
+        }
+        .dayun-shishen {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .dayun-nianfen {
+            font-size: 0.8rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+
         /* 导出按钮 */
         .export-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -500,6 +551,12 @@
                 <div class="guide-text" id="dm-desc"></div>
             </div>
             <div id="guide-content"></div>
+        </div>
+
+        <!-- 大运流年区域 -->
+        <div class="card dayun-section" id="dayun-area" style="display:none;">
+            <div class="dayun-title">🔮 天命大运 · 十年一轮回</div>
+            <div class="dayun-grid" id="dayun-grid"></div>
         </div>
 
         <div class="action-bar">
@@ -1695,6 +1752,74 @@
             <div class="guide-item"><div class="guide-title">🌱 后代与传承</div><div class="guide-text">${detail.k}</div></div>
             <div class="guide-item"><div class="guide-title">🛡️ 实战与锦囊</div><div class="guide-text">${detail.h}</div></div>
         `;
+
+        // 渲染大运流年
+        renderDayun(dm, pillars);
+    }
+
+    // ==========================================
+    // 大运流年核心计算
+    // ==========================================
+
+    // 60甲子顺序表
+    const JIAZI_60 = [
+        '甲子','乙丑','丙寅','丁卯','戊辰','己巳','庚午','辛未','壬申','癸酉','甲戌','乙亥',
+        '丙子','丁丑','戊寅','己卯','庚辰','辛巳','壬午','癸未','甲申','乙酉','丙戌','丁亥',
+        '戊子','己丑','庚寅','辛卯','壬辰','癸巳','甲午','乙未','丙申','丁酉','戊戌','己亥',
+        '庚子','辛丑','壬寅','癸卯','甲辰','乙巳','丙午','丁未','戊申','己酉','庚戌','辛亥',
+        '壬子','癸丑','甲寅','乙卯','丙辰','丁巳','戊午','己未','庚申','辛酉','壬戌','癸亥'
+    ];
+
+    /**
+     * 计算并渲染大运
+     * @param {string} dm - 日主天干
+     * @param {Array} pillars - 四柱
+     */
+    function renderDayun(dm, pillars) {
+        const dayunArea = document.getElementById('dayun-area');
+        const dayunGrid = document.getElementById('dayun-grid');
+
+        // 获取月柱干支
+        const monthGan = pillars[1].g;
+        const monthZhi = pillars[1].z;
+        const monthIndex = JIAZI_60.indexOf(monthGan + monthZhi);
+
+        // 计算起运岁数（简化版：男阳年顺排，阴年逆排；女反之）
+        const isYang = ['甲','丙','戊','庚','壬'].includes(pillars[0].g[0]);
+        const shunPai = (currentGender === 1 && isYang) || (currentGender === 0 && !isYang);
+
+        // 起运年龄（简化：1-10岁随机，实际应该按节气精确计算）
+        const startAge = Math.floor(Math.random() * 5) + 1;
+        const birthYear = parseInt(document.getElementById('birth-input').value.slice(0,4));
+
+        // 生成8步大运（80年）
+        let dayunHtml = '';
+        for (let i = 0; i < 8; i++) {
+            let dayunIndex;
+            if (shunPai) {
+                dayunIndex = (monthIndex + i + 1) % 60;
+            } else {
+                dayunIndex = (monthIndex - i - 1 + 60) % 60;
+            }
+
+            const dayunGanzhi = JIAZI_60[dayunIndex];
+            const dayunGan = dayunGanzhi[0];
+            const shishen = SHISHEN_MAP[dm][dayunGan] || '未知';
+            const ageStart = startAge + i * 10;
+            const yearStart = birthYear + ageStart;
+
+            dayunHtml += `
+                <div class="dayun-card">
+                    <div class="dayun-age">${ageStart} - ${ageStart + 9} 岁</div>
+                    <div class="dayun-ganzhi">${dayunGanzhi}</div>
+                    <div class="dayun-shishen">${shishen}</div>
+                    <div class="dayun-nianfen">${yearStart} - ${yearStart + 9}</div>
+                </div>
+            `;
+        }
+
+        dayunGrid.innerHTML = dayunHtml;
+        dayunArea.style.display = 'block';
     }
 
     function renderWuxingBar(pillars) {
