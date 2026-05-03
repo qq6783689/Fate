@@ -184,6 +184,66 @@
             border-color: #ef5350;
         }
 
+        /* 神煞卡片样式 */
+        .shensha-section {
+            margin-top: 30px;
+        }
+        .shensha-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--china-red);
+            margin-bottom: 20px;
+            font-family: 'Ma Shan Zheng', cursive;
+        }
+        .shensha-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .shensha-card {
+            background: linear-gradient(135deg, #fafafa 0%, #f5f0e6 100%);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .shensha-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .shensha-icon {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        .shensha-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 3px;
+        }
+        .shensha-zhu {
+            font-size: 0.75rem;
+            color: #888;
+        }
+        .shensha-desc {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+        /* 吉煞区分 */
+        .shensha-card.ji {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-color: #a5d6a7;
+        }
+        .shensha-card.xiong {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-color: #ef9a9a;
+        }
+
         /* 导出按钮 */
         .export-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -621,6 +681,12 @@
         <div class="card dayun-section" id="dayun-area" style="display:none;">
             <div class="dayun-title">🔮 天命大运 · 十年一轮回</div>
             <div class="dayun-grid" id="dayun-grid"></div>
+        </div>
+
+        <!-- 神煞区域 -->
+        <div class="card shensha-section" id="shensha-area" style="display:none;">
+            <div class="shensha-title">✨ 命带神煞</div>
+            <div class="shensha-grid" id="shensha-grid"></div>
         </div>
 
         <div class="action-bar">
@@ -1983,6 +2049,163 @@
 
             dayunGrid.innerHTML = dayunHtml;
             dayunArea.style.display = 'block';
+
+            // 渲染神煞
+            renderShensha(pillars);
+        }
+
+        /**
+         * 神煞系统计算与渲染
+         */
+        function renderShensha(pillars) {
+            const area = document.getElementById('shensha-area');
+            const grid = document.getElementById('shensha-grid');
+
+            const yearZhi = pillars[0].z;
+            const dayGan = pillars[2].g;
+            const dayZhi = pillars[2].z;
+
+            // 神煞数据库
+            const shenshaDB = [
+                // 吉煞
+                {
+                    name: '天乙贵人',
+                    icon: '👑',
+                    type: 'ji',
+                    check: () => {
+                        const lookup = {
+                            '甲': ['丑','未'], '乙': ['子','申'], '丙': ['亥','酉'],
+                            '丁': ['亥','酉'], '戊': ['丑','未'], '己': ['子','申'],
+                            '庚': ['丑','未'], '辛': ['寅','午'], '壬': ['卯','巳'],
+                            '癸': ['卯','巳']
+                        };
+                        return lookup[dayGan] && (lookup[dayGan].includes(yearZhi) || lookup[dayGan].includes(dayZhi));
+                    },
+                    desc: '至贵之星，逢凶化吉'
+                },
+                {
+                    name: '文昌',
+                    icon: '📚',
+                    type: 'ji',
+                    check: () => {
+                        const lookup = {
+                            '甲':'巳','乙':'午','丙':'申','丁':'酉',
+                            '戊':'申','己':'酉','庚':'亥','辛':'子',
+                            '壬':'寅','癸':'卯'
+                        };
+                        return lookup[dayGan] && (lookup[dayGan] === yearZhi || lookup[dayGan] === dayZhi);
+                    },
+                    desc: '聪明智慧，利学业考试'
+                },
+                {
+                    name: '将星',
+                    icon: '⚔️',
+                    type: 'ji',
+                    check: () => {
+                        const lookup = {
+                            '寅':'午','卯':'卯','辰':'子','巳':'酉','午':'午','未':'卯',
+                            '申':'子','酉':'酉','戌':'午','亥':'卯','子':'子','丑':'酉'
+                        };
+                        return lookup[yearZhi] && lookup[yearZhi] === dayZhi;
+                    },
+                    desc: '掌权掌印，领导力强'
+                },
+                {
+                    name: '驿马',
+                    icon: '🐎',
+                    type: 'ji',
+                    check: () => {
+                        const lookup = {
+                            '寅':'申','卯':'巳','辰':'寅','巳':'亥','午':'申','未':'巳',
+                            '申':'寅','酉':'亥','戌':'申','亥':'巳','子':'寅','丑':'亥'
+                        };
+                        return lookup[yearZhi] && lookup[yearZhi] === dayZhi;
+                    },
+                    desc: '动中求财，利远行发展'
+                },
+                {
+                    name: '桃花',
+                    icon: '🌸',
+                    type: 'ji',
+                    check: () => {
+                        const lookup = {
+                            '寅':'卯','卯':'子','辰':'酉','巳':'午','午':'卯','未':'子',
+                            '申':'酉','酉':'午','戌':'卯','亥':'子','子':'酉','丑':'午'
+                        };
+                        return lookup[yearZhi] && lookup[yearZhi] === dayZhi;
+                    },
+                    desc: '人缘极佳，魅力四射'
+                },
+                {
+                    name: '华盖',
+                    icon: '⛩️',
+                    type: 'ping',
+                    check: () => {
+                        const lookup = {
+                            '寅':'戌','卯':'未','辰':'辰','巳':'丑','午':'戌','未':'未',
+                            '申':'辰','酉':'丑','戌':'戌','亥':'未','子':'辰','丑':'丑'
+                        };
+                        return lookup[yearZhi] && lookup[yearZhi] === dayZhi;
+                    },
+                    desc: '艺术天赋，孤傲清贵'
+                },
+                {
+                    name: '羊刃',
+                    icon: '🗡️',
+                    type: 'xiong',
+                    check: () => {
+                        const lookup = {
+                            '甲':'卯','乙':'寅','丙':'午','丁':'巳',
+                            '戊':'午','己':'巳','庚':'酉','辛':'申',
+                            '壬':'子','癸':'亥'
+                        };
+                        return lookup[dayGan] && lookup[dayGan] === dayZhi;
+                    },
+                    desc: '刚强急躁，宜慎守勿贪'
+                },
+                {
+                    name: '红艳',
+                    icon: '🌹',
+                    type: 'ji',
+                    check: () => {
+                        const lookup = {
+                            '甲':'午','乙':'申','丙':'寅','丁':'未',
+                            '戊':'辰','己':'辰','庚':'戌','辛':'酉',
+                            '壬':'子','癸':'亥'
+                        };
+                        return lookup[dayGan] && lookup[dayGan] === dayZhi;
+                    },
+                    desc: '气质出众，异性缘佳'
+                }
+            ];
+
+            // 计算命中的神煞
+            const found = [];
+            shenshaDB.forEach(s => {
+                if (s.check()) {
+                    found.push(s);
+                }
+            });
+
+            if (found.length === 0) {
+                area.style.display = 'none';
+                return;
+            }
+
+            // 渲染
+            let html = '';
+            found.forEach(s => {
+                html += `
+                    <div class="shensha-card ${s.type}">
+                        <div class="shensha-icon">${s.icon}</div>
+                        <div class="shensha-name">${s.name}</div>
+                        <div class="shensha-desc">${s.desc}</div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+            area.style.display = 'block';
         }
 
         /**
@@ -2005,10 +2228,10 @@
             }
         }
 
-    function renderWuxingBar(pillars) {
-        // 简单计算天干地支（不含藏干比例，仅主气）
-        const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
-        pillars.forEach(p => { 
+        function renderWuxingBar(pillars) {
+            // 简单计算天干地支（不含藏干比例，仅主气）
+            const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
+            pillars.forEach(p => {
             counts[WUXING_MAP[p.g]] += 1; 
             counts[WUXING_MAP[p.z]] += 1; 
             // 藏干简单加权
