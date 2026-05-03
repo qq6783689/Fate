@@ -1817,44 +1817,66 @@
             const yearStart = birthYear + ageStart;
 
             // ========== 吉凶判断 & 颜色 ==========
-            // 提取喜忌关键词（去掉emoji和空格）
-            const joyStr = xiji.joy.join(' ');
-            const tabooStr = xiji.taboo.join(' ');
-
-            let isJi = false, isXiong = false;
-            const ganWx = WUXING_MAP[dayunGan];
-
-            // 吉凶判断规则：
-            // 1. 十神在喜用 → 吉
-            // 2. 十神在忌神 → 凶
-            // 3. 五行在喜用 → 吉
-            // 4. 财官印食为吉，杀伤劫刃为凶（通用规则）
+            // 吉凶判断逻辑 V2.0 专业版：
+            // 1. 基础属性：财官印食为善，杀伤劫刃为恶
+            // 2. 凶神有制反吉，善神受损反凶
+            // 3. 最终叠加格局喜忌修正
+            
+            // 第一步：基础十神属性判断
             const goodGods = ['正财','偏财','正官','正印','偏印','食神','比肩'];
             const badGods = ['七杀','伤官','劫财','羊刃'];
-
-            if (goodGods.includes(shishen) && !badGods.includes(shishen)) {
+            
+            let isJi = false, isXiong = false;
+            let reason = '';
+            
+            if (goodGods.includes(shishen)) {
                 isJi = true;
+                reason = '善神临宫';
             } else if (badGods.includes(shishen)) {
                 isXiong = true;
+                reason = '凶神主事';
             }
-
-            // 再叠加喜忌判断
-            if (joyStr.includes(shishen) || joyStr.includes(ganWx)) {
+            
+            // 第二步：特殊规则修正（凶神有制反吉）
+            if (shishen === '七杀') {
+                // 七杀有食神/印星制反为贵（这里简化，实际看命局组合）
+                if (pillars.some(p => SHISHEN_MAP[dm][p.g] === '食神')) {
+                    isJi = true;
+                    isXiong = false;
+                    reason = '杀有食制';
+                }
+            }
+            if (shishen === '伤官') {
+                // 伤官配印为吉格
+                if (pillars.some(p => SHISHEN_MAP[dm][p.g] === '正印' || SHISHEN_MAP[dm][p.g] === '偏印')) {
+                    isJi = true;
+                    isXiong = false;
+                    reason = '伤官配印';
+                }
+            }
+            
+            // 第三步：喜忌最终修正（去掉emoji匹配纯文本）
+            const joyText = xiji.joy.join('');
+            const tabooText = xiji.taboo.join('');
+            
+            if (joyText.includes(shishen)) {
                 isJi = true;
                 isXiong = false;
-            } else if (tabooStr.includes(shishen) || tabooStr.includes(ganWx)) {
+                reason = '喜用神到位';
+            } else if (tabooText.includes(shishen)) {
                 isXiong = true;
                 isJi = false;
+                reason = '忌神逢运';
             }
 
             let cardStyle = '';
             let badge = '';
             if (isJi) {
                 cardStyle = 'background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-color: #81c784;';
-                badge = '<div style="font-size:0.7rem;color:#2e7d32;font-weight:bold;margin-top:5px;">★ 吉运</div>';
+                badge = `<div style="font-size:0.7rem;color:#2e7d32;font-weight:bold;margin-top:5px;">★ ${reason}</div>`;
             } else if (isXiong) {
                 cardStyle = 'background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); border-color: #e57373;';
-                badge = '<div style="font-size:0.7rem;color:#c62828;font-weight:bold;margin-top:5px;">☆ 注意</div>';
+                badge = `<div style="font-size:0.7rem;color:#c62828;font-weight:bold;margin-top:5px;">☆ ${reason}</div>`;
             }
 
             dayunHtml += `
