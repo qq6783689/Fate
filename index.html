@@ -69,6 +69,30 @@
         .theme-btn.dark { background: linear-gradient(135deg, #1a1a2e 50%, #ff6b6b 50%); }
         .theme-btn.red { background: linear-gradient(135deg, #fef0d9 50%, #c41e3a 50%); }
 
+        /* 导出按钮 */
+        .export-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        .export-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
@@ -479,7 +503,8 @@
         </div>
 
         <div class="action-bar">
-            <button class="btn-copy" onclick="copyResult()">📥 保存天命书 (复制全文)</button>
+            <button class="export-btn" onclick="exportCard()">📸 生成分享卡片</button>
+            <button class="btn-copy" onclick="copyResult()">📥 复制全文</button>
         </div>
 
         <div class="footer">FATE AUTHENTICATED BY GRANDMASTER · 2025</div>
@@ -1032,6 +1057,83 @@
 
     // 页面加载时自动恢复主题
     document.addEventListener('DOMContentLoaded', initTheme);
+
+    /**
+     * 生成分享卡片并下载
+     */
+    async function exportCard() {
+        const btn = document.querySelector('.export-btn');
+        const originalText = btn.innerHTML;
+
+        try {
+            btn.disabled = true;
+            btn.innerHTML = '⏳ 正在生成...';
+
+            // 获取结果区域
+            const resultArea = document.getElementById('result-area');
+            if (!resultArea || resultArea.style.display === 'none') {
+                showError('请先进行八字鑑定后再生成分享卡片');
+                return;
+            }
+
+            // 创建专门用于截图的容器（优化样式）
+            const captureContainer = document.createElement('div');
+            captureContainer.style.background = 'var(--paper-bg)';
+            captureContainer.style.padding = '30px';
+            captureContainer.style.position = 'fixed';
+            captureContainer.style.left = '-9999px';
+            captureContainer.style.top = '0';
+            captureContainer.style.width = '500px';
+            document.body.appendChild(captureContainer);
+
+            // 克隆内容并优化显示
+            const clone = resultArea.cloneNode(true);
+            clone.style.display = 'block';
+            clone.style.maxWidth = '100%';
+            clone.style.padding = '0';
+            clone.style.margin = '0';
+
+            // 移除按钮区域
+            const actionBar = clone.querySelector('.action-bar');
+            if (actionBar) actionBar.remove();
+
+            // 添加水印标题
+            const watermark = document.createElement('div');
+            watermark.innerHTML = '<hr style="margin:30px 0 15px;border-color:rgba(0,0,0,0.1);"><div style="text-align:center;color:#999;font-size:0.8rem;">🌐 天命鑑定 · 宗师列传</div>';
+            clone.appendChild(watermark);
+
+            captureContainer.appendChild(clone);
+
+            // 生成图片
+            const canvas = await html2canvas(captureContainer, {
+                scale: 2,  // 高清2倍分辨率
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: null,
+                logging: false
+            });
+
+            // 清理
+            document.body.removeChild(captureContainer);
+
+            // 下载图片
+            const link = document.createElement('a');
+            const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            link.download = `天命鑑定_${dateStr}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+
+            logDebug('EXPORT', '分享卡片已生成');
+            showError('✅ 分享卡片已生成！');
+
+        } catch (error) {
+            console.error('导出失败:', error);
+            showError('生成失败: ' + error.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+    }
 
     /**
      * 显示用户友好的错误提示
