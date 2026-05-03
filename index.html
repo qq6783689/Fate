@@ -1207,10 +1207,26 @@
     }
 
     /**
+     * 检查并等待核心历法库加载完成
+     * @param {number} maxRetries - 最大重试次数
+     * @returns {Promise<boolean>}
+     */
+    async function waitForLunarLibrary(maxRetries = 5) {
+        for (let i = 0; i < maxRetries; i++) {
+            if (typeof Lunar !== 'undefined' && typeof Solar !== 'undefined') {
+                return true;
+            }
+            logDebug('WAIT', `等待历法库加载... (${i + 1}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        return false;
+    }
+
+    /**
      * 开始八字鑑定主流程
      * 包含错误处理、加载动画、完整计算流程
      */
-    function startScan() {
+    async function startScan() {
         // 前置校验
         const timeStr = document.getElementById('birth-input').value;
         if (!timeStr) {
@@ -1218,9 +1234,10 @@
             return;
         }
 
-        // 核心库加载检查
-        if (typeof Lunar === 'undefined') {
-            showError('核心历法库加载失败，请刷新重试');
+        // 等待核心库加载（带重试机制）
+        const libraryLoaded = await waitForLunarLibrary();
+        if (!libraryLoaded) {
+            showError('历法库加载中，请稍等几秒再试...');
             return;
         }
 
@@ -1230,7 +1247,7 @@
         // 显示加载步骤动画
         showLoaderSteps();
 
-        setTimeout(() => {
+        setTimeout(async () => {
             try {
                 logDebug('INFO', 'Starting Bazi calculation: ' + timeStr);
 
