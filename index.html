@@ -455,7 +455,7 @@
             .card { padding: 20px 15px; margin-bottom: 20px; }
             .guide-item { padding: 15px 10px; }
             .btn-start { font-size: 1rem; padding: 14px 20px; }
-            .history-btn { bottom: 15px; right: 15px; padding: 10px 18px; font-size: 0.9rem; }
+            
             .theme-switcher { bottom: 65px; right: 15px; }
             .theme-btn { width: 28px; height: 28px; }
             .history-panel { width: 95%; max-height: 80vh; }
@@ -466,20 +466,7 @@
         }
 
         /* ==================== 新增: 历史记录样式 ==================== */
-        .history-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--china-red);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(142, 24, 24, 0.3);
-            font-weight: bold;
-            z-index: 100;
-            transition: all 0.3s;
-        }
+        
         .history-btn:hover { transform: translateY(-2px); }
         
         .history-panel {
@@ -609,9 +596,111 @@
             animation: slideDown 0.3s ease;
         }
         .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 100px; letter-spacing: 4px; text-transform: uppercase; }
+    
+        /* 真太阳时校正 */
+        .solar-time-section {
+            background: rgba(142, 24, 24, 0.05);
+            border: 1px dashed rgba(142, 24, 24, 0.3);
+            border-radius: 6px;
+            padding: 12px;
+            margin: 15px 0;
+        }
+        .solar-time-title {
+            font-weight: bold;
+            color: var(--china-red);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        .solar-time-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .solar-time-select {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .solar-time-result {
+            font-size: 0.85rem;
+            color: #666;
+            padding: 8px;
+            background: #fff;
+            border-radius: 4px;
+        }
+        .solar-time-diff {
+            color: var(--china-red);
+            font-weight: bold;
+        }
+        
+        
+        .history-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 73, 94, 0.35);
+        }
+    
+        /* 历史记录按钮 */
+        .history-btn {
+            margin: 20px auto 0;
+            display: block;
+            width: 200px;
+            padding: 12px 20px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            font-family: 'Noto Serif SC', serif;
+            transition: all 0.3s;
+        }
+        .history-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 73, 94, 0.35);
+        }
     </style>
 </head>
-<body>
+<body><script>
+// 🚀 移动端事件强制绑定（100%兼容方案）
+document.addEventListener('DOMContentLoaded', function() {
+    // 1. 开始按钮双重事件绑定
+    const startBtn = document.querySelector('.btn-start');
+    if (startBtn) {
+        startBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (window.startScan) window.startScan();
+        });
+        startBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.startScan) window.startScan();
+        });
+    }
+    
+    // 2. 性别选择按钮
+    document.querySelectorAll('.g-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const gender = this.innerText.indexOf('男') > -1 ? 1 : 0;
+            window.setGender(gender, this);
+        });
+    });
+    
+    // 3. 自动填充当前时间
+    setTimeout(function() {
+        const now = new Date();
+        const str = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        const input = document.getElementById('birth-input');
+        if (input) input.value = str;
+        // 初始化真太阳时计算
+        if (window.updateSolarTime) window.updateSolarTime();
+    }, 200);
+});
+</script>
+
 
 <div class="container">
     <div class="header">
@@ -629,11 +718,64 @@
         </div>
         <div class="form-group">
             <span class="label">降生时刻 (公历)</span>
-            <input type="datetime-local" id="birth-input">
+            <input type="datetime-local" id="birth-input" onchange="updateSolarTime()">
+        </div>
+        <div class="form-group">
+            <span class="label">出生城市</span>
+            <select id="city-select" class="solar-time-select" onchange="updateSolarTime()">
+                <option value="116.46">北京</option>
+                <option value="121.48">上海</option>
+                <option value="117.2">天津</option>
+                <option value="106.54">重庆</option>
+                <option value="113.23">广州</option>
+                <option value="114.07">深圳</option>
+                <option value="120.19">杭州</option>
+                <option value="118.78">南京</option>
+                <option value="104.06">成都</option>
+                <option value="114.31">武汉</option>
+                <option value="113">长沙</option>
+                <option value="108.95">西安</option>
+                <option value="117.27">合肥</option>
+                <option value="115.89">南昌</option>
+                <option value="119.3">福州</option>
+                <option value="113.65">郑州</option>
+                <option value="114.48">石家庄</option>
+                <option value="112.53">太原</option>
+                <option value="117">济南</option>
+                <option value="125.35">长春</option>
+                <option value="126.63">哈尔滨</option>
+                <option value="123.38">沈阳</option>
+                <option value="111.65">呼和浩特</option>
+                <option value="103.73">兰州</option>
+                <option value="101.74">西宁</option>
+                <option value="106.27">银川</option>
+                <option value="87.68">乌鲁木齐</option>
+                <option value="91.11">拉萨</option>
+                <option value="106.71">贵阳</option>
+                <option value="102.73">昆明</option>
+                <option value="108.33">南宁</option>
+                <option value="110.35">海口</option>
+                <option value="121.5">台北</option>
+                <option value="120.33">青岛</option>
+                <option value="121.62">大连</option>
+                <option value="120.62">苏州</option>
+                <option value="118.1">厦门</option>
+            </select>
+        </div>
+
+        <div class="solar-time-section">
+            <div class="solar-time-title">☀️ 真太阳时校正</div>
+            <div id="solar-time-result" class="solar-time-result">请选择出生时间和城市</div>
         </div>
         <button class="btn-start" onclick="startScan()">
             开启 · 天命卷轴 <span class="loader" id="loader"></span>
         </button>
+
+        <button class="history-btn" onclick="showHistoryPanel()">
+            📜 历史记录
+        </button>
+
+        
     </div>
 
     <div id="result-area">
@@ -715,7 +857,7 @@
 </div>
 
 <!-- ==================== 新增: 历史记录相关 HTML ==================== -->
-<button class="history-btn" onclick="showHistoryPanel()">📜 历史记录</button>
+
 
 <div class="history-overlay" id="history-overlay" onclick="hideHistoryPanel()"></div>
 <div class="history-panel" id="history-panel">
@@ -743,6 +885,63 @@
     // 1. 核心全局字典
     // ==========================================
     let currentGender = 1;
+
+
+// 真太阳时校正函数
+function updateSolarTime() {
+    const birthInput = document.getElementById('birth-input');
+    const citySelect = document.getElementById('city-select');
+    const resultEl = document.getElementById('solar-time-result');
+    const birthStr = birthInput.value;
+    
+    if (!birthStr) {
+        if (resultEl) resultEl.innerHTML = '请先选择出生时间';
+        return;
+    }
+    
+    const lng = parseFloat(citySelect.value);
+    const date = new Date(birthStr);
+    
+    // 1. 经度差校正：(经度 - 120) * 4分钟
+    const lngDiff = (lng - 120) * 4;
+    
+    // 2. 均时差（简化版公式）
+    const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000);
+    const b = 2 * Math.PI * (dayOfYear - 81) / 365;
+    const equationOfTime = 9.87 * Math.sin(2 * b) - 7.53 * Math.cos(b) - 1.5 * Math.sin(b);
+    
+    // 3. 夏令时校正：1986-1991年中国夏令时（4月中-9月中）
+    let dst = 0;
+    const year = date.getFullYear();
+    if (year >= 1986 && year <= 1991) {
+        const month = date.getMonth() + 1;
+        if (month > 4 && month < 9) {
+            dst = -60; // 夏令时减1小时
+        }
+    }
+    
+    const totalDiff = lngDiff + equationOfTime + dst;
+    const solarDate = new Date(date.getTime() + totalDiff * 60000);
+    
+    // 格式化显示
+    const format = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    
+    const diffText = totalDiff > 0 ? `+${totalDiff.toFixed(1)}` : totalDiff.toFixed(1);
+    resultEl.innerHTML = `
+        校正前：${format(date)} (北京时间)<br>
+        经度差：${(lng - 120).toFixed(1)}° → ${lngDiff > 0 ? '+' : ''}${lngDiff.toFixed(1)}分钟<br>
+        均时差：${equationOfTime > 0 ? '+' : ''}${equationOfTime.toFixed(1)}分钟<br>
+        ${dst !== 0 ? `夏令时：${dst > 0 ? '+' : ''}${dst}分钟<br>` : ''}
+        ——————————————————————<br>
+        <strong>校正后（真太阳时）：</strong><span class="solar-time-diff">${format(solarDate)}</span><br>
+        <small>总时差：${diffText}分钟</small>
+    `;
+    
+    // 保存真太阳时到全局，供排盘使用
+    window.solarDateTime = solarDate;
+}
+
+
 
     function safeSetText(id, text) { const el = document.getElementById(id); if (el) el.innerText = text; }
     function safeSetHTML(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
