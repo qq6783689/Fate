@@ -26,15 +26,59 @@
             --wood: #2d6a4f; --fire: #c0392b; --earth: #8d6e63; --metal: #d4ac0d; --water: #1f618d;
         }
 
+        /* 暗黑主题 */
+        [data-theme="dark"] {
+            --china-red: #ff6b6b;
+            --paper-bg: #1a1a2e;
+            --ink-main: #eee;
+            --ink-light: #aaa;
+            --gold-accent: #e8d5b7;
+            --bg-pattern: none;
+        }
+
+        /* 故宫红主题 */
+        [data-theme="red"] {
+            --china-red: #c41e3a;
+            --paper-bg: #fef0d9;
+            --ink-main: #4a0404;
+            --ink-light: #7a3b3b;
+            --gold-accent: #daa520;
+        }
+
+        /* 主题切换按钮 */
+        .theme-switcher {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 90;
+        }
+        .theme-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .theme-btn:hover { transform: scale(1.15); }
+        .theme-btn.active { border-color: var(--china-red); }
+        .theme-btn.classic { background: linear-gradient(135deg, #fdfbf7 50%, #8e1818 50%); }
+        .theme-btn.dark { background: linear-gradient(135deg, #1a1a2e 50%, #ff6b6b 50%); }
+        .theme-btn.red { background: linear-gradient(135deg, #fef0d9 50%, #c41e3a 50%); }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Noto Serif SC', serif;
-            background-color: #eee;
-            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+            background: var(--paper-bg);
+            background-image: var(--bg-pattern, url('https://www.transparenttextures.com/patterns/paper-fibers.png'));
             color: var(--ink-main); margin: 0; padding: 30px 10px; min-height: 100vh;
             display: flex; justify-content: center;
             line-height: 1.8;
+            transition: background 0.3s, color 0.3s;
         }
 
         .container { width: 100%; max-width: 900px; padding-bottom: 150px; }
@@ -196,9 +240,21 @@
         .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 100px; letter-spacing: 4px; text-transform: uppercase; }
         
         @media (max-width: 600px) {
-            .header h1 { font-size: 3rem; }
-            .pillars { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .ofuda-char { font-size: 2.5rem; }
+            .header h1 { font-size: 2.2rem; letter-spacing: 3px; }
+            .header .sub-title { font-size: 0.9rem; padding: 4px 15px; }
+            .pillars { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .ofuda-char { font-size: 2rem; }
+            .card { padding: 20px 15px; margin-bottom: 20px; }
+            .guide-item { padding: 15px 10px; }
+            .btn-start { font-size: 1rem; padding: 14px 20px; }
+            .history-btn { bottom: 15px; right: 15px; padding: 10px 18px; font-size: 0.9rem; }
+            .theme-switcher { bottom: 65px; right: 15px; }
+            .theme-btn { width: 28px; height: 28px; }
+            .history-panel { width: 95%; max-height: 80vh; }
+            .role-header { padding: 20px 15px; }
+            .siling-bar { padding: 10px 15px; }
+            body { padding: 20px 8px; }
+            .container { padding-bottom: 120px; }
         }
 
         /* ==================== 新增: 历史记录样式 ==================== */
@@ -428,6 +484,13 @@
 
         <div class="footer">FATE AUTHENTICATED BY GRANDMASTER · 2025</div>
     </div>
+</div>
+
+<!-- ==================== 新增: 主题切换按钮 ==================== -->
+<div class="theme-switcher">
+    <button class="theme-btn classic active" onclick="setTheme('classic')" title="经典宣纸"></button>
+    <button class="theme-btn dark" onclick="setTheme('dark')" title="暗黑模式"></button>
+    <button class="theme-btn red" onclick="setTheme('red')" title="故宫朱红"></button>
 </div>
 
 <!-- ==================== 新增: 历史记录相关 HTML ==================== -->
@@ -937,6 +1000,38 @@
 
     const HISTORY_KEY = 'fate_bazi_history_v1';
     const HISTORY_MAX = 20;
+    const THEME_KEY = 'fate_bazi_theme_v1';
+
+    /**
+     * 设置主题
+     * @param {string} theme - 主题名: classic/dark/red
+     */
+    function setTheme(theme) {
+        if (theme === 'classic') {
+            document.documentElement.removeAttribute('data-theme');
+        } else {
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        // 更新按钮状态
+        document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelector(`.theme-btn.${theme}`).classList.add('active');
+
+        // 保存到本地
+        localStorage.setItem(THEME_KEY, theme);
+        logDebug('THEME', 'Switched to: ' + theme);
+    }
+
+    /**
+     * 初始化主题（从本地记忆恢复）
+     */
+    function initTheme() {
+        const savedTheme = localStorage.getItem(THEME_KEY) || 'classic';
+        setTheme(savedTheme);
+    }
+
+    // 页面加载时自动恢复主题
+    document.addEventListener('DOMContentLoaded', initTheme);
 
     /**
      * 显示用户友好的错误提示
