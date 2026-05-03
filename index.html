@@ -97,35 +97,43 @@
             position: relative;
             width: 100%;
             height: 100%;
-            transition: transform 0.6s;
+            transition: transform 0.5s ease;
             transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
         }
         .dayun-card.flipped .dayun-card-inner {
             transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
         }
         .dayun-card-front, .dayun-card-back {
             position: absolute;
             width: 100%;
             height: 100%;
             backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
+            box-sizing: border-box;
         }
         .dayun-card-front {
             background: linear-gradient(135deg, #fefefe 0%, #f8f5f0 100%);
             border: 1px solid #e0d5c5;
             z-index: 2;
+            transform: rotateY(0deg);
+            -webkit-transform: rotateY(0deg);
         }
         .dayun-card-back {
             background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
             border: 1px solid #ffb74d;
             transform: rotateY(180deg);
+            -webkit-transform: rotateY(180deg);
             z-index: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            font-size: 0.85rem;
+            align-items: center;
+            font-size: 0.8rem;
             line-height: 1.6;
             color: #5d4037;
         }
@@ -1953,7 +1961,7 @@
 
             dayunHtml += `
                 <div class="dayun-card ${cardClass}" 
-                     onclick="this.classList.toggle('flipped')">
+                     onclick="flipDayunCard(this)">
                     <div class="dayun-card-inner">
                         <div class="dayun-card-front">
                             <div class="dayun-age">${ageStart} - ${ageStart + 9} 岁</div>
@@ -1973,9 +1981,29 @@
             `;
         }
 
-        dayunGrid.innerHTML = dayunHtml;
-        dayunArea.style.display = 'block';
-    }
+            dayunGrid.innerHTML = dayunHtml;
+            dayunArea.style.display = 'block';
+        }
+
+        /**
+         * 大运卡片翻转函数（双重保险：CSS3D + JS兜底）
+         */
+        function flipDayunCard(card) {
+            card.classList.toggle('flipped');
+            
+            // 兜底：如果CSS3D不生效，用简单的显示切换
+            const back = card.querySelector('.dayun-card-back');
+            const front = card.querySelector('.dayun-card-front');
+            if (back && getComputedStyle(back).display === 'none') {
+                if (card.classList.contains('flipped')) {
+                    back.style.display = 'flex';
+                    front.style.display = 'none';
+                } else {
+                    back.style.display = '';
+                    front.style.display = '';
+                }
+            }
+        }
 
     function renderWuxingBar(pillars) {
         // 简单计算天干地支（不含藏干比例，仅主气）
