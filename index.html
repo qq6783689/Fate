@@ -191,6 +191,115 @@
             .pillars { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .ofuda-char { font-size: 2.5rem; }
         }
+
+        /* ==================== 新增: 历史记录样式 ==================== */
+        .history-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--china-red);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(142, 24, 24, 0.3);
+            font-weight: bold;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        .history-btn:hover { transform: translateY(-2px); }
+        
+        .history-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--paper-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            z-index: 200;
+            max-width: 500px;
+            width: 90%;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .history-close {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #888;
+        }
+        
+        .history-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .history-item:hover { background: rgba(142, 24, 24, 0.05); }
+        
+        .history-empty {
+            text-align: center;
+            color: #999;
+            padding: 30px;
+        }
+        
+        .history-meta { font-size: 0.85rem; color: #888; margin-top: 5px; }
+        .history-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 199;
+        }
+
+        /* ==================== 新增: 加载步骤动画 ==================== */
+        .loader-steps {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--ink-light);
+            font-size: 0.95rem;
+        }
+        
+        .loader-step {
+            opacity: 0.4;
+            margin: 8px 0;
+            transition: opacity 0.5s;
+        }
+        .loader-step.active { opacity: 1; color: var(--china-red); font-weight: bold; }
+        .loader-step.done { opacity: 0.7; }
+        .loader-step::before { content: "○ "; }
+        .loader-step.active::before { content: "◐ "; }
+        .loader-step.done::before { content: "✓ "; }
+
+        /* 错误提示样式 */
+        .error-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #c0392b;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(192, 57, 43, 0.3);
+            z-index: 1000;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 100px; letter-spacing: 4px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -242,11 +351,11 @@
                 <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:#888;">五行气数分布 (含地支藏干)</div>
                 <div class="wuxing-flex" id="wx-bar"></div>
                 <div class="wx-legend">
-                    <span><span class="dot" style="background:var(--metal)"></span>金</span>
-                    <span><span class="dot" style="background:var(--wood)"></span>木</span>
-                    <span><span class="dot" style="background:var(--water)"></span>水</span>
-                    <span><span class="dot" style="background:var(--fire)"></span>火</span>
-                    <span><span class="dot" style="background:var(--earth)"></span>土</span>
+                    <span><span class="dot" style="background:var(--metal);"></span>金</span>
+                    <span><span class="dot" style="background:var(--wood);"></span>木</span>
+                    <span><span class="dot" style="background:var(--water);"></span>水</span>
+                    <span><span class="dot" style="background:var(--fire);"></span>火</span>
+                    <span><span class="dot" style="background:var(--earth);"></span>土</span>
                 </div>
             </div>
 
@@ -274,6 +383,30 @@
 
         <div class="footer">FATE AUTHENTICATED BY GRANDMASTER · 2025</div>
     </div>
+</div>
+
+<!-- ==================== 新增: 历史记录相关 HTML ==================== -->
+<button class="history-btn" onclick="showHistoryPanel()">📜 历史记录</button>
+
+<div class="history-overlay" id="history-overlay" onclick="hideHistoryPanel()"></div>
+<div class="history-panel" id="history-panel">
+    <div class="history-header">
+        <h3 style="margin:0; color: var(--china-red); font-family: 'Ma Shan Zheng', cursive;">📜 天命记录</h3>
+        <span class="history-close" onclick="hideHistoryPanel()">×</span>
+    </div>
+    <div id="history-list"></div>
+</div>
+
+<!-- 错误提示 Toast -->
+<div class="error-toast" id="error-toast"></div>
+
+<!-- 加载步骤指示器 -->
+<div class="loader-steps" id="loader-steps">
+    <div class="loader-step" id="step-1">排定四柱八字...</div>
+    <div class="loader-step" id="step-2">计算藏干余气...</div>
+    <div class="loader-step" id="step-3">判定格局层次...</div>
+    <div class="loader-step" id="step-4">推演五行旺衰...</div>
+    <div class="loader-step" id="step-5">生成天命全书...</div>
 </div>
 
 <script>
@@ -754,14 +887,203 @@
         "月劫格": { desc: "月令劫财，争财夺利。需官杀制劫或食伤化劫。无制则破财刑妻。", joy: ["🗡️ 官杀","🎨 食伤"], taboo: ["💪 比劫","📜 印星"] },
         "阳刃格": { desc: "阳刃当权，刚强无比。喜七杀制刃，喜食伤泄秀。忌财旺生杀。'羊刃驾杀'为武贵。", joy: ["🗡️ 七杀","🎨 食伤"], taboo: ["💰 财星"] },
         "杂格": { desc: "格局未清，五行杂居。全凭扶抑调候，需看日主底蕴与通关。后天努力可扭乾坤。", joy: ["扶助用神"], taboo: ["克害用神"] }
-    };
+    }
+    // ==================== 新增: 工具函数与优化 ====================
 
-    // 3. 算法核心
+    const HISTORY_KEY = 'fate_bazi_history_v1';
+    const HISTORY_MAX = 20;
+
+    /**
+     * 显示用户友好的错误提示
+     * @param {string} message - 错误信息
+     * @param {number} duration - 显示时长(ms)
+     */
+    function showError(message, duration = 3000) {
+        const toast = document.getElementById('error-toast');
+        toast.textContent = '⚠️ ' + message;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', duration);
+    }
+
+    /**
+     * 控制台日志封装（方便未来扩展日志上报）
+     * @param {string} type - 日志类型
+     * @param {*} data - 日志数据
+     */
+    function logDebug(type, data) {
+        console.log(`[Fate ${type}]`, data);
+    }
+
+    /**
+     * 安全的DOM元素获取
+     * @param {string} id - 元素ID
+     * @returns {HTMLElement|null}
+     */
+    function safeGetElement(id) {
+        const el = document.getElementById(id);
+        if (!el) logDebug('WARNING', `Element #${id} not found`);
+        return el;
+    }
+
+    // ==================== 新增: 加载步骤动画 ====================
+    const LOADER_STEPS = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5'];
+    let currentStepIndex = 0;
+    let stepTimer = null;
+
+    /**
+     * 显示加载步骤动画
+     */
+    function showLoaderSteps() {
+        const stepsPanel = safeGetElement('loader-steps');
+        if (!stepsPanel) return;
+        
+        stepsPanel.style.display = 'block';
+        LOADER_STEPS.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.remove('active', 'done');
+            }
+        });
+        currentStepIndex = 0;
+        animateNextStep();
+    }
+
+    /**
+     * 执行下一步动画
+     */
+    function animateNextStep() {
+        if (stepTimer) clearTimeout(stepTimer);
+        
+        if (currentStepIndex > 0 && currentStepIndex <= LOADER_STEPS.length) {
+            const prevEl = document.getElementById(LOADER_STEPS[currentStepIndex - 1]);
+            if (prevEl) prevEl.classList.add('done');
+        }
+        
+        if (currentStepIndex < LOADER_STEPS.length) {
+            const currEl = document.getElementById(LOADER_STEPS[currentStepIndex]);
+            if (currEl) currEl.classList.add('active');
+            currentStepIndex++;
+            stepTimer = setTimeout(animateNextStep, 400);
+        }
+    }
+
+    /**
+     * 隐藏加载步骤动画
+     */
+    function hideLoaderSteps() {
+        if (stepTimer) clearTimeout(stepTimer);
+        const stepsPanel = safeGetElement('loader-steps');
+        if (stepsPanel) stepsPanel.style.display = 'none';
+    }
+
+    // ==================== 新增: 历史记录功能 ====================
+    /**
+     * 保存到本地历史记录
+     * @param {Object} baziData - 八字数据
+     */
+    function saveToHistory(baziData) {
+        try {
+            const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+            
+            const historyItem = {
+                id: Date.now(),
+                timeStr: document.getElementById('birth-input').value,
+                gender: currentGender,
+                pattern: baziData.pattern,
+                name: baziData.name,
+                icon: baziData.icon,
+                timestamp: new Date().toLocaleString('zh-CN'),
+            };
+            
+            history.unshift(historyItem);
+            if (history.length > HISTORY_MAX) history.pop();
+            
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+            logDebug('HISTORY', 'Saved successfully');
+        } catch (e) {
+            logDebug('ERROR', 'Save history failed: ' + e.message);
+        }
+    }
+
+    /**
+     * 显示历史记录面板
+     */
+    function showHistoryPanel() {
+        const panel = safeGetElement('history-panel');
+        const overlay = safeGetElement('history-overlay');
+        const list = safeGetElement('history-list');
+        
+        if (!panel || !overlay || !list) return;
+        
+        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        
+        if (history.length === 0) {
+            list.innerHTML = '<div class="history-empty">暂无历史记录<br>开启你的第一次天命鑑定吧！</div>';
+        } else {
+            list.innerHTML = history.map(item => `
+                <div class="history-item" onclick="loadFromHistory(${item.id})">
+                    <div><strong>${item.icon} ${item.name}</strong></div>
+                    <div class="history-meta">
+                        ${item.gender === 1 ? '乾造·男' : '坤造·女'} | ${item.timestamp}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        panel.style.display = 'block';
+        overlay.style.display = 'block';
+    }
+
+    /**
+     * 隐藏历史记录面板
+     */
+    function hideHistoryPanel() {
+        const panel = safeGetElement('history-panel');
+        const overlay = safeGetElement('history-overlay');
+        if (panel) panel.style.display = 'none';
+        if (overlay) overlay.style.display = 'none';
+    }
+
+    /**
+     * 从历史记录加载并重新计算
+     * @param {number} id - 历史记录ID
+     */
+    function loadFromHistory(id) {
+        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+        const item = history.find(h => h.id === id);
+        
+        if (item) {
+            document.getElementById('birth-input').value = item.timeStr;
+            currentGender = item.gender;
+            
+            // 更新性别按钮状态
+            document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.g-btn')[item.gender === 1 ? 0 : 1].classList.add('active');
+            
+            hideHistoryPanel();
+            startScan(); // 自动重新计算
+        }
+    }
+
+    // ==================== 原有函数优化: JSDoc + try-catch ====================
+
+    /**
+     * 判断日主在地支是否有根
+     * @param {string} gan - 天干
+     * @param {Array} pillars - 四柱数组
+     * @returns {boolean}
+     */
     function hasRoot(gan, pillars) {
         const roots = ROOT_MAP[gan] || [];
         return pillars.some(p => roots.includes(p.z));
     }
 
+    /**
+     * 计算月令司令真神
+     * @param {Object} lunar - 农历对象
+     * @param {string} mz - 月支
+     * @returns {Object} commander司令, diffDays天数差
+     */
     function calcCommander(lunar, mz) {
         const pj = lunar.getPrevJie();
         const s = lunar.getSolar();
@@ -884,80 +1206,145 @@
         return `你是生于${season}季的【${dm}】。`;
     }
 
+    /**
+     * 开始八字鑑定主流程
+     * 包含错误处理、加载动画、完整计算流程
+     */
     function startScan() {
-        if (typeof Lunar === 'undefined') return alert("⚠️ 核心组件加载失败，请检查网络连接！");
+        // 前置校验
         const timeStr = document.getElementById('birth-input').value;
-        if (!timeStr) return alert("请选择以降生时刻");
-        
+        if (!timeStr) {
+            showError('请选择出生时间！');
+            return;
+        }
+
+        // 核心库加载检查
+        if (typeof Lunar === 'undefined') {
+            showError('核心历法库加载失败，请刷新重试');
+            return;
+        }
+
         const loader = document.getElementById('loader');
-        if(loader) loader.style.display = 'inline-block';
-        
+        if (loader) loader.style.display = 'inline-block';
+
+        // 显示加载步骤动画
+        showLoaderSteps();
+
         setTimeout(() => {
             try {
+                logDebug('INFO', 'Starting Bazi calculation: ' + timeStr);
+
                 const date = new Date(timeStr);
-                const solar = Solar.fromYmdHms(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
+                if (isNaN(date.getTime())) {
+                    throw new Error('日期格式无效');
+                }
+
+                const solar = Solar.fromYmdHms(
+                    date.getFullYear(),
+                    date.getMonth() + 1,
+                    date.getDate(),
+                    date.getHours(),
+                    date.getMinutes(),
+                    date.getSeconds()
+                );
+
                 const lunar = solar.getLunar();
                 const baziObj = lunar.getEightChar();
                 baziObj.setSect(2);
 
                 const pillars = [
-                    {t:'年', g:baziObj.getYearGan().toString(), z:baziObj.getYearZhi().toString()},
-                    {t:'月', g:baziObj.getMonthGan().toString(), z:baziObj.getMonthZhi().toString()},
-                    {t:'日', g:baziObj.getDayGan().toString(), z:baziObj.getDayZhi().toString()},
-                    {t:'时', g:baziObj.getTimeGan().toString(), z:baziObj.getTimeZhi().toString()}
+                    { t: '年', g: baziObj.getYearGan().toString(), z: baziObj.getYearZhi().toString() },
+                    { t: '月', g: baziObj.getMonthGan().toString(), z: baziObj.getMonthZhi().toString() },
+                    { t: '日', g: baziObj.getDayGan().toString(), z: baziObj.getDayZhi().toString() },
+                    { t: '时', g: baziObj.getTimeGan().toString(), z: baziObj.getTimeZhi().toString() },
                 ];
 
-                const dm = pillars[2].g, mz = pillars[1].z;
+                const dm = pillars[2].g; // 日主天干
+                const mz = pillars[1].z; // 月支
                 const cmd = calcCommander(lunar, mz);
-                
-                // 调候激活
-                const isWinter = ["亥","子","丑"].includes(mz);
-                const isSummer = ["巳","午","未"].includes(mz);
-                const hasFire = pillars.some(p => WUXING_MAP[p.g]==='火' || WUXING_MAP[p.z]==='火');
-                const hasWater = pillars.some(p => WUXING_MAP[p.g]==='水' || WUXING_MAP[p.z]==='水');
-                
-                let actStatus = "", actDesc = "";
-                let isActivated = false;
 
-                if ((WUXING_MAP[dm]==='金' && isWinter && hasFire) || 
-                    (WUXING_MAP[dm]==='木' && isSummer && hasWater) ||
-                    (WUXING_MAP[dm]==='土' && isWinter && hasFire)) {
-                    isActivated = true;
-                    actStatus = "🔥 紫气东来 · 格局变贵";
-                    actDesc = "局中见调候“奢侈品”，犹如寒金遇火、焦木逢雨。原格力量瞬间激活，层次倍增，名利双收之象。";
+                // 调候激活判断
+                const isWinter = ['亥', '子', '丑'].includes(mz);
+                const isSummer = ['巳', '午', '未'].includes(mz);
+                const hasFire = pillars.some(p => WUXING_MAP[p.g] === '火' || WUXING_MAP[p.z] === '火');
+                const hasWater = pillars.some(p => WUXING_MAP[p.g] === '水' || WUXING_MAP[p.z] === '水');
+
+                let activated = false;
+                let activationStatus = '', activationDesc = '';
+
+                if ((WUXING_MAP[dm] === '金' && isWinter && hasFire) ||
+                    (WUXING_MAP[dm] === '木' && isSummer && hasWater) ||
+                    (WUXING_MAP[dm] === '土' && isWinter && hasFire)) {
+                    activated = true;
+                    activationStatus = '🔥 紫气东来 · 格局变贵';
+                    activationDesc = '局中见调候真神，犹如寒金遇火、焦木逢雨。原格力量瞬间激活，层次倍增，名利双收之象。';
                 }
 
                 const climate = { special: null };
-                if (WUXING_MAP[dm]==='金' && isWinter) climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官') ? "金水伤官" : "金水食神";
-                if (WUXING_MAP[dm]==='木' && ["寅","卯"].includes(mz) && hasFire) climate.special = "木火通明";
-                if (WUXING_MAP[dm]==='木' && (isSummer || mz==='巳') && hasWater && pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官' && hasRoot(p.g, pillars))) climate.special = "伤官配印";
-
-                const pattern = determinePattern(climate, pillars, dm, mz, cmd);
-                
-                // 渲染
-                const resultArea = document.getElementById('result-area');
-                resultArea.style.display = 'block';
-                
-                if (isActivated) {
-                    safeSetStyle('activation-area', 'display', 'block');
-                    safeSetText('activation-status', actStatus);
-                    safeSetText('activation-desc', actDesc);
-                } else {
-                    safeSetStyle('activation-area', 'display', 'none');
+                if (WUXING_MAP[dm] === '金' && isWinter) {
+                    climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官') ? '金水伤官' : '金水食神';
+                }
+                if (WUXING_MAP[dm] === '木' && ['寅', '卯'].includes(mz) && hasFire) climate.special = '木火通明';
+                if (WUXING_MAP[dm] === '木' && (isSummer || mz === '巳') && hasWater &&
+                    pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官' && hasRoot(p.g, pillars))) {
+                    climate.special = '伤官配印';
                 }
 
-                renderUI(pattern, cmd, dm, mz, pillars);
+                const pattern = determinePattern(climate, pillars, dm, mz, cmd);
+                logDebug('SUCCESS', 'Pattern determined: ' + pattern);
+
+                // 渲染结果
+                const resultArea = document.getElementById('result-area');
+                resultArea.style.display = 'block';
+
+                const activationArea = document.getElementById('activation-area');
+                if (activated) {
+                    activationArea.style.display = 'block';
+                    safeSetText('activation-status', activationStatus);
+                    safeSetText('activation-desc', activationDesc);
+                } else {
+                    activationArea.style.display = 'none';
+                }
+
+                const patternData = GAME_DB[pattern] || GAME_DB['杂格'];
+                renderUI(pattern, cmd, dm, mz, pillars, patternData);
                 renderWuxingBar(pillars);
 
-                resultArea.scrollIntoView({ behavior: 'smooth' });
+                // 滚动到结果区
+                setTimeout(() => {
+                    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
 
-            } catch (e) { alert("鑑定中断：" + e.message); console.error(e); }
-            finally { if(loader) loader.style.display = 'none'; }
+                // 保存到历史记录
+                saveToHistory({
+                    pattern: pattern,
+                    name: patternData.name,
+                    icon: patternData.icon,
+                    pillars: pillars
+                });
+
+            } catch (error) {
+                logDebug('ERROR', error.message);
+                showError('鑑定失败: ' + error.message);
+                console.error('Bazi calculation error:', error);
+            } finally {
+                // 清理
+                if (loader) loader.style.display = 'none';
+                hideLoaderSteps();
+            }
         }, 300);
     }
 
-    function renderUI(key, cmd, dm, mz, pillars) {
-        const data = GAME_DB[key] || GAME_DB["杂格"];
+    /**
+     * 渲染主界面UI
+     * @param {string} key - 格局key
+     * @param {Object} cmd - 司令真神
+     * @param {string} dm - 日主天干
+     * @param {string} mz - 月支
+     * @param {Array} pillars - 四柱
+     * @param {Object} data - 格局文案数据
+     */
+    function renderUI(key, cmd, dm, mz, pillars, data) {
         const xiji = XIJI_RULES[key] || XIJI_RULES["杂格"];
         const detail = data[currentGender === 1 ? 'male' : 'female'];
 
