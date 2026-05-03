@@ -90,7 +90,7 @@
         /* 3D翻转卡片 */
         .dayun-card {
             perspective: 1000px;
-            height: 130px;
+            height: 140px;
             cursor: pointer;
         }
         .dayun-card-inner {
@@ -112,9 +112,10 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px 8px;
             text-align: center;
             box-sizing: border-box;
+            overflow: hidden;
         }
         .dayun-card-front {
             background: linear-gradient(135deg, #fefefe 0%, #f8f5f0 100%);
@@ -133,35 +134,43 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 0.8rem;
-            line-height: 1.6;
+            font-size: 0.75rem;
+            line-height: 1.5;
             color: #5d4037;
+            position: relative;
+            padding-bottom: 22px;
+        }
+        .dayun-card-back .flip-hint {
+            position: absolute;
+            bottom: 5px;
+            font-size: 0.55rem;
+            color: #9e9e9e;
         }
         .dayun-age {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #888;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
         .dayun-ganzhi {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: var(--china-red);
             font-family: 'Ma Shan Zheng', cursive;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
         .dayun-shishen {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #666;
         }
         .dayun-nianfen {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: #aaa;
-            margin-top: 5px;
+            margin-top: 3px;
         }
         .dayun-hint {
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             color: #bbb;
-            margin-top: 8px;
+            margin-top: 5px;
         }
         
         /* 吉运卡片样式 */
@@ -2038,9 +2047,9 @@
                             <div class="dayun-hint">点击查看详情 ↻</div>
                         </div>
                         <div class="dayun-card-back">
-                            <div style="font-weight:bold;font-size:1rem;margin-bottom:8px;">${shishen}运</div>
+                            <div style="font-weight:bold;font-size:0.9rem;margin-bottom:5px;">${shishen}运</div>
                             <div>${backText}</div>
-                            <div style="font-size:0.7rem;margin-top:10px;opacity:0.7;">点击翻回 ↻</div>
+                            <div class="flip-hint">点击翻回 ↻</div>
                         </div>
                     </div>
                 </div>
