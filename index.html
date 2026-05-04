@@ -712,8 +712,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="form-group">
             <span class="label">乾坤之造</span>
             <div class="gender-box">
-                <div class="g-btn active" onclick="setGender(1, this)">乾造 (男)</div>
-                <div class="g-btn" onclick="setGender(0, this)">坤造 (女)</div>
+                <div class="g-btn active" onclick="window.setGender(1, this)">乾造 (男)</div>
+                <div class="g-btn" onclick="window.setGender(0, this)">坤造 (女)</div>
             </div>
         </div>
         <div class="form-group">
@@ -767,11 +767,11 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="solar-time-title">☀️ 真太阳时校正</div>
             <div id="solar-time-result" class="solar-time-result">请选择出生时间和城市</div>
         </div>
-        <button class="btn-start" onclick="startScan()">
+        <button class="btn-start" onclick="window.startScan()">
             开启 · 天命卷轴 <span class="loader" id="loader"></span>
         </button>
 
-        <button class="history-btn" onclick="showHistoryPanel()">
+        <button class="history-btn" onclick="window.showHistoryPanel()">
             📜 历史记录
         </button>
 
@@ -841,8 +841,8 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
 
         <div class="action-bar">
-            <button class="export-btn" onclick="exportCard()">📸 生成分享卡片</button>
-            <button class="btn-copy" onclick="copyResult()">📥 复制全文</button>
+            <button class="export-btn" onclick="window.exportCard()">📸 生成分享卡片</button>
+            <button class="btn-copy" onclick="window.copyResult()">📥 复制全文</button>
         </div>
 
         <div class="footer">FATE AUTHENTICATED BY GRANDMASTER · 2025</div>
@@ -851,19 +851,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <!-- ==================== 新增: 主题切换按钮 ==================== -->
 <div class="theme-switcher">
-    <button class="theme-btn classic active" onclick="setTheme('classic')" title="经典宣纸"></button>
-    <button class="theme-btn dark" onclick="setTheme('dark')" title="暗黑模式"></button>
-    <button class="theme-btn red" onclick="setTheme('red')" title="故宫朱红"></button>
+    <button class="theme-btn classic active" onclick="window.setTheme('classic')" title="经典宣纸"></button>
+    <button class="theme-btn dark" onclick="window.setTheme('dark')" title="暗黑模式"></button>
+    <button class="theme-btn red" onclick="window.setTheme('red')" title="故宫朱红"></button>
 </div>
 
 <!-- ==================== 新增: 历史记录相关 HTML ==================== -->
 
 
-<div class="history-overlay" id="history-overlay" onclick="hideHistoryPanel()"></div>
+<div class="history-overlay" id="history-overlay" onclick="window.hideHistoryPanel()"></div>
 <div class="history-panel" id="history-panel">
     <div class="history-header">
         <h3 style="margin:0; color: var(--china-red); font-family: 'Ma Shan Zheng', cursive;">📜 天命记录</h3>
-        <span class="history-close" onclick="hideHistoryPanel()">×</span>
+        <span class="history-close" onclick="window.hideHistoryPanel()">×</span>
     </div>
     <div id="history-list"></div>
 </div>
@@ -1452,7 +1452,7 @@ function updateSolarTime() {
      * 设置主题
      * @param {string} theme - 主题名: classic/dark/red
      */
-    function setTheme(theme) {
+    window.setTheme = function(theme) {
         if (theme === 'classic') {
             document.documentElement.removeAttribute('data-theme');
         } else {
@@ -1482,7 +1482,7 @@ function updateSolarTime() {
     /**
      * 生成分享卡片并下载（移动端优化版）
      */
-    async function exportCard() {
+    async window.exportCard = function() {
         const btn = document.querySelector('.export-btn');
         const originalText = btn.innerHTML;
 
@@ -1661,7 +1661,7 @@ function updateSolarTime() {
      * @param {Event} event - 点击事件
      * @param {number} id - 记录ID
      */
-    function deleteFromHistory(event, id) {
+    window.deleteFromHistory = function(event, id) {
         event.stopPropagation(); // 防止触发加载历史记录
         try {
             let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
@@ -1677,7 +1677,7 @@ function updateSolarTime() {
     /**
      * 清空全部历史记录
      */
-    function clearAllHistory() {
+    window.clearAllHistory = function() {
         if (confirm('确定要清空全部历史记录吗？')) {
             localStorage.removeItem(HISTORY_KEY);
             showHistoryPanel();
@@ -1688,7 +1688,7 @@ function updateSolarTime() {
     /**
      * 显示历史记录面板
      */
-    function showHistoryPanel() {
+    window.showHistoryPanel = function() {
         const panel = safeGetElement('history-panel');
         const overlay = safeGetElement('history-overlay');
         const list = safeGetElement('history-list');
@@ -1701,7 +1701,7 @@ function updateSolarTime() {
             list.innerHTML = '<div class="history-empty">暂无历史记录<br>开启你的第一次天命鑑定吧！</div>';
         } else {
             list.innerHTML = history.map(item => `
-                <div class="history-item" onclick="loadFromHistory(${item.id})">
+                <div class="history-item" onclick="window.loadFromHistory(${item.id})">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                         <div><strong>${item.icon} ${item.name}</strong></div>
@@ -1709,12 +1709,12 @@ function updateSolarTime() {
                             ${item.gender === 1 ? '乾造·男' : '坤造·女'} | ${item.timestamp}
                         </div>
                         </div>
-                        <button class="history-delete-btn" onclick="deleteFromHistory(event, ${item.id})" title="删除此条记录">×</button>
+                        <button class="history-delete-btn" onclick="window.deleteFromHistory(event, ${item.id})" title="删除此条记录">×</button>
                     </div>
                 </div>
             `).join('') + `
                 <div style="text-align: center; padding-top: 15px; margin-top: 10px; border-top: 1px solid #eee;">
-                    <button class="history-clear-btn" onclick="clearAllHistory()">清空全部记录</button>
+                    <button class="history-clear-btn" onclick="window.clearAllHistory()">清空全部记录</button>
                 </div>
             `;
         }
@@ -1726,7 +1726,7 @@ function updateSolarTime() {
     /**
      * 隐藏历史记录面板
      */
-    function hideHistoryPanel() {
+    window.hideHistoryPanel = function() {
         const panel = safeGetElement('history-panel');
         const overlay = safeGetElement('history-overlay');
         if (panel) panel.style.display = 'none';
@@ -1737,7 +1737,7 @@ function updateSolarTime() {
      * 从历史记录加载并重新计算
      * @param {number} id - 历史记录ID
      */
-    function loadFromHistory(id) {
+    window.loadFromHistory = function(id) {
         const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
         const item = history.find(h => h.id === id);
         
@@ -1921,7 +1921,7 @@ function updateSolarTime() {
      * 开始八字鑑定主流程
      * 包含错误处理、加载动画、完整计算流程
      */
-    async function startScan() {
+    async window.startScan = function() {
         // 前置校验
         const timeStr = document.getElementById('birth-input').value;
         if (!timeStr) {
@@ -2285,7 +2285,7 @@ function updateSolarTime() {
 
             dayunHtml += `
                 <div class="dayun-card ${cardClass}" 
-                     onclick="flipDayunCard(this)">
+                     onclick="window.flipDayunCard(this)">
                     <div class="dayun-card-inner">
                         <div class="dayun-card-front">
                             <div class="dayun-age">${ageStart} - ${ageStart + 9} 岁</div>
@@ -2583,7 +2583,7 @@ function updateSolarTime() {
         /**
          * 大运卡片翻转函数（双重保险：CSS3D + JS兜底）
          */
-        function flipDayunCard(card) {
+        window.flipDayunCard = function(card) {
             card.classList.toggle('flipped');
             
             // 兜底：如果CSS3D不生效，用简单的显示切换
@@ -2631,7 +2631,7 @@ function updateSolarTime() {
         el.classList.add('active'); 
     }
 
-    function copyResult() {
+    window.copyResult = function() {
         const text = document.getElementById('result-area').innerText;
         navigator.clipboard.writeText(text).then(() => alert("天命书已复制到剪贴板"));
     }
