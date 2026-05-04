@@ -673,7 +673,21 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(52, 73, 94, 0.35);
         }
-    </style>
+    
+button, .btn-start, .g-btn, .theme-btn, .export-btn, .btn-copy, .history-btn, .history-close, .history-delete-btn, .history-clear-btn, .dayun-arrow {
+    position: relative;
+    z-index: 10;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+
+body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+}
+
+</style>
 </head>
 <body><script>
 // 🚀 移动端事件强制绑定（100%兼容方案）
