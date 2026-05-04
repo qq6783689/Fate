@@ -1638,6 +1638,7 @@ function updateSolarTime() {
             const historyItem = {
                 id: Date.now(),
                 timeStr: document.getElementById('birth-input').value,
+                cityValue: document.getElementById('city-select').value, // 保存城市选择
                 gender: currentGender,
                 pattern: baziData.pattern,
                 name: baziData.name,
@@ -1743,6 +1744,12 @@ function updateSolarTime() {
         if (item) {
             document.getElementById('birth-input').value = item.timeStr;
             currentGender = item.gender;
+            
+            // 恢复城市选择（向后兼容：如果没有保存城市则不改变）
+            if (item.cityValue) {
+                document.getElementById('city-select').value = item.cityValue;
+                updateSolarTime(); // 重新计算真太阳时
+            }
             
             // 更新性别按钮状态
             document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active'));
@@ -1939,9 +1946,14 @@ function updateSolarTime() {
             try {
                 logDebug('INFO', 'Starting Bazi calculation: ' + timeStr);
 
-                const date = new Date(timeStr);
+                // 使用真太阳时进行排盘，如果有真太阳时的话
+                let date = window.solarDateTime ? new Date(window.solarDateTime) : new Date(timeStr);
                 if (isNaN(date.getTime())) {
-                    throw new Error('日期格式无效');
+                    // 回退到原始时间
+                    date = new Date(timeStr);
+                    if (isNaN(date.getTime())) {
+                        throw new Error('日期格式无效');
+                    }
                 }
 
                 const solar = Solar.fromYmdHms(
@@ -2129,11 +2141,49 @@ function updateSolarTime() {
         const shunPai = (currentGender === 1 && isYang) || (currentGender === 0 && !isYang);
 
         // 3天=1岁，1天=4个月，1时辰=10天
-        // 简化精准计算：节气计算复杂，这里用业界通用简化算法
-        // 阳年男/阴年女：从生日到下一个节，天数 ÷ 3 = 起运岁
-        // 阴年男/阳年女：从生日到上一个节，天数 ÷ 3 = 起运岁
-        // 简化版统一用1-4岁的合理范围（实际应精确计算到节气）
-        const startAge = shunPai ? 2 : 3;
+        // 使用lunar库的节气方法精确计算
+        const jieQiList = lunar.getJieQiList();
+        const birthSolar = lunar.getSolar();
+        const birthYear = birthSolar.getYear();
+        const birthMonth = birthSolar.getMonth();
+        const birthDay = birthSolar.getDay();
+        
+        // 找到最近的前后节气
+        let prevJie = null, nextJie = null;
+        const yearJieQi = Solar.fromYmd(birthYear, 1, 1).getLunar().getJieQiTable();
+        const nextYearJieQi = Solar.fromYmd(birthYear + 1, 1, 1).getLunar().getJieQiTable();
+        
+        // 合并两年的节气表
+        const allJieQi = {...yearJieQi, ...nextYearJieQi};
+        
+        // 找出节气（12节：立春、惊蛰、清明、立夏、芒种、小暑、立秋、白露、寒露、立冬、大雪、小寒）
+        const jieNames = ['立春','惊蛰','清明','立夏','芒种','小暑','立秋','白露','寒露','立冬','大雪','小寒'];
+        const jieList = jieNames.map(name => allJieQi[name]).filter(Boolean);
+        
+        // 找到出生日前后的节
+        let minDiffPrev = Infinity, minDiffNext = Infinity;
+        for (let jie of jieList) {
+            const jieYear = jie.getYear();
+            const jieMonth = jie.getMonth();
+            const jieDay = jie.getDay();
+            // 简化计算天数差
+            const daysFromJie = (birthYear - jieYear) * 365 + (birthMonth - jieMonth) * 30 + (birthDay - jieDay);
+            if (daysFromJie >= 0 && daysFromJie < minDiffPrev) {
+                minDiffPrev = daysFromJie;
+                prevJie = jie;
+            }
+            if (daysFromJie <= 0 && -daysFromJie < minDiffNext) {
+                minDiffNext = -daysFromJie;
+                nextJie = jie;
+            }
+        }
+        
+        // 计算起运天数（3天=1岁，精确到天数）
+        let daysToJie = shunPai ? (nextJie ? minDiffNext : 0) : (prevJie ? minDiffPrev : 0);
+        if (daysToJie === 0) daysToJie = 3;  // 边界保护
+        
+        // 3天=1岁，计算起运年龄
+        const startAge = Math.max(0, Math.floor(daysToJie / 3));
 
         const birthYear = parseInt(document.getElementById('birth-input').value.slice(0,4));
 
@@ -2575,7 +2625,7 @@ function updateSolarTime() {
     }
 
     // --- 工具 ---
-    function setGender(v, el) { 
+    window.setGender = function(v, el) { 
         currentGender = v; 
         document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active')); 
         el.classList.add('active'); 
