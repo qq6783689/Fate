@@ -1965,7 +1965,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {number} maxRetries - 最大重试次数
      * @returns {Promise<boolean>}
      */
-    window.waitForLunarLibrary = async functionmaxRetries = 5) {
+    window.waitForLunarLibrary = async function(maxRetries = 5) {
         for (let i = 0; i < maxRetries; i++) {
             if (typeof Lunar !== 'undefined' && typeof Solar !== 'undefined') {
                 return true;
