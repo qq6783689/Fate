@@ -717,6 +717,17 @@ input, select, textarea, .form-control {
     appearance: none;
     touch-action: manipulation !important;
 }
+
+/* 修复移动端点击失效：装饰层不拦截触摸 */
+.card::before,
+.logic-panel::after {
+    pointer-events: none !important;
+}
+
+/* 交互元素显式可点击 */
+button, [onclick], input, select {
+    pointer-events: auto;
+}
 </style>
 </head>
 <body>
@@ -759,6 +770,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.updateSolarTime) window.updateSolarTime();
     }, 200);
 });
+
+// iOS/安卓兜底：触摸结束时主动触发交互元素点击
+document.addEventListener('touchend', function (e) {
+    const target = e.target.closest('button, [onclick], .g-btn, .theme-btn, .history-btn, .history-close');
+    if (!target) return;
+    if (e.cancelable) e.preventDefault();
+    target.click();
+}, { passive: false, capture: true });
 </script>
 
 
