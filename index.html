@@ -1604,7 +1604,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {string} id - 元素ID
      * @returns {HTMLElement|null}
      */
-    window.safeGetElement = functionid) {
+    window.safeGetElement = function(id) {
         const el = document.getElementById(id);
         if (!el) logDebug('WARNING', `Element #${id} not found`);
         return el;
@@ -1666,7 +1666,7 @@ console.log("✅ 业务脚本开始执行");
      * 保存到本地历史记录
      * @param {Object} baziData - 八字数据
      */
-    window.saveToHistory = functionbaziData) {
+    window.saveToHistory = function(baziData) {
         try {
             const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
 
@@ -2350,7 +2350,7 @@ console.log("✅ 业务脚本开始执行");
         /**
          * 神煞系统计算与渲染
          */
-        window.renderShensha = functionpillars) {
+        window.renderShensha = function(pillars) {
             const area = document.getElementById('shensha-area');
             const grid = document.getElementById('shensha-grid');
 
@@ -2635,7 +2635,7 @@ console.log("✅ 业务脚本开始执行");
             }
         }
 
-        window.renderWuxingBar = functionpillars) {
+        window.renderWuxingBar = function(pillars) {
             // 简单计算天干地支（不含藏干比例，仅主气）
             const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
             pillars.forEach(p => {
