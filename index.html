@@ -1497,7 +1497,7 @@ function updateSolarTime() {
     /**
      * 生成分享卡片并下载（移动端优化版）
      */
-    async window.exportCard = function() {
+    window.exportCard = async function() {
         const btn = document.querySelector('.export-btn');
         const originalText = btn.innerHTML;
 
@@ -1936,7 +1936,7 @@ function updateSolarTime() {
      * 开始八字鑑定主流程
      * 包含错误处理、加载动画、完整计算流程
      */
-    async window.startScan = function() {
+    window.startScan = async function() {
         // 前置校验
         const timeStr = document.getElementById('birth-input').value;
         if (!timeStr) {
