@@ -771,10 +771,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 200);
 });
 
-// iOS/安卓兜底：触摸结束时主动触发交互元素点击
+// iOS/安卓兜底：触摸结束时主动触发交互元素点击（避免与显式 touch 处理重复触发）
+let lastFallbackTouchTs = 0;
 document.addEventListener('touchend', function (e) {
     const target = e.target.closest('button, [onclick], .g-btn, .theme-btn, .history-btn, .history-close');
     if (!target) return;
+
+    // .btn-start 已有专用 touchend 逻辑，避免重复调用 startScan
+    if (target.closest('.btn-start')) return;
+
+    // 同一触摸序列内去重，避免重复触发 click
+    const now = Date.now();
+    if (now - lastFallbackTouchTs < 350) return;
+    lastFallbackTouchTs = now;
+
     if (e.cancelable) e.preventDefault();
     target.click();
 }, { passive: false, capture: true });
