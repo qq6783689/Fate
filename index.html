@@ -1,6 +1,51 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<script>
+<script>
+// ⚡ BOOTSTRAP: 预先定义所有全局函数（确保按钮点击时函数已存在）
+// 解决脚本加载顺序问题导致的"函数未定义"错误
+
+(function() {
+    // 所有被onclick调用的函数列表
+    const FUNCTION_NAMES = [
+        'setGender', 'startScan', 'showHistoryPanel', 'hideHistoryPanel',
+        'exportCard', 'copyResult', 'setTheme', 'loadFromHistory',
+        'deleteFromHistory', 'clearAllHistory', 'flipDayunCard'
+    ];
+    
+    // 创建安全的包装函数
+    FUNCTION_NAMES.forEach(function(name) {
+        window[name] = function() {
+            const args = arguments;
+            const self = this;
+            
+            // 检查真实函数是否已加载
+            function check() {
+                // 查找包含真实实现的函数（通过函数体判断）
+                const fn = window[name];
+                // 如果函数体不再是这个包装函数，说明已被真实实现覆盖
+                if (fn.toString().indexOf('// ⚡ BOOTSTRAP WRAPPER') === -1) {
+                    return fn.apply(self, args);
+                }
+                
+                // 否则继续等待
+                console.log('[BOOTSTRAP] Waiting for ' + name + ' to load...');
+                setTimeout(check, 50);
+            }
+            
+            // 标记这是包装函数
+            // ⚡ BOOTSTRAP WRAPPER
+            return check();
+        };
+    });
+    
+    console.log('[BOOTSTRAP] All global function wrappers ready!');
+})();
+</script>
+
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>天命鑑定 · 宗师列传（天干气势优先版）</title>
