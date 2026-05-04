@@ -1475,6 +1475,8 @@ function updateSolarTime() {
   </script>
 
   <script>
+console.log("✅ 业务脚本开始执行");
+
     // ==================== 新增: 工具函数与优化 ====================
 
     const HISTORY_KEY = 'fate_bazi_history_v1';
@@ -1504,7 +1506,7 @@ function updateSolarTime() {
     /**
      * 初始化主题（从本地记忆恢复）
      */
-    window.initTheme = function) {
+    window.initTheme = function() {
         const savedTheme = localStorage.getItem(THEME_KEY) || 'classic';
         setTheme(savedTheme);
     }
@@ -1616,7 +1618,7 @@ function updateSolarTime() {
     /**
      * 显示加载步骤动画
      */
-    window.showLoaderSteps = function) {
+    window.showLoaderSteps = function() {
         const stepsPanel = safeGetElement('loader-steps');
         if (!stepsPanel) return;
         
@@ -1634,7 +1636,7 @@ function updateSolarTime() {
     /**
      * 执行下一步动画
      */
-    window.animateNextStep = function) {
+    window.animateNextStep = function() {
         if (stepTimer) clearTimeout(stepTimer);
         
         if (currentStepIndex > 0 && currentStepIndex <= LOADER_STEPS.length) {
@@ -1653,7 +1655,7 @@ function updateSolarTime() {
     /**
      * 隐藏加载步骤动画
      */
-    window.hideLoaderSteps = function) {
+    window.hideLoaderSteps = function() {
         if (stepTimer) clearTimeout(stepTimer);
         const stepsPanel = safeGetElement('loader-steps');
         if (stepsPanel) stepsPanel.style.display = 'none';
