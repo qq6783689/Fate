@@ -1504,7 +1504,7 @@ function updateSolarTime() {
     /**
      * 初始化主题（从本地记忆恢复）
      */
-    function initTheme() {
+    window.initTheme = function) {
         const savedTheme = localStorage.getItem(THEME_KEY) || 'classic';
         setTheme(savedTheme);
     }
@@ -1581,7 +1581,7 @@ function updateSolarTime() {
      * @param {string} message - 错误信息
      * @param {number} duration - 显示时长(ms)
      */
-    function showError(message, duration = 3000) {
+    window.showError = functionmessage, duration = 3000) {
         const toast = document.getElementById('error-toast');
         toast.textContent = '⚠️ ' + message;
         toast.style.display = 'block';
@@ -1593,7 +1593,7 @@ function updateSolarTime() {
      * @param {string} type - 日志类型
      * @param {*} data - 日志数据
      */
-    function logDebug(type, data) {
+    window.logDebug = functiontype, data) {
         console.log(`[Fate ${type}]`, data);
     }
 
@@ -1602,7 +1602,7 @@ function updateSolarTime() {
      * @param {string} id - 元素ID
      * @returns {HTMLElement|null}
      */
-    function safeGetElement(id) {
+    window.safeGetElement = functionid) {
         const el = document.getElementById(id);
         if (!el) logDebug('WARNING', `Element #${id} not found`);
         return el;
@@ -1616,7 +1616,7 @@ function updateSolarTime() {
     /**
      * 显示加载步骤动画
      */
-    function showLoaderSteps() {
+    window.showLoaderSteps = function) {
         const stepsPanel = safeGetElement('loader-steps');
         if (!stepsPanel) return;
         
@@ -1634,7 +1634,7 @@ function updateSolarTime() {
     /**
      * 执行下一步动画
      */
-    function animateNextStep() {
+    window.animateNextStep = function) {
         if (stepTimer) clearTimeout(stepTimer);
         
         if (currentStepIndex > 0 && currentStepIndex <= LOADER_STEPS.length) {
@@ -1653,7 +1653,7 @@ function updateSolarTime() {
     /**
      * 隐藏加载步骤动画
      */
-    function hideLoaderSteps() {
+    window.hideLoaderSteps = function) {
         if (stepTimer) clearTimeout(stepTimer);
         const stepsPanel = safeGetElement('loader-steps');
         if (stepsPanel) stepsPanel.style.display = 'none';
@@ -1664,7 +1664,7 @@ function updateSolarTime() {
      * 保存到本地历史记录
      * @param {Object} baziData - 八字数据
      */
-    function saveToHistory(baziData) {
+    window.saveToHistory = functionbaziData) {
         try {
             const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
 
@@ -1801,7 +1801,7 @@ function updateSolarTime() {
      * @param {Array} pillars - 四柱数组
      * @returns {boolean}
      */
-    function hasRoot(gan, pillars) {
+    window.hasRoot = functiongan, pillars) {
         const roots = ROOT_MAP[gan] || [];
         return pillars.some(p => roots.includes(p.z));
     }
@@ -1812,7 +1812,7 @@ function updateSolarTime() {
      * @param {string} mz - 月支
      * @returns {Object} commander司令, diffDays天数差
      */
-    function calcCommander(lunar, mz) {
+    window.calcCommander = functionlunar, mz) {
         const pj = lunar.getPrevJie();
         const s = lunar.getSolar();
         const pjs = pj.getSolar();
@@ -1829,7 +1829,7 @@ function updateSolarTime() {
     // ==========================================
     // 4. 格局判定核心逻辑 (含真假从格 + 气势判定 + 优先级修复)
     // ==========================================
-    function determinePattern(climate, pillars, dm, mz, cmd) {
+    window.determinePattern = functionclimate, pillars, dm, mz, cmd) {
         const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
         const zhis = pillars.map(p => p.z);
         
@@ -1929,7 +1929,7 @@ function updateSolarTime() {
         return fallback[mzMainGod] || "杂格";
     }
 
-    function getDMDesc(dm, mz) {
+    window.getDMDesc = functiondm, mz) {
         const season = ["亥","子","丑"].includes(mz) ? "冬" : ["巳","午","未"].includes(mz) ? "夏" : ["寅","卯","辰"].includes(mz) ? "春" : "秋";
         return `你是生于${season}季的【${dm}】。`;
     }
@@ -1939,7 +1939,7 @@ function updateSolarTime() {
      * @param {number} maxRetries - 最大重试次数
      * @returns {Promise<boolean>}
      */
-    async function waitForLunarLibrary(maxRetries = 5) {
+    window.waitForLunarLibrary = async functionmaxRetries = 5) {
         for (let i = 0; i < maxRetries; i++) {
             if (typeof Lunar !== 'undefined' && typeof Solar !== 'undefined') {
                 return true;
@@ -2094,7 +2094,7 @@ function updateSolarTime() {
      * @param {Array} pillars - 四柱
      * @param {Object} data - 格局文案数据
      */
-    function renderUI(key, cmd, dm, mz, pillars, data) {
+    window.renderUI = functionkey, cmd, dm, mz, pillars, data) {
         const xiji = XIJI_RULES[key] || XIJI_RULES["杂格"];
         const detail = data[currentGender === 1 ? 'male' : 'female'];
 
@@ -2159,7 +2159,7 @@ function updateSolarTime() {
      * @param {Array} pillars - 四柱
      * @param {Object} xiji - 喜忌数据
      */
-    function renderDayun(dm, pillars, xiji) {
+    window.renderDayun = functiondm, pillars, xiji) {
         const dayunArea = document.getElementById('dayun-area');
         const dayunGrid = document.getElementById('dayun-grid');
 
@@ -2348,7 +2348,7 @@ function updateSolarTime() {
         /**
          * 神煞系统计算与渲染
          */
-        function renderShensha(pillars) {
+        window.renderShensha = functionpillars) {
             const area = document.getElementById('shensha-area');
             const grid = document.getElementById('shensha-grid');
 
@@ -2633,7 +2633,7 @@ function updateSolarTime() {
             }
         }
 
-        function renderWuxingBar(pillars) {
+        window.renderWuxingBar = functionpillars) {
             // 简单计算天干地支（不含藏干比例，仅主气）
             const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
             pillars.forEach(p => {
@@ -2678,20 +2678,6 @@ function updateSolarTime() {
     };
 </script>
 
-<script>
-// ⚡ 强制暴露全局函数
-window.setTheme = setTheme;
-window.setGender = setGender;
-window.startScan = startScan;
-window.showHistoryPanel = showHistoryPanel;
-window.hideHistoryPanel = hideHistoryPanel;
-window.loadFromHistory = loadFromHistory;
-window.deleteFromHistory = deleteFromHistory;
-window.clearAllHistory = clearAllHistory;
-window.flipDayunCard = flipDayunCard;
-window.exportCard = exportCard;
-window.copyResult = copyResult;
-console.log('All functions exposed to window');
-</script>
+
 </body>
 </html>
