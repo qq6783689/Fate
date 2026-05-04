@@ -55,6 +55,7 @@
             z-index: 90;
         }
         .theme-btn {
+            position: relative; z-index: 1; 
             width: 32px;
             height: 32px;
             border-radius: 50%;
@@ -255,6 +256,7 @@
 
         /* 导出按钮 */
         .export-btn {
+            position: relative; z-index: 1; 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -287,6 +289,8 @@
             display: flex; justify-content: center;
             line-height: 1.8;
             transition: background 0.3s, color 0.3s;
+            -webkit-overflow-scrolling: touch;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .container { width: 100%; max-width: 900px; padding-bottom: 150px; }
@@ -322,6 +326,7 @@
         }
         .gender-box { display: flex; gap: 15px; margin-bottom: 30px; }
         .g-btn {
+            position: relative; z-index: 1; 
             flex: 1; padding: 18px; text-align: center; border: 1px solid #ccc;
             background: #fff; color: #888; cursor: pointer; transition: 0.3s;
             font-family: 'Noto Serif SC', serif; font-weight: bold; font-size: 1.1rem;
@@ -335,6 +340,7 @@
             color: var(--ink-main); font-size: 1.2rem; outline: none; font-family: 'Noto Serif SC', serif;
         }
         .btn-start {
+            position: relative; z-index: 1; 
             width: 100%; padding: 22px; border: none; background: var(--china-red);
             color: #fff; font-size: 1.5rem; font-weight: 900; letter-spacing: 10px;
             cursor: pointer; margin-top: 30px; transition: all 0.3s;
@@ -439,6 +445,7 @@
 
         .action-bar { text-align: center; margin-top: 60px; }
         .btn-copy {
+            position: relative; z-index: 1; 
             background: #fff; border: 2px solid #ccc; color: #666;
             padding: 15px 40px; cursor: pointer; border-radius: 4px; font-family: inherit;
             transition: 0.3s; font-size: 1rem; font-weight: bold;
@@ -454,10 +461,12 @@
             .ofuda-char { font-size: 2rem; }
             .card { padding: 20px 15px; margin-bottom: 20px; }
             .guide-item { padding: 15px 10px; }
-            .btn-start { font-size: 1rem; padding: 14px 20px; }
+            .btn-start {
+            position: relative; z-index: 1;  font-size: 1rem; padding: 14px 20px; }
             
             .theme-switcher { bottom: 65px; right: 15px; }
-            .theme-btn { width: 28px; height: 28px; }
+            .theme-btn {
+            position: relative; z-index: 1;  width: 28px; height: 28px; }
             .history-panel { width: 95%; max-height: 80vh; }
             .role-header { padding: 20px 15px; }
             .siling-bar { padding: 10px 15px; }
@@ -496,6 +505,7 @@
         }
         
         .history-close {
+            cursor: pointer; touch-action: manipulation; position: relative; z-index: 1; 
             cursor: pointer;
             font-size: 1.5rem;
             color: #888;
@@ -644,6 +654,7 @@
     
         /* 历史记录按钮 */
         .history-btn {
+            position: relative; z-index: 1; 
             margin: 20px auto 0;
             display: block;
             width: 200px;
@@ -670,15 +681,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. 开始按钮双重事件绑定
     const startBtn = document.querySelector('.btn-start');
     if (startBtn) {
+        // 移动端触摸事件 - 无延迟响应
+        let touchMoved = false;
+        startBtn.addEventListener('touchstart', function() { touchMoved = false; }, { passive: true });
+        startBtn.addEventListener('touchmove', function() { touchMoved = true; }, { passive: true });
+        startBtn.addEventListener('touchend', function(e) {
+            if (!touchMoved) { e.preventDefault(); if (window.startScan) window.startScan(); }
+        }, { passive: false });
+        // 桌面端点击事件
         startBtn.addEventListener('click', function(e) {
             e.preventDefault();
             if (window.startScan) window.startScan();
         });
-        startBtn.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.startScan) window.startScan();
-        });
+
     }
     
     // 2. 性别选择按钮
