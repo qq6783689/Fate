@@ -1636,7 +1636,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {string} message - 错误信息
      * @param {number} duration - 显示时长(ms)
      */
-    window.showError = functionmessage, duration = 3000) {
+    window.showError = function(message, duration = 3000) {
         const toast = document.getElementById('error-toast');
         toast.textContent = '⚠️ ' + message;
         toast.style.display = 'block';
@@ -1648,7 +1648,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {string} type - 日志类型
      * @param {*} data - 日志数据
      */
-    window.logDebug = functiontype, data) {
+    window.logDebug = function(type, data) {
         console.log(`[Fate ${type}]`, data);
     }
 
@@ -1856,7 +1856,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {Array} pillars - 四柱数组
      * @returns {boolean}
      */
-    window.hasRoot = functiongan, pillars) {
+    window.hasRoot = function(gan, pillars) {
         const roots = ROOT_MAP[gan] || [];
         return pillars.some(p => roots.includes(p.z));
     }
@@ -1867,7 +1867,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {string} mz - 月支
      * @returns {Object} commander司令, diffDays天数差
      */
-    window.calcCommander = functionlunar, mz) {
+    window.calcCommander = function(lunar, mz) {
         const pj = lunar.getPrevJie();
         const s = lunar.getSolar();
         const pjs = pj.getSolar();
@@ -1884,7 +1884,7 @@ console.log("✅ 业务脚本开始执行");
     // ==========================================
     // 4. 格局判定核心逻辑 (含真假从格 + 气势判定 + 优先级修复)
     // ==========================================
-    window.determinePattern = functionclimate, pillars, dm, mz, cmd) {
+    window.determinePattern = function(climate, pillars, dm, mz, cmd) {
         const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
         const zhis = pillars.map(p => p.z);
         
@@ -1984,7 +1984,7 @@ console.log("✅ 业务脚本开始执行");
         return fallback[mzMainGod] || "杂格";
     }
 
-    window.getDMDesc = functiondm, mz) {
+    window.getDMDesc = function(dm, mz) {
         const season = ["亥","子","丑"].includes(mz) ? "冬" : ["巳","午","未"].includes(mz) ? "夏" : ["寅","卯","辰"].includes(mz) ? "春" : "秋";
         return `你是生于${season}季的【${dm}】。`;
     }
@@ -2214,7 +2214,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {Array} pillars - 四柱
      * @param {Object} xiji - 喜忌数据
      */
-    window.renderDayun = functiondm, pillars, xiji) {
+    window.renderDayun = function(dm, pillars, xiji) {
         const dayunArea = document.getElementById('dayun-area');
         const dayunGrid = document.getElementById('dayun-grid');
 
@@ -2273,7 +2273,6 @@ console.log("✅ 业务脚本开始执行");
         // 3天=1岁，计算起运年龄
         const startAge = Math.max(0, Math.floor(daysToJie / 3));
 
-        const birthYear = parseInt(document.getElementById('birth-input').value.slice(0,4));
 
         // ========== 生成8步大运 ==========
         let dayunHtml = '';
