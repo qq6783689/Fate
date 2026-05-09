@@ -2292,16 +2292,27 @@ console.log("✅ 业务脚本开始执行");
                     reason = '伤官配印';
                 }
             }
-            
-            // 第三步：喜忌最终修正（去掉emoji匹配纯文本）
+
+            // 第三步：喜忌最终修正（十神名映射到喜忌关键词）
             const joyText = xiji.joy.join('');
             const tabooText = xiji.taboo.join('');
-            
-            if (joyText.includes(shishen)) {
+            // 十神到喜忌关键词的映射：shishen是具体十神，joy/taboo用类别
+            const SHISHEN_KEYWORDS = {
+                '正财': ['财星','偏财','财'], '偏财': ['财星','偏财','财'],
+                '正官': ['官杀','正官','官'], '七杀': ['官杀','七杀','杀'],
+                '正印': ['印星','正印','印'], '偏印': ['印星','偏印','印','枭'],
+                '食神': ['食伤','食神','食'], '伤官': ['食伤','伤官','伤'],
+                '比肩': ['比劫','比肩','比'], '劫财': ['比劫','劫财','劫'],
+            };
+            const kw = SHISHEN_KEYWORDS[shishen] || [shishen];
+            const matchesJoy = kw.some(k => joyText.includes(k));
+            const matchesTaboo = kw.some(k => tabooText.includes(k));
+
+            if (matchesJoy) {
                 isJi = true;
                 isXiong = false;
                 reason = '喜用神到位';
-            } else if (tabooText.includes(shishen)) {
+            } else if (matchesTaboo) {
                 isXiong = true;
                 isJi = false;
                 reason = '忌神逢运';
