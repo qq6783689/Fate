@@ -2069,7 +2069,7 @@ console.log("✅ 业务脚本开始执行");
                 }
 
                 const patternData = GAME_DB[pattern] || GAME_DB['杂格'];
-                renderUI(pattern, cmd, dm, mz, pillars, patternData);
+                renderUI(pattern, cmd, dm, mz, pillars, patternData, solar);
                 renderWuxingBar(pillars);
 
                 // 滚动到结果区
@@ -2106,7 +2106,7 @@ console.log("✅ 业务脚本开始执行");
      * @param {Array} pillars - 四柱
      * @param {Object} data - 格局文案数据
      */
-    window.renderUI = function(key, cmd, dm, mz, pillars, data) {
+    window.renderUI = function(key, cmd, dm, mz, pillars, data, solar) {
         const xiji = XIJI_RULES[key] || XIJI_RULES["杂格"];
         const detail = data[currentGender === 1 ? 'male' : 'female'];
 
@@ -2149,7 +2149,7 @@ console.log("✅ 业务脚本开始执行");
         `;
 
         // 渲染大运流年（传入喜忌数据）
-        renderDayun(dm, pillars, xiji);
+        renderDayun(dm, pillars, xiji, solar);
     }
 
     // ==========================================
@@ -2170,8 +2170,9 @@ console.log("✅ 业务脚本开始执行");
      * @param {string} dm - 日主天干
      * @param {Array} pillars - 四柱
      * @param {Object} xiji - 喜忌数据
+     * @param {Object} solar - 出生公历对象
      */
-    window.renderDayun = function(dm, pillars, xiji) {
+    window.renderDayun = function(dm, pillars, xiji, solar) {
         const dayunArea = document.getElementById('dayun-area');
         const dayunGrid = document.getElementById('dayun-grid');
 
@@ -2185,13 +2186,10 @@ console.log("✅ 业务脚本开始执行");
         const isYang = ['甲','丙','戊','庚','壬'].includes(pillars[0].g[0]);
         const shunPai = (currentGender === 1 && isYang) || (currentGender === 0 && !isYang);
 
-        // 3天=1岁，1天=4个月，1时辰=10天
-        // 使用lunar库的节气方法精确计算
-        const jieQiList = lunar.getJieQiList();
-        const birthSolar = lunar.getSolar();
-        const birthYear = birthSolar.getYear();
-        const birthMonth = birthSolar.getMonth();
-        const birthDay = birthSolar.getDay();
+        // 使用传入的solar对象计算节气
+        const birthYear = solar.getYear();
+        const birthMonth = solar.getMonth();
+        const birthDay = solar.getDay();
         
         // 找到最近的前后节气
         let prevJie = null, nextJie = null;
