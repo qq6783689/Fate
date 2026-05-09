@@ -2196,11 +2196,13 @@ console.log("✅ 业务脚本开始执行");
         const prevYearJieQi = Solar.fromYmd(birthYear - 1, 1, 1).getLunar().getJieQiTable();
         const yearJieQi = Solar.fromYmd(birthYear, 1, 1).getLunar().getJieQiTable();
         const nextYearJieQi = Solar.fromYmd(birthYear + 1, 1, 1).getLunar().getJieQiTable();
-        const allJieQi = {...prevYearJieQi, ...yearJieQi, ...nextYearJieQi};
 
-        // 找出12节（不包含12气）
+        // 收集三年所有12节到数组（不能用对象合并，同名节气会互相覆盖）
         const jieNames = ['立春','惊蛰','清明','立夏','芒种','小暑','立秋','白露','寒露','立冬','大雪','小寒'];
-        const jieList = jieNames.map(name => allJieQi[name]).filter(Boolean);
+        const jieList = [];
+        for (const table of [prevYearJieQi, yearJieQi, nextYearJieQi]) {
+            for (const name of jieNames) { if (table[name]) jieList.push(table[name]); }
+        }
 
         // 用 Solar.subtract() 精确计算出生日到各节的天数差
         let prevJie = null, nextJie = null;
