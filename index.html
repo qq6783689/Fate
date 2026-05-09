@@ -2188,44 +2188,37 @@ console.log("✅ 业务脚本开始执行");
         const isYang = ['甲','丙','戊','庚','壬'].includes(pillars[0].g[0]);
         const shunPai = (currentGender === 1 && isYang) || (currentGender === 0 && !isYang);
 
-        // 使用传入的solar对象计算节气
         const birthYear = solar.getYear();
         const birthMonth = solar.getMonth();
         const birthDay = solar.getDay();
-        
-        // 找到最近的前后节气
-        let prevJie = null, nextJie = null;
+
+        // 获取三年节气表（上年+本年+下年），覆盖所有可能的节气位置
+        const prevYearJieQi = Solar.fromYmd(birthYear - 1, 1, 1).getLunar().getJieQiTable();
         const yearJieQi = Solar.fromYmd(birthYear, 1, 1).getLunar().getJieQiTable();
         const nextYearJieQi = Solar.fromYmd(birthYear + 1, 1, 1).getLunar().getJieQiTable();
-        
-        // 合并两年的节气表
-        const allJieQi = {...yearJieQi, ...nextYearJieQi};
-        
-        // 找出节气（12节：立春、惊蛰、清明、立夏、芒种、小暑、立秋、白露、寒露、立冬、大雪、小寒）
+        const allJieQi = {...prevYearJieQi, ...yearJieQi, ...nextYearJieQi};
+
+        // 找出12节（不包含12气）
         const jieNames = ['立春','惊蛰','清明','立夏','芒种','小暑','立秋','白露','寒露','立冬','大雪','小寒'];
         const jieList = jieNames.map(name => allJieQi[name]).filter(Boolean);
-        
-        // 找到出生日前后的节
+
+        // 用 Solar.subtract() 精确计算出生日到各节的天数差
+        let prevJie = null, nextJie = null;
         let minDiffPrev = Infinity, minDiffNext = Infinity;
         for (let jie of jieList) {
-            const jieYear = jie.getYear();
-            const jieMonth = jie.getMonth();
-            const jieDay = jie.getDay();
-            // 简化计算天数差
-            const daysFromJie = (birthYear - jieYear) * 365 + (birthMonth - jieMonth) * 30 + (birthDay - jieDay);
-            if (daysFromJie >= 0 && daysFromJie < minDiffPrev) {
-                minDiffPrev = daysFromJie;
-                prevJie = jie;
-            }
-            if (daysFromJie <= 0 && -daysFromJie < minDiffNext) {
-                minDiffNext = -daysFromJie;
-                nextJie = jie;
+            const diffDays = jie.subtract(solar); // >0: 节在出生后, <0: 节在出生前
+            if (diffDays < 0) {
+                const dist = -diffDays;
+                if (dist < minDiffPrev) { minDiffPrev = dist; prevJie = jie; }
+            } else {
+                const dist = diffDays;
+                if (dist < minDiffNext) { minDiffNext = dist; nextJie = jie; }
             }
         }
-        
-        // 计算起运天数（3天=1岁，精确到天数）
-        let daysToJie = shunPai ? (nextJie ? minDiffNext : 0) : (prevJie ? minDiffPrev : 0);
-        if (daysToJie === 0) daysToJie = 3;  // 边界保护
+
+        // 起运天数：顺排数到下一个节，逆排数到上一个节
+        let daysToJie = shunPai ? (nextJie ? minDiffNext : 3) : (prevJie ? minDiffPrev : 3);
+        if (daysToJie < 1) daysToJie = 3;  // 出生在节当日，至少3天
         
         // 3天=1岁，计算起运年龄
         const startAge = Math.max(0, Math.floor(daysToJie / 3));
