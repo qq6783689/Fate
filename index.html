@@ -1679,6 +1679,9 @@ console.log("✅ 业务脚本开始执行");
      * @param {Object} baziData - 八字数据
      */
     window.saveToHistory = function(baziData) {
+        // 从历史记录加载时不重复保存
+        if (window._skipHistorySave) { window._skipHistorySave = false; return; }
+
         try {
             const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
 
@@ -1801,8 +1804,10 @@ console.log("✅ 业务脚本开始执行");
             // 更新性别按钮状态
             document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.g-btn')[item.gender === 1 ? 0 : 1].classList.add('active');
-            
+
             hideHistoryPanel();
+            // 设置标记，避免 startScan 重新保存历史记录
+            window._skipHistorySave = true;
             startScan(); // 自动重新计算
         }
     }
