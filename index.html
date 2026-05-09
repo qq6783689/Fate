@@ -849,7 +849,7 @@ document.addEventListener('touchend', function (e) {
             <div class="solar-time-title">☀️ 真太阳时校正</div>
             <div id="solar-time-result" class="solar-time-result">请选择出生时间和城市</div>
         </div>
-        <button class="btn-start" onclick="window.startScan()">
+        <button class="btn-start" id="btn-start">
             开启 · 天命卷轴 <span class="loader" id="loader"></span>
         </button>
 
@@ -1969,10 +1969,14 @@ console.log("✅ 业务脚本开始执行");
      * 包含错误处理、加载动画、完整计算流程
      */
     window.startScan = async function() {
-        // 前置校验
+        // 防重入锁：防止 onclick + addEventListener + touchend 多次触发
+        if (window._scanning) return;
+        window._scanning = true;
+
         const timeStr = document.getElementById('birth-input').value;
         if (!timeStr) {
             showError('请选择出生时间！');
+            window._scanning = false;
             return;
         }
 
@@ -1980,6 +1984,7 @@ console.log("✅ 业务脚本开始执行");
         const libraryLoaded = await waitForLunarLibrary();
         if (!libraryLoaded) {
             showError('历法库加载中，请稍等几秒再试...');
+            window._scanning = false;
             return;
         }
 
@@ -2095,6 +2100,7 @@ console.log("✅ 业务脚本开始执行");
                 // 清理
                 if (loader) loader.style.display = 'none';
                 hideLoaderSteps();
+                window._scanning = false;
             }
         }, 300);
     }
@@ -2550,8 +2556,8 @@ console.log("✅ 业务脚本开始执行");
                     weight: '★',
                     check: () => {
                         const lookup = {
-                            '寅':'巳','卯':'午','辰':'午','巳':'申','午':'亥','未':'亥',
-                            '申':'亥','酉':'申','戌':'申','亥':'寅','子':'寅','丑':'卯'
+                            '寅':'巳','午':'巳','戌':'巳','巳':'申','酉':'申','丑':'申',
+                            '申':'亥','子':'亥','辰':'亥','亥':'寅','卯':'寅','未':'寅'
                         };
                         return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
                     },
@@ -2564,8 +2570,8 @@ console.log("✅ 业务脚本开始执行");
                     weight: '★',
                     check: () => {
                         const lookup = {
-                            '寅':'亥','卯':'寅','辰':'巳','巳':'寅','午':'亥','未':'申',
-                            '申':'巳','酉':'亥','戌':'亥','亥':'申','子':'巳','丑':'寅'
+                            '寅':'亥','午':'亥','戌':'亥','巳':'寅','酉':'寅','丑':'寅',
+                            '申':'巳','子':'巳','辰':'巳','亥':'申','卯':'申','未':'申'
                         };
                         return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
                     },
@@ -2577,10 +2583,17 @@ console.log("✅ 业务脚本开始执行");
                     type: 'ping',
                     weight: '★',
                     check: () => {
-                        const jiazi = ['甲子','乙丑','丙寅','丁卯','戊辰','己巳','庚午','辛未','壬申','癸酉','甲戌','乙亥'];
-                        const yearGZ = pillars[0].g + pillars[0].z;
-                        const idx = jiazi.indexOf(yearGZ);
-                        return idx >= 0 && idx <= 9;
+                        // 旬空：每旬10日，缺2地支为空亡
+                        // 甲子旬空戌亥, 甲戌旬空申酉, 甲申旬空午未,
+                        // 甲午旬空辰巳, 甲辰旬空寅卯, 甲寅旬空子丑
+                        const kongwangTable = ['戌亥','申酉','午未','辰巳','寅卯','子丑'];
+                        const dayGZ = pillars[2].g + pillars[2].z;
+                        const dayIdx = JIAZI_60.indexOf(dayGZ);
+                        if (dayIdx < 0) return false;
+                        const kwPair = kongwangTable[Math.floor(dayIdx / 10)];
+                        if (!kwPair) return false;
+                        const kwList = [kwPair[0], kwPair[1]];
+                        return pillars.some(p => kwList.includes(p.z));
                     },
                     desc: '诸事多磨，亦主智慧'
                 }
