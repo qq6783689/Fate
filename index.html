@@ -991,15 +991,17 @@ function updateSolarTime() {
     const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / 86400000);
     const b = 2 * Math.PI * (dayOfYear - 81) / 365;
     const equationOfTime = 9.87 * Math.sin(2 * b) - 7.53 * Math.cos(b) - 1.5 * Math.sin(b);
-    
-    // 3. 夏令时校正：1986-1991年中国夏令时（4月中-9月中）
+
+    // 3. 夏令时校正：1986-1991年中国夏令时（4月15日-9月15日）
     let dst = 0;
     const year = date.getFullYear();
     if (year >= 1986 && year <= 1991) {
         const month = date.getMonth() + 1;
-        if (month > 4 && month < 9) {
-            dst = -60; // 夏令时减1小时
-        }
+        const day = date.getDate();
+        const isDST = (month === 4 && day >= 15)
+                   || (month > 4 && month < 9)
+                   || (month === 9 && day <= 15);
+        if (isDST) dst = -60; // 夏令时减1小时
     }
     
     const totalDiff = lngDiff + equationOfTime + dst;
