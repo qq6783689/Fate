@@ -1693,7 +1693,7 @@ console.log("✅ 业务脚本开始执行");
                 pattern: baziData.pattern,
                 name: baziData.name,
                 icon: baziData.icon,
-                timestamp: new Date().toLocaleString('zh-CN'),
+                timestamp: (document.getElementById('birth-input').value || '').replace('T', ' '),
             };
 
             history.unshift(historyItem);
@@ -1756,7 +1756,7 @@ console.log("✅ 业务脚本开始执行");
                         <div>
                         <div><strong>${item.icon} ${item.name}</strong></div>
                         <div class="history-meta">
-                            ${item.gender === 1 ? '乾造·男' : '坤造·女'} | ${item.timestamp}
+                            ${item.gender === 1 ? '乾造·男' : '坤造·女'} | ${(item.timeStr || '').replace('T', ' ')}
                         </div>
                         </div>
                         <button class="history-delete-btn" onclick="window.deleteFromHistory(event, ${item.id})" title="删除此条记录">×</button>
