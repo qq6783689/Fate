@@ -1044,6 +1044,143 @@ function updateSolarTime() {
     const ROOT_MAP = {'甲':['寅','卯','亥','辰','未'], '乙':['卯','寅','辰','未','亥'], '丙':['巳','午','寅','戌'], '丁':['午','巳','未','戌','寅'], '戊':['辰','戌','丑','未','巳','午'], '己':['丑','未','辰','戌','午','巳'], '庚':['申','酉','巳','丑'], '辛':['酉','申','丑','巳'], '壬':['亥','子','申','辰'], '癸':['子','亥','辰','丑','申']};
     
     const CHANGSHENG_TABLE = {"甲":{"亥":"长生","子":"沐浴","丑":"冠带","寅":"临官","卯":"帝旺","辰":"衰","巳":"病","午":"死","未":"墓","申":"绝","酉":"胎","戌":"养"},"乙":{"午":"长生","巳":"沐浴","辰":"冠带","卯":"临官","寅":"帝旺","丑":"衰","子":"病","亥":"死","戌":"墓","酉":"绝","申":"胎","未":"养"},"丙":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"丁":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"戊":{"寅":"长生","卯":"沐浴","辰":"冠带","巳":"临官","午":"帝旺","未":"衰","申":"病","酉":"死","戌":"墓","亥":"绝","子":"胎","丑":"养"},"己":{"酉":"长生","申":"沐浴","未":"冠带","午":"临官","巳":"帝旺","辰":"衰","卯":"病","寅":"死","丑":"墓","子":"绝","亥":"胎","戌":"养"},"庚":{"巳":"长生","午":"沐浴","未":"冠带","申":"临官","酉":"帝旺","戌":"衰","亥":"病","子":"死","丑":"墓","寅":"绝","卯":"胎","辰":"养"},"辛":{"子":"长生","亥":"沐浴","戌":"冠带","酉":"临官","申":"帝旺","未":"衰","午":"病","巳":"死","辰":"墓","卯":"绝","寅":"胎","丑":"养"},"壬":{"申":"长生","酉":"沐浴","戌":"冠带","亥":"临官","子":"帝旺","丑":"衰","寅":"病","卯":"死","辰":"墓","巳":"绝","午":"胎","未":"养"},"癸":{"卯":"长生","寅":"沐浴","丑":"冠带","子":"临官","亥":"帝旺","戌":"衰","酉":"病","申":"死","未":"墓","午":"绝","巳":"胎","辰":"养"}};
+    // ==========================================
+    // 1.5 星露实战派扩展数据结构
+    // ==========================================
+
+    // 天干冲（甲庚冲、乙辛冲、丙壬冲、丁癸冲）
+    const GAN_CLASH = {'甲':'庚','乙':'辛','丙':'壬','丁':'癸','庚':'甲','辛':'乙','壬':'丙','癸':'丁'};
+
+    // 天干五合（甲己合土、乙庚合金、丙辛合水、丁壬合木、戊癸合火）
+    const GAN_COMBINE = {'甲':'己','己':'甲','乙':'庚','庚':'乙','丙':'辛','辛':'丙','丁':'壬','壬':'丁','戊':'癸','癸':'戊'};
+
+    // 地支六合
+    const ZHI_LIUHE = {'子':'丑','丑':'子','寅':'亥','亥':'寅','卯':'戌','戌':'卯','辰':'酉','酉':'辰','巳':'申','申':'巳','午':'未','未':'午'};
+
+    // 地支三合局（半合也算）
+    const ZHI_SANHE = {
+        '申子辰':'水','子辰':true,'申辰':true,'申子':true,
+        '亥卯未':'木','卯未':true,'亥未':true,'亥卯':true,
+        '寅午戌':'火','午戌':true,'寅戌':true,'寅午':true,
+        '巳酉丑':'金','酉丑':true,'巳丑':true,'巳酉':true
+    };
+
+    // 穷通宝鉴式调候表：日主×月令 → [首选调候天干, 次选, 三选]
+    // 星露核心：调候用神必须精确到具体天干（甲≠乙，庚≠辛）
+    const TIAOHOU_TABLE = {
+        '甲':{'寅':['丙','癸'],'卯':['庚','丙','丁','戊','己'],'辰':['庚','丁','壬'],'巳':['癸','丁','庚'],'午':['癸','丁','庚'],'未':['癸','丁','庚'],'申':['庚','丁','壬'],'酉':['庚','丁','壬'],'戌':['庚','甲','丁','壬','癸'],'亥':['庚','丁','丙','戊'],'子':['丁','庚','丙'],'丑':['丁','丙','庚']},
+        '乙':{'寅':['丙','癸'],'卯':['丙','癸'],'辰':['癸','丙'],'巳':['癸'],'午':['癸','丙'],'未':['癸','丙'],'申':['丙','癸','己'],'酉':['癸','丙','丁'],'戌':['癸','辛'],'亥':['丙','戊'],'子':['丙'],'丑':['丙']},
+        '丙':{'寅':['壬','庚'],'卯':['壬','己'],'辰':['壬','甲'],'巳':['壬','庚','癸'],'午':['壬','庚'],'未':['壬','庚'],'申':['壬','戊'],'酉':['壬','癸'],'戌':['甲','壬'],'亥':['甲','戊','庚','壬'],'子':['壬','戊','己'],'丑':['壬','甲']},
+        '丁':{'寅':['甲','庚'],'卯':['庚','甲'],'辰':['甲','庚'],'巳':['甲','庚'],'午':['壬','庚','癸'],'未':['甲','庚','壬'],'申':['甲','庚','丙','戊'],'酉':['甲','庚','丙','戊'],'戌':['甲','庚','戊'],'亥':['甲','庚'],'子':['甲','庚'],'丑':['甲','庚']},
+        '戊':{'寅':['丙','癸','甲'],'卯':['丙','癸','甲'],'辰':['甲','癸','丙'],'巳':['甲','丙','癸'],'午':['壬','甲','丙'],'未':['壬','甲','丙'],'申':['丙','癸','甲'],'酉':['丙','癸'],'戌':['甲','丙','癸'],'亥':['甲','丙'],'子':['丙','甲'],'丑':['丙','甲']},
+        '己':{'寅':['丙','庚','甲'],'卯':['甲','癸','丙'],'辰':['丙','甲','癸'],'巳':['癸','丙'],'午':['癸','丙','辛'],'未':['癸','丙'],'申':['丙','癸'],'酉':['丙','癸'],'戌':['甲','丙','癸'],'亥':['丙','甲','戊'],'子':['丙','甲','戊'],'丑':['丙','甲']},
+        '庚':{'寅':['丙','甲','丁'],'卯':['丁','丙','甲'],'辰':['甲','丁','壬','癸'],'巳':['壬','戊','丙','丁'],'午':['壬','癸'],'未':['壬','癸','丁'],'申':['丁','甲'],'酉':['丁','甲','丙'],'戌':['甲','壬'],'亥':['丁','丙'],'子':['丁','甲','丙'],'丑':['丙','丁','甲']},
+        '辛':{'寅':['己','壬','庚'],'卯':['壬','甲'],'辰':['壬','甲'],'巳':['壬','甲','癸'],'午':['壬','己','癸'],'未':['壬','甲'],'申':['壬','甲','戊'],'酉':['壬','甲'],'戌':['壬','甲'],'亥':['壬','丙'],'子':['丙','戊','壬','申'],'丑':['丙','壬','戊','己']},
+        '壬':{'寅':['庚','丙','戊'],'卯':['戊','辛','庚'],'辰':['甲','庚'],'巳':['壬','庚','癸'],'午':['壬','庚','癸'],'未':['庚','壬'],'申':['戊','丁'],'酉':['庚','甲'],'戌':['甲','庚'],'亥':['戊','丙','庚'],'子':['戊','丙'],'丑':['丙','丁','甲']},
+        '癸':{'寅':['辛','丙'],'卯':['庚','辛'],'辰':['丙','辛','甲'],'巳':['辛'],'午':['庚','辛','壬','癸'],'未':['庚','辛','壬','癸'],'申':['丁'],'酉':['辛','丙'],'戌':['辛','甲','癸','壬'],'亥':['庚','辛','戊','丁'],'子':['丙','辛'],'丑':['丙','丁']}
+    };
+
+    // 长生状态强度权重（星露：死绝胎不帮身，临官帝旺=强，长生=有气）
+    const CS_STRENGTH = {
+        '长生':3, '沐浴':2, '冠带':2.5, '临官':4, '帝旺':5,
+        '衰':1.5, '病':0.8, '死':0.3, '墓':0.5, '绝':0.1, '胎':0.4, '养':1
+    };
+
+    // ==========================================
+    // 1.6 星露实战派工具函数
+    // ==========================================
+
+    /**
+     * 计算日主综合强度（含藏干力量 + 十二长生）
+     * @param {string} dm - 日主天干
+     * @param {Array} pillars - 四柱
+     * @returns {number} 综合强度分数
+     */
+    window.calcDMStrength = function(dm, pillars) {
+        let score = 0;
+        const dmElement = WUXING_MAP[dm];
+
+        // 1. 日支长生状态权重（最重要）
+        const dayZhi = pillars[2].z;
+        const csState = CHANGSHENG_TABLE[dm][dayZhi];
+        score += (CS_STRENGTH[csState] || 1) * 3;
+
+        // 2. 四个天干中有多少比劫印
+        for (let p of pillars) {
+            const god = SHISHEN_MAP[dm][p.g];
+            if (['比肩','劫财'].includes(god)) score += 2;
+            if (['正印','偏印'].includes(god)) score += 1.5;
+        }
+
+        // 3. 地支藏干中的比劫印力量（含权重）
+        for (let p of pillars) {
+            const hidden = HIDDEN_STEMS[p.z] || [];
+            for (let i = 0; i < hidden.length; i++) {
+                const h = hidden[i];
+                if (WUXING_MAP[h] === dmElement) {
+                    score += (i === 0 ? 1.5 : (i === 1 ? 1 : 0.5));
+                }
+                const hGod = SHISHEN_MAP[dm][h];
+                if (['正印','偏印'].includes(hGod)) {
+                    score += (i === 0 ? 1 : (i === 1 ? 0.7 : 0.3));
+                }
+            }
+        }
+
+        // 4. 月令五行加成（月令当权）
+        const mz = pillars[1].z;
+        if (WUXING_MAP[mz] === dmElement) score += 3;
+        const wxCYCLE = {'木生火':true,'火生土':true,'土生金':true,'金生水':true,'水生木':true};
+        if (wxCYCLE[WUXING_MAP[mz]+'生'+dmElement]) score += 1.5;
+
+        return score;
+    };
+
+    /**
+     * 检测天干是否有冲（甲庚冲等）
+     * @param {Array} stems - 天干数组
+     * @returns {Array} 冲的配对
+     */
+    window.detectGanClash = function(stems) {
+        const clashes = [];
+        for (let i = 0; i < stems.length; i++) {
+            const opponent = GAN_CLASH[stems[i]];
+            for (let j = i + 1; j < stems.length; j++) {
+                if (stems[j] === opponent) {
+                    clashes.push({a: stems[i], b: stems[j], aIdx: i, bIdx: j});
+                }
+            }
+        }
+        return clashes;
+    };
+
+    /**
+     * 检测天干合（甲己合等）
+     * @returns {Array} 合的配对
+     */
+    window.detectGanCombine = function(stems) {
+        const combines = [];
+        for (let i = 0; i < stems.length; i++) {
+            const partner = GAN_COMBINE[stems[i]];
+            for (let j = i + 1; j < stems.length; j++) {
+                if (stems[j] === partner) {
+                    combines.push({a: stems[i], b: stems[j]});
+                }
+            }
+        }
+        return combines;
+    };
+
+    /**
+     * 获取日主调候用神（基于穷通宝鉴表）
+     * @returns {Array} 调候天干数组
+     */
+    window.getTiaoHouGans = function(dm, mz) {
+        const monthTable = TIAOHOU_TABLE[dm];
+        if (!monthTable) return [];
+        return monthTable[mz] || [];
+    };
+
 
     // ==========================================
     // 2. 文案库 (万字全解版 - Fully Expanded)
@@ -1444,8 +1581,8 @@ function updateSolarTime() {
                 h:"<b>[实战锦囊]</b> 保证睡眠。你容易因为琐事而焦虑失眠。要学会放宽心，保持充足睡眠。心情放松，不要想太多。多听听音乐，看看书，丰富自己的内心世界。" 
             } 
         },
-        
-        "伤官生财": { name: "⚗️ 炼金术士", tags: ["SSR","爆发"], icon: "💸", slogan: "万物皆可交易。", male: { c:"<b>[天赋传记]</b> 创业奇才。脑子灵活，点石成金。适合科技、媒体、电商等轻资产行业。", w:"<b>[财富逻辑]</b> 现金流极强。周转快，但花销也大。", l:"<b>[情感羁绊]</b> 颜控。喜欢漂亮的伴侣。", k:"<b>[后代传承]</b> 自由生长。", h:"<b>[实战锦囊]</b> 防脱发失眠。用脑过度。" }, female: { c:"<b>[天赋传记]</b> 带货女王。口才极佳，感染力强。", w:"[财富逻辑]</b> 购买力极强。喜欢购物解压。", l:"<b>[情感羁绊]</b> 挑剔。眼光毒辣。", k:"<b>[后代传承]</b> 倾力投入。", h:"<b>[实战锦囊]</b> 通乳腺。注意淋巴健康。" } },
+
+"伤官生财": { name: "⚗️ 炼金术士", tags: ["SSR","爆发"], icon: "💸", slogan: "万物皆可交易。", male: { c:"<b>[天赋传记]</b> 创业奇才。脑子灵活，点石成金。适合科技、媒体、电商等轻资产行业。", w:"<b>[财富逻辑]</b> 现金流极强。周转快，但花销也大。", l:"<b>[情感羁绊]</b> 颜控。喜欢漂亮的伴侣。", k:"<b>[后代传承]</b> 自由生长。", h:"<b>[实战锦囊]</b> 防脱发失眠。用脑过度。" }, female: { c:"<b>[天赋传记]</b> 带货女王。口才极佳，感染力强。", w:"[财富逻辑]</b> 购买力极强。喜欢购物解压。", l:"<b>[情感羁绊]</b> 挑剔。眼光毒辣。", k:"<b>[后代传承]</b> 倾力投入。", h:"<b>[实战锦囊]</b> 通乳腺。注意淋巴健康。" } },
         "食神生财": { name: "🎐 逍遥财主", tags: ["SR","安稳"], icon: "💰", slogan: "快乐才是第一生产力。", male: { c:"<b>[天赋传记]</b> 快乐赚钱。适合餐饮、娱乐、服务业。你做事讲究顺其自然。", w:"<b>[财富逻辑]</b> 细水长流。财源不断。", l:"<b>[情感羁绊]</b> 温馨浪漫。懂得享受生活。", k:"<b>[后代传承]</b> 福星。晚年享福。", h:"<b>[实战锦囊]</b> 防肥胖。注意饮食节制。" }, female: { c:"<b>[天赋传记]</b> 生活美学家。", w:"<b>[财富逻辑]</b> 物质优渥。不缺零花钱。", l:"<b>[情感羁绊]</b> 撒娇好命。", k:"<b>[后代传承]</b> 慈母多福。", h:"<b>[实战锦囊]</b> 多运动。保持活力。" } },
         "真从儿格": { name: "🌟 绝代才子 (真)", tags: ["SSR","名流"], icon: "🎨", slogan: "才华横溢，顺势流芳。", male: { c:"<b>[天赋传记]</b> 满盘食伤，日主无根。你是一代才子，才华如江河奔涌，不可遏止。适合艺术、演艺、学术。", w:"<b>[财富逻辑]</b> 技艺生财，名利双收。", l:"<b>[情感羁绊]</b> 浪漫多情。", k:"<b>[后代传承]</b> 晚年享福。", h:"<b>[实战锦囊]</b> 忌印星克制。" }, female: { c:"<b>[天赋传记]</b> 艺术女神。", w:"<b>[财富逻辑]</b> 粉丝经济。", l:"<b>[情感羁绊]</b> 注重精神。", k:"<b>[后代传承]</b> 母凭子贵。", h:"<b>[实战锦囊]</b> 情绪化。" } },
         "假从儿格": { name: "🎭 怀才不遇 (假)", tags: ["SR","才情"], icon: "🎭", slogan: "心比天高，命途多舛。", male: { c:"<b>[天赋传记]</b> 虽有才华，但局中印星干扰，常感怀才不遇，或才华无法变现。需要运势去印方能爆发。", w:"<b>[财富逻辑]</b> 辛苦钱。", l:"<b>[情感羁绊]</b> 唠叨。", k:"<b>[后代传承]</b> 操劳。", h:"<b>[实战锦囊]</b> 务实。" }, female: { c:"<b>[天赋传记]</b> 劳碌命。为子女操碎心。", w:"<b>[财富逻辑]</b> 积少成多。", l:"<b>[情感羁绊]</b> 挑剔。", k:"<b>[后代传承]</b> 溺爱。", h:"<b>[实战锦囊]</b> 焦虑。" } },
@@ -1466,6 +1603,42 @@ function updateSolarTime() {
                 l:"<b>[情感羁绊]</b> 慕强心理。你只会被比你更强的男人征服。但遗憾的是，真正能驾驭你的男人凤毛麟角。你的婚姻往往带有某种“合作”性质。建议找一个大格局的成熟男性。", 
                 k:"<b>[后代传承]</b> 精英教育。你会倾尽全力培养孩子成为人中龙凤。但要注意不要给孩子太大的压力，偶尔也要展示你温柔的一面。", 
                 h:"<b>[实战锦囊]</b> 肝火易旺。七杀攻身，伤官泄气，你的身体容易透支。要注意乳腺、甲状腺和生殖系统的保养。少动怒，多做瑜伽调节内分泌。" 
+            } 
+        },
+        
+        "水火既济": { 
+            name: "🌊 灵渊潜龙", tags: ["SSR","调候极贵"], icon: "🐉", slogan: "水火既济，阴阳调和。", 
+            male: { 
+                c:"<b>[天赋传记]</b> 水火既济是调候体系顶级格局——水日主生于夏季，火旺水衰，但局中水火之力达到微妙平衡。你天生聪明绝顶，思维如水银泻地，能宏观战略也能微观执行。对危机有极其敏锐的直觉。适合从事情报分析、金融风控、科技研发、战略咨询等高智力行业。", 
+                w:"<b>[财富逻辑]</b> 智力是最高杠杆。你的财富来自判断力和信息处理能力。不适合体力活或重复性工作，应在需要"算力"的领域深耕。最怕火过旺（水干）或水过旺（火熄），保持平衡是财运关键。", 
+                l:"<b>[情感羁绊]</b> 灵魂深度契合。外表冷静，内心暗流涌动。需要能理解你内心复杂性的伴侣。旗鼓相当的智识伴侣最优选。", 
+                k:"<b>[后代传承]</b> 智商遗传明显。孩子多半继承你的高智商和敏锐直觉。给他们自由探索的环境。", 
+                h:"<b>[实战锦囊]</b> 金为通关之神。水火交战，金来生水泄火是平衡关键。大运逢金是最佳发力时机。身体注意肾脏和心脏平衡，不熬夜不纵欲是底线。" 
+            }, 
+            female: { 
+                c:"<b>[天赋传记]</b> 冰美人型智者。清冷疏离的气质，在专业领域光芒四射。适合做学者、分析师、技术专家。", 
+                w:"<b>[财富逻辑]</b> 专业壁垒型收入。技能越稀缺收入越高。深耕一个领域建立不可替代性。", 
+                l:"<b>[情感羁绊]</b> 慢热但深情。不会轻易陷入爱情，一旦认定极其专一。需要有耐心的人慢慢打开你的心扉。", 
+                k:"<b>[后代传承]</b> 重质不重量。可能只有一个孩子，倾注全部心血培养。", 
+                h:"<b>[实战锦囊]</b> 体寒或内分泌失调的风险。忌生冷，多喝温水。定期艾灸和泡脚有益。" 
+            } 
+        },
+        
+        "土金伤官": { 
+            name: "⛰️ 点石成金", tags: ["SSR","调候变贵"], icon: "💎", slogan: "土燥得润，金石为开。", 
+            male: { 
+                c:"<b>[天赋传记]</b> 土金伤官是特殊调候格局——土日主夏令，火炎土燥，急需壬水润局，金泄土气又生水，形成完美通关链条。你有化腐朽为神奇的能力。思维是"转化型"的——把问题变成机会，把劣势变成特色。适合资源回收、循环经济、技术转化、中介撮合。", 
+                w:"<b>[财富逻辑]</b> 壬水调候是关键。原局有壬水或大运逢壬，格局瞬间变贵，财运暴涨。财富来自"资源错配的纠正"——把A处多余搬到B处稀缺。你不是生产者，你是价值发现者。", 
+                l:"<b>[情感羁绊]</b> 互补型伴侣。需要一个能"润"你的伴侣——像水一样温柔灵活，能化解你的固执和燥气。", 
+                k:"<b>[后代传承]</b> 金石之坚。孩子意志力极强，但可能固执。教会灵活变通比教会坚持更重要。", 
+                h:"<b>[实战锦囊]</b> 火炎土燥，皮肤和消化系统薄弱。多喝水，少吃辛辣。定期去水边度假充电。" 
+            }, 
+            female: { 
+                c:"<b>[天赋传记]</b> 温柔而有力量。外柔内刚，能把杂乱资源整合成漂亮成果。适合项目管理和资源协调。", 
+                w:"<b>[财富逻辑]</b> 整合型收入。收入来自撮合交易或项目提成。拓展人脉是财富增长核心。", 
+                l:"<b>[情感羁绊]</b> 宜配水旺之人。找性格灵活、善于沟通的伴侣，能让生活更滋润。", 
+                k:"<b>[后代传承]</b> 子女坚韧。像你一样有毅力，但别把高标准变成负担。", 
+                h:"<b>[实战锦囊]</b> 润肤养颜。土燥之人皮肤偏干，多补水保湿。壬水调候到位时状态明显提升。" 
             } 
         }
     };
@@ -1498,1221 +1671,7 @@ function updateSolarTime() {
         "建禄格": { desc: "月令建禄，身强财弱。喜财官食伤泄秀。最忌比劫分财。白手起家之格。", joy: ["💰 财星","🗡️ 官杀"], taboo: ["💪 比劫","📜 印星"] },
         "月劫格": { desc: "月令劫财，争财夺利。需官杀制劫或食伤化劫。无制则破财刑妻。", joy: ["🗡️ 官杀","🎨 食伤"], taboo: ["💪 比劫","📜 印星"] },
         "阳刃格": { desc: "阳刃当权，刚强无比。喜七杀制刃，喜食伤泄秀。忌财旺生杀。'羊刃驾杀'为武贵。", joy: ["🗡️ 七杀","🎨 食伤"], taboo: ["💰 财星"] },
-        "杂格": { desc: "格局未清，五行杂居。全凭扶抑调候，需看日主底蕴与通关。后天努力可扭乾坤。", joy: ["扶助用神"], taboo: ["克害用神"] }
+,
+"水火既济": { desc: "水日主生于夏令，火旺水衰，喜金生水、水帮身、湿土护水。水火既济，阴阳调和，主聪明绝顶，随机应变，富贵双全。最忌火土再旺，水涸则危。", joy: ["💧 水 (帮身)","⛰️ 金 (生水)","🌱 湿土 (护水)"], taboo: ["🔥 火 (涸水)","☀️ 燥土 (克水)"] },
+        "土金伤官": { desc: "土日主生于夏，火炎土燥，必用壬水调候。金泄土气而生水，为通关之妙。此格见壬即贵，无壬则土燥金脆，才华难展。", joy: ["💧 壬水 (调候)","⛰️ 金 (泄秀)"], taboo: ["🔥 火 (炎燥)","☀️ 燥土 (埋金)"] }
     }
-  
-console.log("✅ 业务脚本开始执行");
-
-    // ==================== 新增: 工具函数与优化 ====================
-
-    const HISTORY_KEY = 'fate_bazi_history_v1';
-    const HISTORY_MAX = 20;
-    const THEME_KEY = 'fate_bazi_theme_v1';
-
-    /**
-     * 设置主题
-     * @param {string} theme - 主题名: classic/dark/red
-     */
-    window.setTheme = function(theme) {
-        if (theme === 'classic') {
-            document.documentElement.removeAttribute('data-theme');
-        } else {
-            document.documentElement.setAttribute('data-theme', theme);
-        }
-
-        // 更新按钮状态
-        document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelector(`.theme-btn.${theme}`).classList.add('active');
-
-        // 保存到本地
-        localStorage.setItem(THEME_KEY, theme);
-        logDebug('THEME', 'Switched to: ' + theme);
-    }
-
-    /**
-     * 初始化主题（从本地记忆恢复）
-     */
-    window.initTheme = function() {
-        const savedTheme = localStorage.getItem(THEME_KEY) || 'classic';
-        setTheme(savedTheme);
-    }
-
-    // 页面加载时自动恢复主题
-    document.addEventListener('DOMContentLoaded', initTheme);
-
-    /**
-     * 生成分享卡片并下载（移动端优化版）
-     */
-    window.exportCard = async function() {
-        const btn = document.querySelector('.export-btn');
-        const originalText = btn.innerHTML;
-
-        try {
-            btn.disabled = true;
-            btn.innerHTML = '⏳ 生成中...';
-
-            // 获取结果区域
-            const resultArea = document.getElementById('result-area');
-            if (!resultArea || resultArea.style.display === 'none') {
-                showError('请先进行八字鑑定');
-                return;
-            }
-
-            // 简化配置，提升移动端兼容性
-            const canvas = await html2canvas(resultArea, {
-                scale: 1.5,          // 略微降低分辨率，提升移动端稳定性
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#fdfbf7',
-                logging: false,
-                ignoreElements: (el) => {
-                    // 忽略按钮区域
-                    return el.classList && el.classList.contains('action-bar');
-                }
-            });
-
-            // 下载图片
-            const link = document.createElement('a');
-            const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-            link.download = `天命鑑定_${dateStr}.png`;
-            link.href = canvas.toDataURL('image/png', 0.9); // 略微压缩，加快速度
-            link.click();
-
-            logDebug('EXPORT', '分享卡片已生成');
-            showError('✅ 分享卡片已保存到相册！');
-
-        } catch (error) {
-            console.error('导出失败:', error);
-            showError('生成失败，请截图保存即可');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
-    }
-
-    /**
-     * 显示用户友好的错误提示
-     * @param {string} message - 错误信息
-     * @param {number} duration - 显示时长(ms)
-     */
-    window.showError = function(message, duration = 3000) {
-        const toast = document.getElementById('error-toast');
-        toast.textContent = '⚠️ ' + message;
-        toast.style.display = 'block';
-        setTimeout(() => toast.style.display = 'none', duration);
-    }
-
-    /**
-     * 控制台日志封装（方便未来扩展日志上报）
-     * @param {string} type - 日志类型
-     * @param {*} data - 日志数据
-     */
-    window.logDebug = function(type, data) {
-        console.log(`[Fate ${type}]`, data);
-    }
-
-    /**
-     * 安全的DOM元素获取
-     * @param {string} id - 元素ID
-     * @returns {HTMLElement|null}
-     */
-    window.safeGetElement = function(id) {
-        const el = document.getElementById(id);
-        if (!el) logDebug('WARNING', `Element #${id} not found`);
-        return el;
-    }
-
-    // ==================== 新增: 加载步骤动画 ====================
-    const LOADER_STEPS = ['step-1', 'step-2', 'step-3', 'step-4', 'step-5'];
-    let currentStepIndex = 0;
-    let stepTimer = null;
-
-    /**
-     * 显示加载步骤动画
-     */
-    window.showLoaderSteps = function() {
-        const stepsPanel = safeGetElement('loader-steps');
-        if (!stepsPanel) return;
-        
-        stepsPanel.style.display = 'block';
-        LOADER_STEPS.forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.classList.remove('active', 'done');
-            }
-        });
-        currentStepIndex = 0;
-        animateNextStep();
-    }
-
-    /**
-     * 执行下一步动画
-     */
-    window.animateNextStep = function() {
-        if (stepTimer) clearTimeout(stepTimer);
-        
-        if (currentStepIndex > 0 && currentStepIndex <= LOADER_STEPS.length) {
-            const prevEl = document.getElementById(LOADER_STEPS[currentStepIndex - 1]);
-            if (prevEl) prevEl.classList.add('done');
-        }
-        
-        if (currentStepIndex < LOADER_STEPS.length) {
-            const currEl = document.getElementById(LOADER_STEPS[currentStepIndex]);
-            if (currEl) currEl.classList.add('active');
-            currentStepIndex++;
-            stepTimer = setTimeout(animateNextStep, 400);
-        }
-    }
-
-    /**
-     * 隐藏加载步骤动画
-     */
-    window.hideLoaderSteps = function() {
-        if (stepTimer) clearTimeout(stepTimer);
-        const stepsPanel = safeGetElement('loader-steps');
-        if (stepsPanel) stepsPanel.style.display = 'none';
-    }
-
-    // ==================== 新增: 历史记录功能 ====================
-    /**
-     * 保存到本地历史记录
-     * @param {Object} baziData - 八字数据
-     */
-    window.saveToHistory = function(baziData) {
-        // 从历史记录加载时不重复保存
-        if (window._skipHistorySave) { window._skipHistorySave = false; return; }
-
-        try {
-            const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-
-            const historyItem = {
-                id: Date.now(),
-                timeStr: document.getElementById('birth-input').value,
-                cityValue: document.getElementById('city-select').value, // 保存城市选择
-                gender: currentGender,
-                pattern: baziData.pattern,
-                name: baziData.name,
-                icon: baziData.icon,
-                timestamp: (document.getElementById('birth-input').value || '').replace('T', ' '),
-            };
-
-            history.unshift(historyItem);
-            if (history.length > HISTORY_MAX) history.pop();
-
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-            logDebug('HISTORY', 'Saved successfully');
-        } catch (e) {
-            logDebug('ERROR', 'Save history failed: ' + e.message);
-        }
-    }
-
-    /**
-     * 删除单条历史记录
-     * @param {Event} event - 点击事件
-     * @param {number} id - 记录ID
-     */
-    window.deleteFromHistory = function(event, id) {
-        event.stopPropagation(); // 防止触发加载历史记录
-        try {
-            let history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-            history = history.filter(item => item.id !== id);
-            localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
-            logDebug('HISTORY', 'Deleted: ' + id);
-            showHistoryPanel(); // 刷新列表
-        } catch (e) {
-            logDebug('ERROR', 'Delete history failed: ' + e.message);
-        }
-    }
-
-    /**
-     * 清空全部历史记录
-     */
-    window.clearAllHistory = function() {
-        if (confirm('确定要清空全部历史记录吗？')) {
-            localStorage.removeItem(HISTORY_KEY);
-            showHistoryPanel();
-            logDebug('HISTORY', 'All cleared');
-        }
-    }
-
-    /**
-     * 显示历史记录面板
-     */
-    window.showHistoryPanel = function() {
-        const panel = safeGetElement('history-panel');
-        const overlay = safeGetElement('history-overlay');
-        const list = safeGetElement('history-list');
-
-        if (!panel || !overlay || !list) return;
-
-        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-
-        if (history.length === 0) {
-            list.innerHTML = '<div class="history-empty">暂无历史记录<br>开启你的第一次天命鑑定吧！</div>';
-        } else {
-            list.innerHTML = history.map(item => `
-                <div class="history-item" onclick="window.loadFromHistory(${item.id})">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <div>
-                        <div><strong>${item.icon} ${item.name}</strong></div>
-                        <div class="history-meta">
-                            ${item.gender === 1 ? '乾造·男' : '坤造·女'} | ${(item.timeStr || '').replace('T', ' ')}
-                        </div>
-                        </div>
-                        <button class="history-delete-btn" onclick="window.deleteFromHistory(event, ${item.id})" title="删除此条记录">×</button>
-                    </div>
-                </div>
-            `).join('') + `
-                <div style="text-align: center; padding-top: 15px; margin-top: 10px; border-top: 1px solid #eee;">
-                    <button class="history-clear-btn" onclick="window.clearAllHistory()">清空全部记录</button>
-                </div>
-            `;
-        }
-
-        panel.style.display = 'block';
-        overlay.style.display = 'block';
-    }
-
-    /**
-     * 隐藏历史记录面板
-     */
-    window.hideHistoryPanel = function() {
-        const panel = safeGetElement('history-panel');
-        const overlay = safeGetElement('history-overlay');
-        if (panel) panel.style.display = 'none';
-        if (overlay) overlay.style.display = 'none';
-    }
-
-    /**
-     * 从历史记录加载并重新计算
-     * @param {number} id - 历史记录ID
-     */
-    window.loadFromHistory = function(id) {
-        const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-        const item = history.find(h => h.id === id);
-        
-        if (item) {
-            document.getElementById('birth-input').value = item.timeStr;
-            currentGender = item.gender;
-            
-            // 恢复城市选择（向后兼容：如果没有保存城市则不改变）
-            if (item.cityValue) {
-                document.getElementById('city-select').value = item.cityValue;
-                updateSolarTime(); // 重新计算真太阳时
-            }
-            
-            // 更新性别按钮状态
-            document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.g-btn')[item.gender === 1 ? 0 : 1].classList.add('active');
-
-            hideHistoryPanel();
-            // 设置标记，避免 startScan 重新保存历史记录
-            window._skipHistorySave = true;
-            startScan(); // 自动重新计算
-        }
-    }
-
-    // ==================== 原有函数优化: JSDoc + try-catch ====================
-
-    /**
-     * 判断日主在地支是否有根
-     * @param {string} gan - 天干
-     * @param {Array} pillars - 四柱数组
-     * @returns {boolean}
-     */
-    window.hasRoot = function(gan, pillars) {
-        const roots = ROOT_MAP[gan] || [];
-        return pillars.some(p => roots.includes(p.z));
-    }
-
-    /**
-     * 计算月令司令真神
-     * @param {Object} lunar - 农历对象
-     * @param {string} mz - 月支
-     * @returns {Object} commander司令, diffDays天数差
-     */
-    window.calcCommander = function(lunar, mz) {
-        const pj = lunar.getPrevJie();
-        const s = lunar.getSolar();
-        const pjs = pj.getSolar();
-        const d1 = new Date(s.getYear(), s.getMonth()-1, s.getDay(), s.getHour(), s.getMinute());
-        const d2 = new Date(pjs.getYear(), pjs.getMonth()-1, pjs.getDay(), pjs.getHour(), pjs.getMinute());
-        const diff = Math.floor((d1.getTime() - d2.getTime()) / (1000 * 60 * 60 * 24));
-        const rules = SILING_RULES[mz];
-        let commander = rules[rules.length-1][0]; 
-        let sum = 0;
-        for (let r of rules) { sum += r[1]; if (diff < sum) { commander = r[0]; break; } }
-        return { commander, diffDays: diff };
-    }
-
-    // ==========================================
-    // 4. 格局判定核心逻辑 (含真假从格 + 气势判定 + 优先级修复)
-    // ==========================================
-    window.determinePattern = function(climate, pillars, dm, mz, cmd) {
-        const stems = [pillars[0].g, pillars[1].g, pillars[3].g];
-        const zhis = pillars.map(p => p.z);
-        
-        const dmRooted = hasRoot(dm, pillars);
-        let mzMainGod = SHISHEN_MAP[dm][ZHI_MAIN_QI[mz]]; 
-
-        // === 1. 气势判定 (Formation Override) ===
-        if (!dmRooted) {
-             const dmElement = WUXING_MAP[dm];
-             if (dmElement === '金') {
-                 if ((zhis.includes('亥') && zhis.includes('卯')) || 
-                     (zhis.includes('寅') && zhis.includes('卯')) || 
-                     (zhis.includes('亥') && zhis.includes('寅'))) {
-                     if (mzMainGod === '食神' || mzMainGod === '伤官') mzMainGod = '偏财';
-                 }
-             }
-             if (dmElement === '水') {
-                 if ((zhis.includes('寅') && zhis.includes('午')) || 
-                     (zhis.includes('巳') && zhis.includes('午'))) {
-                     mzMainGod = '偏财';
-                 }
-             }
-             if (dmElement === '火') {
-                 if ((zhis.includes('巳') && zhis.includes('酉')) || 
-                     (zhis.includes('申') && zhis.includes('酉'))) {
-                     mzMainGod = '偏财';
-                 }
-             }
-        }
-
-        const supportStemsCount = stems.filter(s => {
-            const god = SHISHEN_MAP[dm][s];
-            return ["正印","偏印","比肩","劫财"].includes(god);
-        }).length;
-
-        // === 2. 优先判定“从格” (Cong Ge Priority) ===
-        if (!dmRooted) {
-            if (mzMainGod.includes("财")) {
-                if (supportStemsCount === 0) return "真从财格";
-                if (supportStemsCount <= 2) return "假从财格"; 
-            }
-            if (mzMainGod === "七杀" || mzMainGod === "正官") {
-                if (supportStemsCount === 0) return "真从杀格";
-                if (supportStemsCount <= 2) return "假从杀格";
-            }
-            if (mzMainGod === "食神" || mzMainGod === "伤官") {
-                const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s]));
-                if (!hasSeal && supportStemsCount === 0) return "真从儿格";
-                if (hasSeal || supportStemsCount > 0) return "假从儿格";
-            }
-        }
-
-        // === 3. 关键交互 (Interaction Priority - 针对 乙亥/庚辰/己丑/壬申 此类天干成格) ===
-        // 必须优先于月令本气判定
-        const hasKill = stems.some(s => SHISHEN_MAP[dm][s] === "七杀");
-        const hasHurt = stems.some(s => SHISHEN_MAP[dm][s] === "伤官");
-        const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s]));
-        const hasFood = stems.some(s => SHISHEN_MAP[dm][s] === "食神");
-
-        // 伤官合杀：见七杀且见伤官
-        if (hasKill && hasHurt) return "伤官合杀";
-        // 食神制杀：见七杀且见食神
-        if (hasKill && hasFood) return "食神制杀";
-        // 杀印相生：见七杀且见印
-        if (hasKill && hasSeal) return "杀印相生";
-        // 伤官配印：伤官旺且见印
-        if (hasHurt && hasSeal && hasRoot(dm, pillars)) return "伤官配印";
-
-        // === 4. 特殊气候格 (Climate Special) ===
-        if (climate.special) return climate.special;
-
-        // === 5. 阳刃/建禄/月劫 (Standard Strong Patterns) ===
-        if (YANG_REN_MAP[dm] === mz) return "阳刃格";
-        if (WUXING_MAP[dm] === WUXING_MAP[mz] && mz !== YANG_REN_MAP[dm]) return "建禄格";
-        if (mzMainGod === "劫财") return "月劫格";
-
-        // === 6. 普通正格 (Standard Month Commander) ===
-        if (stems.includes(cmd.commander)) {
-            const god = SHISHEN_MAP[dm][cmd.commander];
-            const map = {
-                "正财":"正财格", "偏财":"偏财格", 
-                "正官":"正官格", "七杀":"七杀格",
-                "正印":"正印格", "偏印":"偏印格",
-                "食神":"食神格", "伤官":"伤官格"
-            };
-            if (map[god]) return map[god];
-        }
-
-        // === 7. 本气兜底 ===
-        const fallback = {
-            "正财":"正财格", "偏财":"偏财格", 
-            "正官":"正官格", "七杀":"七杀格",
-            "正印":"正印格", "偏印":"偏印格",
-            "食神":"食神格", "伤官":"伤官格",
-            "比肩":"建禄格", "劫财":"月劫格"
-        };
-        return fallback[mzMainGod] || "杂格";
-    }
-
-    window.getDMDesc = function(dm, mz) {
-        const season = ["亥","子","丑"].includes(mz) ? "冬" : ["巳","午","未"].includes(mz) ? "夏" : ["寅","卯","辰"].includes(mz) ? "春" : "秋";
-        return `你是生于${season}季的【${dm}】。`;
-    }
-
-    /**
-     * 检查并等待核心历法库加载完成
-     * @param {number} maxRetries - 最大重试次数
-     * @returns {Promise<boolean>}
-     */
-    window.waitForLunarLibrary = async function(maxRetries = 5) {
-        for (let i = 0; i < maxRetries; i++) {
-            if (typeof Lunar !== 'undefined' && typeof Solar !== 'undefined') {
-                return true;
-            }
-            logDebug('WAIT', `等待历法库加载... (${i + 1}/${maxRetries})`);
-            await new Promise(resolve => setTimeout(resolve, 500));
-        }
-        return false;
-    }
-
-    /**
-     * 开始八字鑑定主流程
-     * 包含错误处理、加载动画、完整计算流程
-     */
-    window.startScan = async function() {
-        // 防重入锁：防止 onclick + addEventListener + touchend 多次触发
-        if (window._scanning) return;
-        window._scanning = true;
-
-        const timeStr = document.getElementById('birth-input').value;
-        if (!timeStr) {
-            showError('请选择出生时间！');
-            window._scanning = false;
-            return;
-        }
-
-        // 等待核心库加载（带重试机制）
-        const libraryLoaded = await waitForLunarLibrary();
-        if (!libraryLoaded) {
-            showError('历法库加载中，请稍等几秒再试...');
-            window._scanning = false;
-            return;
-        }
-
-        const loader = document.getElementById('loader');
-        if (loader) loader.style.display = 'inline-block';
-
-        // 显示加载步骤动画
-        showLoaderSteps();
-
-        setTimeout(async () => {
-            try {
-                logDebug('INFO', 'Starting Bazi calculation: ' + timeStr);
-
-                // 使用真太阳时进行排盘，如果有真太阳时的话
-                let date = window.solarDateTime ? new Date(window.solarDateTime) : new Date(timeStr);
-                if (isNaN(date.getTime())) {
-                    // 回退到原始时间
-                    date = new Date(timeStr);
-                    if (isNaN(date.getTime())) {
-                        throw new Error('日期格式无效');
-                    }
-                }
-
-                const solar = Solar.fromYmdHms(
-                    date.getFullYear(),
-                    date.getMonth() + 1,
-                    date.getDate(),
-                    date.getHours(),
-                    date.getMinutes(),
-                    date.getSeconds()
-                );
-
-                const lunar = solar.getLunar();
-                const baziObj = lunar.getEightChar();
-                baziObj.setSect(2);
-
-                const pillars = [
-                    { t: '年', g: baziObj.getYearGan().toString(), z: baziObj.getYearZhi().toString() },
-                    { t: '月', g: baziObj.getMonthGan().toString(), z: baziObj.getMonthZhi().toString() },
-                    { t: '日', g: baziObj.getDayGan().toString(), z: baziObj.getDayZhi().toString() },
-                    { t: '时', g: baziObj.getTimeGan().toString(), z: baziObj.getTimeZhi().toString() },
-                ];
-
-                const dm = pillars[2].g; // 日主天干
-                const mz = pillars[1].z; // 月支
-                const cmd = calcCommander(lunar, mz);
-
-                // 调候激活判断
-                const isWinter = ['亥', '子', '丑'].includes(mz);
-                const isSummer = ['巳', '午', '未'].includes(mz);
-                const hasFire = pillars.some(p => WUXING_MAP[p.g] === '火' || WUXING_MAP[p.z] === '火');
-                const hasWater = pillars.some(p => WUXING_MAP[p.g] === '水' || WUXING_MAP[p.z] === '水');
-
-                let activated = false;
-                let activationStatus = '', activationDesc = '';
-
-                if ((WUXING_MAP[dm] === '金' && isWinter && hasFire) ||
-                    (WUXING_MAP[dm] === '木' && isSummer && hasWater) ||
-                    (WUXING_MAP[dm] === '土' && isWinter && hasFire)) {
-                    activated = true;
-                    activationStatus = '🔥 紫气东来 · 格局变贵';
-                    activationDesc = '局中见调候真神，犹如寒金遇火、焦木逢雨。原格力量瞬间激活，层次倍增，名利双收之象。';
-                }
-
-                const climate = { special: null };
-                if (WUXING_MAP[dm] === '金' && isWinter) {
-                    climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官') ? '金水伤官' : '金水食神';
-                }
-                if (WUXING_MAP[dm] === '木' && ['寅', '卯'].includes(mz) && hasFire) climate.special = '木火通明';
-                if (WUXING_MAP[dm] === '木' && (isSummer || mz === '巳') && hasWater &&
-                    pillars.some(p => SHISHEN_MAP[dm][p.g] === '伤官' && hasRoot(p.g, pillars))) {
-                    climate.special = '伤官配印';
-                }
-
-                const pattern = determinePattern(climate, pillars, dm, mz, cmd);
-                logDebug('SUCCESS', 'Pattern determined: ' + pattern);
-
-                // 渲染结果
-                const resultArea = document.getElementById('result-area');
-                resultArea.style.display = 'block';
-
-                const activationArea = document.getElementById('activation-area');
-                if (activated) {
-                    activationArea.style.display = 'block';
-                    safeSetText('activation-status', activationStatus);
-                    safeSetText('activation-desc', activationDesc);
-                } else {
-                    activationArea.style.display = 'none';
-                }
-
-                const patternData = GAME_DB[pattern] || GAME_DB['杂格'];
-                renderUI(pattern, cmd, dm, mz, pillars, patternData, solar);
-                renderWuxingBar(pillars);
-
-                // 滚动到结果区
-                setTimeout(() => {
-                    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-
-                // 保存到历史记录
-                saveToHistory({
-                    pattern: pattern,
-                    name: patternData.name,
-                    icon: patternData.icon,
-                    pillars: pillars
-                });
-
-            } catch (error) {
-                logDebug('ERROR', error.message);
-                showError('鑑定失败: ' + error.message);
-                console.error('Bazi calculation error:', error);
-            } finally {
-                // 清理
-                if (loader) loader.style.display = 'none';
-                hideLoaderSteps();
-                window._scanning = false;
-            }
-        }, 300);
-    }
-
-    /**
-     * 渲染主界面UI
-     * @param {string} key - 格局key
-     * @param {Object} cmd - 司令真神
-     * @param {string} dm - 日主天干
-     * @param {string} mz - 月支
-     * @param {Array} pillars - 四柱
-     * @param {Object} data - 格局文案数据
-     */
-    window.renderUI = function(key, cmd, dm, mz, pillars, data, solar) {
-        const xiji = XIJI_RULES[key] || XIJI_RULES["杂格"];
-        const detail = data[currentGender === 1 ? 'male' : 'female'];
-
-        safeSetText('role-icon', data.icon);
-        safeSetText('role-title', data.name);
-        safeSetText('role-sub', data.slogan);
-        safeSetHTML('role-tags', `<span class="tag ssr">${key}</span>`);
-        safeSetHTML('siling-text', `${cmd.commander} <small>(${SHISHEN_MAP[dm][cmd.commander] || '真神'})</small> · 掌权 ${cmd.diffDays} 日`);
-        
-        safeSetText('pattern-reason', `此局定为【${key}】。\n\n${xiji.desc}`);
-        safeSetText('txt-joy', xiji.joy.join(" / "));
-        safeSetText('txt-taboo', xiji.taboo.join(" / "));
-        safeSetText('dm-desc', getDMDesc(dm, mz));
-
-        let p_html = '';
-        pillars.forEach(p => {
-            const god = p.t.includes('日') ? '元神' : (SHISHEN_MAP[dm][p.g] || "");
-            const colorG = WX_COLOR_DATA[WUXING_MAP[p.g]] || '#333';
-            const colorZ = WX_COLOR_DATA[WUXING_MAP[p.z]] || '#333';
-            // 显示藏干
-            const hiddens = HIDDEN_STEMS[p.z] || [];
-            let hiddenStr = "";
-            hiddens.forEach(h => {
-                hiddenStr += `<div class="hs-row"><span class="hs-gan" style="color:${WX_COLOR_DATA[WUXING_MAP[h]]}">${h}</span><span class="hs-god">${SHISHEN_MAP[dm][h]}</span></div>`;
-            });
-
-            // 长生状态
-            const cs = CHANGSHENG_TABLE[p.g][p.z];
-
-            p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${colorG}">${p.g}</div><div class="ofuda-char" style="color:${colorZ}">${p.z}</div><div class="ofuda-head">${p.t}</div><div class="hidden-stems">${hiddenStr}</div><div class="ofuda-cs">自坐${cs}</div></div>`;
-        });
-        document.getElementById('pillars-box').innerHTML = p_html;
-
-        document.getElementById('guide-content').innerHTML = `
-            <div class="guide-item"><div class="guide-title">⚔️ 事业与才情</div><div class="guide-text">${detail.c}</div></div>
-            <div class="guide-item"><div class="guide-title">💰 财富与气数</div><div class="guide-text">${detail.w}</div></div>
-            <div class="guide-item"><div class="guide-title">💞 情缘与羁绊</div><div class="guide-text">${detail.l}</div></div>
-            <div class="guide-item"><div class="guide-title">🌱 后代与传承</div><div class="guide-text">${detail.k}</div></div>
-            <div class="guide-item"><div class="guide-title">🛡️ 实战与锦囊</div><div class="guide-text">${detail.h}</div></div>
-        `;
-
-        // 渲染大运流年（传入喜忌数据）
-        renderDayun(dm, pillars, xiji, solar);
-    }
-
-    // ==========================================
-    // 大运流年核心计算
-    // ==========================================
-
-    // 60甲子顺序表
-    const JIAZI_60 = [
-        '甲子','乙丑','丙寅','丁卯','戊辰','己巳','庚午','辛未','壬申','癸酉','甲戌','乙亥',
-        '丙子','丁丑','戊寅','己卯','庚辰','辛巳','壬午','癸未','甲申','乙酉','丙戌','丁亥',
-        '戊子','己丑','庚寅','辛卯','壬辰','癸巳','甲午','乙未','丙申','丁酉','戊戌','己亥',
-        '庚子','辛丑','壬寅','癸卯','甲辰','乙巳','丙午','丁未','戊申','己酉','庚戌','辛亥',
-        '壬子','癸丑','甲寅','乙卯','丙辰','丁巳','戊午','己未','庚申','辛酉','壬戌','癸亥'
-    ];
-
-    /**
-     * 计算并渲染大运（精准版）
-     * @param {string} dm - 日主天干
-     * @param {Array} pillars - 四柱
-     * @param {Object} xiji - 喜忌数据
-     * @param {Object} solar - 出生公历对象
-     */
-    window.renderDayun = function(dm, pillars, xiji, solar) {
-        const dayunArea = document.getElementById('dayun-area');
-        const dayunGrid = document.getElementById('dayun-grid');
-
-        // 获取月柱干支
-        const monthGan = pillars[1].g;
-        const monthZhi = pillars[1].z;
-        const monthIndex = JIAZI_60.indexOf(monthGan + monthZhi);
-
-        // ========== 精准起运计算 ==========
-        // 男阳年顺排、阴年逆排；女反之
-        const isYang = ['甲','丙','戊','庚','壬'].includes(pillars[0].g[0]);
-        const shunPai = (currentGender === 1 && isYang) || (currentGender === 0 && !isYang);
-
-        const birthYear = solar.getYear();
-        const birthMonth = solar.getMonth();
-        const birthDay = solar.getDay();
-
-        // 获取三年节气表（上年+本年+下年），覆盖所有可能的节气位置
-        const prevYearJieQi = Solar.fromYmd(birthYear - 1, 1, 1).getLunar().getJieQiTable();
-        const yearJieQi = Solar.fromYmd(birthYear, 1, 1).getLunar().getJieQiTable();
-        const nextYearJieQi = Solar.fromYmd(birthYear + 1, 1, 1).getLunar().getJieQiTable();
-
-        // 收集三年所有12节到数组（不能用对象合并，同名节气会互相覆盖）
-        const jieNames = ['立春','惊蛰','清明','立夏','芒种','小暑','立秋','白露','寒露','立冬','大雪','小寒'];
-        const jieList = [];
-        for (const table of [prevYearJieQi, yearJieQi, nextYearJieQi]) {
-            for (const name of jieNames) { if (table[name]) jieList.push(table[name]); }
-        }
-
-        // 用 Solar.subtract() 精确计算出生日到各节的天数差
-        let prevJie = null, nextJie = null;
-        let minDiffPrev = Infinity, minDiffNext = Infinity;
-        for (let jie of jieList) {
-            const diffDays = jie.subtract(solar); // >0: 节在出生后, <0: 节在出生前
-            if (diffDays < 0) {
-                const dist = -diffDays;
-                if (dist < minDiffPrev) { minDiffPrev = dist; prevJie = jie; }
-            } else {
-                const dist = diffDays;
-                if (dist < minDiffNext) { minDiffNext = dist; nextJie = jie; }
-            }
-        }
-
-        // 起运天数：顺排数到下一个节，逆排数到上一个节
-        let daysToJie = shunPai ? (nextJie ? minDiffNext : 3) : (prevJie ? minDiffPrev : 3);
-        if (daysToJie < 1) daysToJie = 3;  // 出生在节当日，至少3天
-        
-        // 3天=1岁，计算起运年龄
-        const startAge = Math.max(0, Math.floor(daysToJie / 3));
-
-
-        // ========== 生成8步大运 ==========
-        let dayunHtml = '';
-        for (let i = 0; i < 8; i++) {
-            let dayunIndex;
-            if (shunPai) {
-                dayunIndex = (monthIndex + i + 1) % 60;
-            } else {
-                dayunIndex = (monthIndex - i - 1 + 60) % 60;
-            }
-
-            const dayunGanzhi = JIAZI_60[dayunIndex];
-            const dayunGan = dayunGanzhi[0];
-            const dayunZhi = dayunGanzhi[1];
-            const shishen = SHISHEN_MAP[dm][dayunGan] || '未知';
-            const ageStart = startAge + i * 10;
-            const yearStart = birthYear + ageStart;
-
-            // ========== 吉凶判断 & 颜色 ==========
-            // 吉凶判断逻辑 V2.0 专业版：
-            // 1. 基础属性：财官印食为善，杀伤劫刃为恶
-            // 2. 凶神有制反吉，善神受损反凶
-            // 3. 最终叠加格局喜忌修正
-            
-            // 第一步：基础十神属性判断
-            const goodGods = ['正财','偏财','正官','正印','偏印','食神','比肩'];
-            const badGods = ['七杀','伤官','劫财','羊刃'];
-            
-            let isJi = false, isXiong = false;
-            let reason = '';
-            
-            if (goodGods.includes(shishen)) {
-                isJi = true;
-                reason = '善神临宫';
-            } else if (badGods.includes(shishen)) {
-                isXiong = true;
-                reason = '凶神主事';
-            }
-            
-            // 第二步：特殊规则修正（凶神有制反吉）
-            if (shishen === '七杀') {
-                // 七杀有食神/印星制反为贵（这里简化，实际看命局组合）
-                if (pillars.some(p => SHISHEN_MAP[dm][p.g] === '食神')) {
-                    isJi = true;
-                    isXiong = false;
-                    reason = '杀有食制';
-                }
-            }
-            if (shishen === '伤官') {
-                // 伤官配印为吉格
-                if (pillars.some(p => SHISHEN_MAP[dm][p.g] === '正印' || SHISHEN_MAP[dm][p.g] === '偏印')) {
-                    isJi = true;
-                    isXiong = false;
-                    reason = '伤官配印';
-                }
-            }
-
-            // 第三步：喜忌最终修正（十神名映射到喜忌关键词）
-            const joyText = xiji.joy.join('');
-            const tabooText = xiji.taboo.join('');
-            // 十神到喜忌关键词的映射：shishen是具体十神，joy/taboo用类别
-            const SHISHEN_KEYWORDS = {
-                '正财': ['财星','偏财','财'], '偏财': ['财星','偏财','财'],
-                '正官': ['官杀','正官','官'], '七杀': ['官杀','七杀','杀'],
-                '正印': ['印星','正印','印'], '偏印': ['印星','偏印','印','枭'],
-                '食神': ['食伤','食神','食'], '伤官': ['食伤','伤官','伤'],
-                '比肩': ['比劫','比肩','比'], '劫财': ['比劫','劫财','劫'],
-            };
-            const kw = SHISHEN_KEYWORDS[shishen] || [shishen];
-            const matchesJoy = kw.some(k => joyText.includes(k));
-            const matchesTaboo = kw.some(k => tabooText.includes(k));
-
-            if (matchesJoy) {
-                isJi = true;
-                isXiong = false;
-                reason = '喜用神到位';
-            } else if (matchesTaboo) {
-                isXiong = true;
-                isJi = false;
-                reason = '忌神逢运';
-            }
-
-            let cardClass = '';
-            let cardStyle = '';
-            let badge = '';
-            if (isJi) {
-                cardClass = 'dayun-card-ji';
-                badge = `<div style="font-size:0.7rem;color:#2e7d32;font-weight:bold;margin-top:5px;">★ ${reason}</div>`;
-            } else if (isXiong) {
-                cardClass = 'dayun-card-xiong';
-                badge = `<div style="font-size:0.7rem;color:#c62828;font-weight:bold;margin-top:5px;">☆ ${reason}</div>`;
-            }
-
-            // 背面运势解读文案
-            const backTexts = {
-                '正财': '财运亨通，利求财创业，收入增长',
-                '偏财': '意外之财，利投资投机，贵人相助',
-                '正官': '官运亨通，利事业晋升，名声鹊起',
-                '七杀': '压力与机遇并存，冲劲足但防是非',
-                '正印': '贵人扶持，利学业考试，思维清晰',
-                '偏印': '灵感迸发，利创意研究，防小人',
-                '食神': '福气满满，口福佳，利创作表达',
-                '伤官': '才华显露，利展示自我，防口舌',
-                '比肩': '朋友相助，合作共利，分财之象',
-                '劫财': '竞争激烈，防破财，宜守不宜攻'
-            };
-            const backText = backTexts[shishen] || '运势平稳，稳步前行';
-
-            dayunHtml += `
-                <div class="dayun-card ${cardClass}" 
-                     onclick="window.flipDayunCard(this)">
-                    <div class="dayun-card-inner">
-                        <div class="dayun-card-front">
-                            <div class="dayun-age">${ageStart} - ${ageStart + 9} 岁</div>
-                            <div class="dayun-ganzhi">${dayunGanzhi}</div>
-                            <div class="dayun-shishen">${shishen}</div>
-                            <div class="dayun-nianfen">${yearStart} - ${yearStart + 9}</div>
-                            ${badge}
-                            <div class="dayun-hint">点击查看详情 ↻</div>
-                        </div>
-                        <div class="dayun-card-back">
-                            <div style="font-weight:bold;font-size:0.9rem;margin-bottom:5px;">${shishen}运</div>
-                            <div>${backText}</div>
-                            <div class="flip-hint">点击翻回 ↻</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-            dayunGrid.innerHTML = dayunHtml;
-            dayunArea.style.display = 'block';
-
-            // 渲染神煞
-            renderShensha(pillars);
-        }
-
-        /**
-         * 神煞系统计算与渲染
-         */
-        window.renderShensha = function(pillars) {
-            const area = document.getElementById('shensha-area');
-            const grid = document.getElementById('shensha-grid');
-
-            const yearZhi = pillars[0].z;
-            const dayGan = pillars[2].g;
-            const dayZhi = pillars[2].z;
-
-            // 神煞数据库（15个最常见神煞）
-            const shenshaDB = [
-                // 大吉煞（权重高）
-                {
-                    name: '天乙贵人',
-                    icon: '👑',
-                    type: 'ji',
-                    weight: '★★★',
-                    check: () => {
-                        const lookup = {
-                            '甲': ['丑','未'], '乙': ['子','申'], '丙': ['亥','酉'],
-                            '丁': ['亥','酉'], '戊': ['丑','未'], '己': ['子','申'],
-                            '庚': ['丑','未'], '辛': ['寅','午'], '壬': ['卯','巳'],
-                            '癸': ['卯','巳']
-                        };
-                        return pillars.some(p => lookup[dayGan] && lookup[dayGan].includes(p.z));
-                    },
-                    desc: '至贵之星，遇难呈祥'
-                },
-                {
-                    name: '太极贵人',
-                    icon: '☯️',
-                    type: 'ji',
-                    weight: '★★',
-                    check: () => {
-                        const lookup = {
-                            '甲': ['子'], '乙': ['午'], '丙': ['卯','酉'], '丁': ['酉'],
-                            '戊': ['辰','戌','丑','未'], '己': ['辰','戌','丑','未'],
-                            '庚': ['午'], '辛': ['子'], '壬': ['酉'], '癸': ['卯']
-                        };
-                        return pillars.some(p => lookup[dayGan] && lookup[dayGan].includes(p.z));
-                    },
-                    desc: '悟性过人，喜哲学玄学'
-                },
-                {
-                    name: '文昌',
-                    icon: '📚',
-                    type: 'ji',
-                    weight: '★★',
-                    check: () => {
-                        const lookup = {
-                            '甲':'巳','乙':'午','丙':'申','丁':'酉',
-                            '戊':'申','己':'酉','庚':'亥','辛':'子',
-                            '壬':'寅','癸':'卯'
-                        };
-                        return pillars.some(p => lookup[dayGan] && lookup[dayGan] === p.z);
-                    },
-                    desc: '聪明智慧，利学业考试'
-                },
-                {
-                    name: '将星',
-                    icon: '⚔️',
-                    type: 'ji',
-                    weight: '★★',
-                    check: () => {
-                        const lookup = {
-                            '寅':'午','卯':'卯','辰':'子','巳':'酉','午':'午','未':'卯',
-                            '申':'子','酉':'酉','戌':'午','亥':'卯','子':'子','丑':'酉'
-                        };
-                        return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
-                    },
-                    desc: '掌权掌印，领导力强'
-                },
-                {
-                    name: '驿马',
-                    icon: '🐎',
-                    type: 'ji',
-                    weight: '★★',
-                    check: () => {
-                        const lookup = {
-                            '寅':'申','卯':'巳','辰':'寅','巳':'亥','午':'申','未':'巳',
-                            '申':'寅','酉':'亥','戌':'申','亥':'巳','子':'寅','丑':'亥'
-                        };
-                        return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
-                    },
-                    desc: '动中求财，利远行发展'
-                },
-                {
-                    name: '禄神',
-                    icon: '💰',
-                    type: 'ji',
-                    weight: '★★',
-                    check: () => {
-                        const lookup = {
-                            '甲':'寅','乙':'卯','丙':'巳','丁':'午',
-                            '戊':'巳','己':'午','庚':'申','辛':'酉',
-                            '壬':'亥','癸':'子'
-                        };
-                        return pillars.some(p => lookup[dayGan] && lookup[dayGan] === p.z);
-                    },
-                    desc: '福禄双全，衣食无忧'
-                },
-                {
-                    name: '天厨',
-                    icon: '🍜',
-                    type: 'ji',
-                    weight: '★',
-                    check: () => {
-                        const lookup = {
-                            '甲':'巳','乙':'午','丙':'申','丁':'酉',
-                            '戊':'申','己':'酉','庚':'亥','辛':'子',
-                            '壬':'寅','癸':'卯'
-                        };
-                        return lookup[dayGan] && (lookup[dayGan] === yearZhi || lookup[dayGan] === dayZhi);
-                    },
-                    desc: '口福好，吃穿不愁'
-                },
-                {
-                    name: '国印',
-                    icon: '🏛️',
-                    type: 'ji',
-                    weight: '★',
-                    check: () => {
-                        const lookup = {
-                            '甲':'戌','乙':'亥','丙':'丑','丁':'寅',
-                            '戊':'丑','己':'寅','庚':'辰','辛':'巳',
-                            '壬':'未','癸':'申'
-                        };
-                        return lookup[dayGan] && (lookup[dayGan] === yearZhi || lookup[dayGan] === dayZhi);
-                    },
-                    desc: '诚实可靠，掌印之权'
-                },
-                {
-                    name: '桃花',
-                    icon: '🌸',
-                    type: 'ji',
-                    weight: '★★',
-                    check: () => {
-                        const lookup = {
-                            '寅':'卯','卯':'子','辰':'酉','巳':'午','午':'卯','未':'子',
-                            '申':'酉','酉':'午','戌':'卯','亥':'子','子':'酉','丑':'午'
-                        };
-                        return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
-                    },
-                    desc: '人缘极佳，魅力四射'
-                },
-                {
-                    name: '红艳',
-                    icon: '🌹',
-                    type: 'ji',
-                    weight: '★',
-                    check: () => {
-                        const lookup = {
-                            '甲':'午','乙':'申','丙':'寅','丁':'未',
-                            '戊':'辰','己':'辰','庚':'戌','辛':'酉',
-                            '壬':'子','癸':'亥'
-                        };
-                        return lookup[dayGan] && (lookup[dayGan] === yearZhi || lookup[dayGan] === dayZhi);
-                    },
-                    desc: '气质出众，异性缘佳'
-                },
-                {
-                    name: '华盖',
-                    icon: '⛩️',
-                    type: 'ping',
-                    weight: '★',
-                    check: () => {
-                        const lookup = {
-                            '寅':'戌','卯':'未','辰':'辰','巳':'丑','午':'戌','未':'未',
-                            '申':'辰','酉':'丑','戌':'戌','亥':'未','子':'辰','丑':'丑'
-                        };
-                        return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
-                    },
-                    desc: '艺术天赋，孤傲清贵'
-                },
-                // 凶煞
-                {
-                    name: '羊刃',
-                    icon: '🗡️',
-                    type: 'xiong',
-                    weight: '★★',
-                    check: () => {
-                        const lookup = {
-                            '甲':'卯','乙':'寅','丙':'午','丁':'巳',
-                            '戊':'午','己':'巳','庚':'酉','辛':'申',
-                            '壬':'子','癸':'亥'
-                        };
-                        return lookup[dayGan] && (lookup[dayGan] === yearZhi || lookup[dayGan] === dayZhi);
-                    },
-                    desc: '刚强急躁，宜慎守勿贪'
-                },
-                {
-                    name: '亡神',
-                    icon: '💀',
-                    type: 'xiong',
-                    weight: '★',
-                    check: () => {
-                        const lookup = {
-                            '寅':'巳','午':'巳','戌':'巳','巳':'申','酉':'申','丑':'申',
-                            '申':'亥','子':'亥','辰':'亥','亥':'寅','卯':'寅','未':'寅'
-                        };
-                        return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
-                    },
-                    desc: '多波折，宜稳扎稳打'
-                },
-                {
-                    name: '劫煞',
-                    icon: '⚡',
-                    type: 'xiong',
-                    weight: '★',
-                    check: () => {
-                        const lookup = {
-                            '寅':'亥','午':'亥','戌':'亥','巳':'寅','酉':'寅','丑':'寅',
-                            '申':'巳','子':'巳','辰':'巳','亥':'申','卯':'申','未':'申'
-                        };
-                        return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
-                    },
-                    desc: '防破财纠纷，凡事三思'
-                },
-                {
-                    name: '空亡',
-                    icon: '☁️',
-                    type: 'ping',
-                    weight: '★',
-                    check: () => {
-                        // 旬空：每旬10日，缺2地支为空亡
-                        // 甲子旬空戌亥, 甲戌旬空申酉, 甲申旬空午未,
-                        // 甲午旬空辰巳, 甲辰旬空寅卯, 甲寅旬空子丑
-                        const kongwangTable = ['戌亥','申酉','午未','辰巳','寅卯','子丑'];
-                        const dayGZ = pillars[2].g + pillars[2].z;
-                        const dayIdx = JIAZI_60.indexOf(dayGZ);
-                        if (dayIdx < 0) return false;
-                        const kwPair = kongwangTable[Math.floor(dayIdx / 10)];
-                        if (!kwPair) return false;
-                        const kwList = [kwPair[0], kwPair[1]];
-                        return pillars.some(p => kwList.includes(p.z));
-                    },
-                    desc: '诸事多磨，亦主智慧'
-                }
-            ];
-
-            // 计算命中的神煞
-            const found = [];
-            shenshaDB.forEach(s => {
-                if (s.check()) {
-                    found.push(s);
-                }
-            });
-
-            if (found.length === 0) {
-                area.style.display = 'none';
-                return;
-            }
-
-            // 更新标题，显示命中数量
-            const titleEl = area.querySelector('.shensha-title');
-            titleEl.innerHTML = `✨ 命带神煞 <small>（命中 ${found.length} 个）</small>`;
-
-            // 渲染
-            let html = '';
-            found.forEach(s => {
-                html += `
-                    <div class="shensha-card ${s.type}">
-                        <div class="shensha-icon">${s.icon}</div>
-                        <div class="shensha-name">${s.name}</div>
-                        <div class="shensha-desc">${s.desc}</div>
-                    </div>
-                `;
-            });
-
-            grid.innerHTML = html;
-            area.style.display = 'block';
-        }
-
-        /**
-         * 大运卡片翻转函数（双重保险：CSS3D + JS兜底）
-         */
-        window.flipDayunCard = function(card) {
-            card.classList.toggle('flipped');
-            
-            // 兜底：如果CSS3D不生效，用简单的显示切换
-            const back = card.querySelector('.dayun-card-back');
-            const front = card.querySelector('.dayun-card-front');
-            if (back && getComputedStyle(back).display === 'none') {
-                if (card.classList.contains('flipped')) {
-                    back.style.display = 'flex';
-                    front.style.display = 'none';
-                } else {
-                    back.style.display = '';
-                    front.style.display = '';
-                }
-            }
-        }
-
-        window.renderWuxingBar = function(pillars) {
-            // 简单计算天干地支（不含藏干比例，仅主气）
-            const counts = {'金':0,'木':0,'水':0,'火':0,'土':0};
-            pillars.forEach(p => {
-            counts[WUXING_MAP[p.g]] += 1; 
-            counts[WUXING_MAP[p.z]] += 1; 
-            // 藏干简单加权
-            const hiddens = HIDDEN_STEMS[p.z] || [];
-            hiddens.forEach(h => counts[WUXING_MAP[h]] += 0.5);
-        });
-        
-        let total = 0;
-        for(let w in counts) total += counts[w];
-
-        let barHtml = "";
-        for(let w in counts) {
-            if(counts[w] > 0) {
-                const pct = (counts[w] / total) * 100;
-                barHtml += `<div class="wx-segment" style="width:${pct}%; background:${WX_COLOR_DATA[w]};"></div>`;
-            }
-        }
-        document.getElementById('wx-bar').innerHTML = barHtml;
-    }
-
-    // --- 工具 ---
-    window.setGender = function(v, el) { 
-        currentGender = v; 
-        document.querySelectorAll('.g-btn').forEach(b => b.classList.remove('active')); 
-        el.classList.add('active'); 
-    }
-
-    window.copyResult = function() {
-        const text = document.getElementById('result-area').innerText;
-        navigator.clipboard.writeText(text).then(() => alert("天命书已复制到剪贴板"));
-    }
-
-    window.onload = function() {
-        try {
-            const now = new Date();
-            const str = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-            document.getElementById('birth-input').value = str;
-        } catch(e){}
-    };
-</script>
-
-
-</body>
-</html>
