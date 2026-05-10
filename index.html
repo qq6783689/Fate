@@ -2140,8 +2140,7 @@ console.log("✅ 业务脚本开始执行");
         const dmEl = WUXING_MAP[dm];
         const allGans = pillars.map(p=>p.g);
         const allZhis = pillars.map(p=>p.z);
-        const xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
-        
+
         // 1. 找病：五行偏枯、冲战、调候缺失
         let bing = [], yao = [];
         const wuxCount = {金:0,木:0,水:0,火:0,土:0};
@@ -2175,11 +2174,8 @@ console.log("✅ 业务脚本开始执行");
         const thMissing = thGans.filter(t=>!allGans.includes(t));
         if (thMissing.length>0) { bing.push('缺调候：需'+thMissing.join('/')+'而原局无'); yao.push('大运逢'+thMissing.join('或')+'则激活'); }
         
-        // 4. 格局特定病药
-        const tabooHint = xiji.taboo.join('').replace(/[^一-龥]/g,'').slice(0,20);
-        if (tabooHint) { bing.push('格局忌：'+tabooHint); }
-        const joyHint = xiji.joy.join('').replace(/[^一-龥]/g,'').slice(0,20);
-        if (joyHint) { yao.push('格局喜：'+joyHint); }
+        // 4. 通关建议（基于冲战）
+        // 已在上方冲战检测中处理
         
         if (bing.length===0) { bing.push('五行相对均衡，无明显病处'); yao.push('顺势而为，以月令所喜为方向'); }
         
@@ -2385,7 +2381,18 @@ console.log("✅ 业务脚本开始执行");
         const zhiList2 = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
         const tyGan = ganList[(ganList.indexOf(pillars[1].g)+1)%10];
         const tyZhi = zhiList2[(zhiList2.indexOf(pillars[1].z)+3)%12];
-        document.getElementById('pillars-box').innerHTML += '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--gold-accent);">胎元：' + tyGan + tyZhi + ' <small style="color:#999">月干进一·月支进三</small></div><div style="text-align:center;font-size:0.75rem;color:#aaa;margin-top:2px;">胎元表先天禀赋，代表出生前的孕育环境。生扶日元则根基深厚，克泄日元则先天不足。仅作日元参考，不参与大运。</div>';
+        document.getElementById('pillars-box').innerHTML += (function(){
+            var tyGod = SHISHEN_MAP[dm][tyGan] || '';
+            var tyWx = WUXING_MAP[tyGan] || '';
+            var dmWx = WUXING_MAP[dm] || '';
+            var tyEffect = '';
+            if (tyGod==='比肩'||tyGod==='劫财') tyEffect = '<span style="color:#2e7d32">✓ 胎元帮身，根基深厚</span>';
+            else if (tyGod==='正印'||tyGod==='偏印') tyEffect = '<span style="color:#2e7d32">✓ 胎元生扶，先天滋养</span>';
+            else if (tyGod==='七杀'||tyGod==='正官') tyEffect = '<span style="color:#c62828">✗ 胎元克身，先天承压</span>';
+            else if (tyGod==='伤官'||tyGod==='食神') tyEffect = '<span style="color:#e67e22">△ 胎元泄气，需后天补益</span>';
+            else tyEffect = '<span style="color:#888">○ 胎元不扰，先天平稳</span>';
+            return '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--gold-accent);">胎元：' + tyGan + tyZhi + '（' + tyGod + '）<small style="color:#999"> 月干进一·月支进三</small></div><div style="text-align:center;font-size:0.8rem;margin-top:3px;">' + tyEffect + '</div>';
+        })();
         safeSetText('dm-desc', getDMDesc(dm, mz));
         const dims = [
             {icon:'⚔️', title:'天赋与事业', text:detail.c},
@@ -2745,20 +2752,30 @@ console.log("✅ 业务脚本开始执行");
             commentary += '两胎月令格局一致（都是' + oldMZGod + '），核心天赋趋同；但太极不同，<b>六亲缘分、配偶条件、人际关系</b>会有明显分叉。<br><br>';
         }
         
-                // 幼胎格局快速判定（基于新太极）
-        var twinCmd = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
-        var twinPatternHint = '以' + newDM + '为太极，月令为' + twinCmd;
-        if (['正财','偏财'].includes(twinCmd)) twinPatternHint += '，偏向求财发展';
-        else if (['正官','七杀'].includes(twinCmd)) twinPatternHint += '，偏向权柄管理';
-        else if (['正印','偏印'].includes(twinCmd)) twinPatternHint += '，偏向学术修养';
-        else if (['食神','伤官'].includes(twinCmd)) twinPatternHint += '，偏向才艺创作';
-        else twinPatternHint += '，偏向自主独立';
+                // 幼胎格局重新判定
+        var twinMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
+        var twinDayGod = SHISHEN_MAP[newDM][d.pillars[2].g];
         
-        commentary += '⭐ <b>一句话总结：</b>双胞胎如同一块木料劈成两半，纹路相同方向相反。长者宜顺先天之势开路，幼者宜寻后天之变深耕。<br><br>';
-        commentary += '<b>幼胎格局倾向：</b>' + twinPatternHint + '。<br>';
-        commentary += '<b>大运感应差异：</b>长胎以' + d.dm + '为日元，喜印比生扶——大运见印比为佳；幼胎以' + newDM + '为太极，喜忌完全翻转——';
-        commentary += '长胎的吉运可能恰是幼胎的平运或忌运。具体需以幼胎太极重新排大运方可精确判断。<br><br>';
-        commentary += '<b>太极选择建议：</b>若双胞胎性格/天赋差异明显，选月柱为太极；若晚年际遇/子女缘分差异大，选时柱为太极。可两方对比，择更贴合实际者。';
+        // 太极选择标准
+        var monthScore = 0, hourScore = 0;
+        // 月柱太极得分：月令十神是否为吉神
+        if (['正财','偏财','正官','正印','偏印','食神'].includes(twinMZGod)) monthScore += 2;
+        // 时柱太极得分：时柱是否见喜用
+        var hourGanGod = SHISHEN_MAP[newDM][d.pillars[3].g];
+        if (['正印','偏印','食神','正财'].includes(hourGanGod)) hourScore += 2;
+        // 日支与时支关系
+        if (ZHI_LIUHE[d.pillars[2].z] === d.pillars[3].z) hourScore += 1;
+        var suggestTaiji = monthScore >= hourScore ? '月柱' : '时柱';
+        var suggestReason = monthScore >= hourScore ? '月令十神为' + twinMZGod + '，天赋方向清晰' : '时柱与日柱关系紧密，晚年际遇影响大';
+        
+        commentary += '⭐ <b>长胎格局：</b>' + d.pattern + '，以' + d.dm + '为日元。月令为<b>' + SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.pillars[1].z]] + '</b>。<br>';
+        commentary += '⭐ <b>幼胎太极：</b>以<b>' + newDM + '</b>为新日元。原月柱' + d.pillars[1].g + d.pillars[1].z + '对幼胎而言是<b>' + twinDayGod + '</b>，原日柱' + d.pillars[2].g + d.pillars[2].z + '变为<b>' + twinMZGod + '</b>。<br><br>';
+        
+        commentary += '<b>建议太极：</b>' + suggestTaiji + '（' + suggestReason + '）<br><br>';
+        
+        commentary += '<b>大运差异：</b>同一大运' + d.pillars[1].g + d.pillars[1].z + '起运——长胎视角下为月柱大运，幼胎视角下大运干支对' + newDM + '的十神关系完全不同。长胎的每一步大运，幼胎可能走出截然不同的吉凶曲线。<br><br>';
+        
+        commentary += '<b>一句话：</b>双胞胎同盘不同命，根源不在八字本身，而在<b>以谁为太极看世界</b>。选对太极，两命皆可顺遂。';
         
         document.getElementById('twin-commentary').innerHTML = commentary;
         document.getElementById('twin-result').style.display = 'block';
