@@ -2471,6 +2471,31 @@ console.log("✅ 业务脚本开始执行");
                 else { score+=1; reasons.push('天干有合'); }
             }
             
+            // 地支三合六合：大运地支与原局合局改变五行气势
+            const dyZhi = dayunZhi;
+            const zhiList = pillars.map(p=>p.z);
+            const sanheCombo = [['申','子','辰'],['亥','卯','未'],['寅','午','戌'],['巳','酉','丑']];
+            let zhiHeScore = 0;
+            for (let sh of sanheCombo) {
+                const cnt = sh.filter(z=>zhiList.includes(z)||z===dyZhi).length;
+                if (cnt>=2 && (zhiList.includes(dyZhi)||sh.includes(dyZhi))) {
+                    if (cnt===3) { zhiHeScore=2; reasons.push('地支三合局·气势大变'); break; }
+                    else { zhiHeScore=1; reasons.push('地支半合'); }
+                }
+            }
+            if (zhiHeScore===0 && ZHI_LIUHE[dyZhi]) {
+                if (zhiList.includes(ZHI_LIUHE[dyZhi])) { zhiHeScore=0.5; reasons.push('地支六合'); }
+            }
+            if (zhiHeScore===0) {
+                const sanhui=[['寅','卯','辰'],['巳','午','未'],['申','酉','戌'],['亥','子','丑']];
+                for (let sh of sanhui) {
+                    if (sh.filter(z=>zhiList.includes(z)||z===dyZhi).length>=3) { zhiHeScore=2; reasons.push('地支三会'); break; }
+                }
+            }
+            if (zhiHeScore>=1.5) score+=2;
+            else if (zhiHeScore>=0.5) score+=1;
+            
+            
             // 第三层：制化关系（+1）
             if (shishen==='七杀' && pillars.some(p=>SHISHEN_MAP[dm][p.g]==='食神')) { score+=1; reasons.push('杀有食制'); }
             else if (shishen==='七杀' && pillars.some(p=>['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { score+=1; reasons.push('杀有印化'); }
@@ -2658,7 +2683,9 @@ console.log("✅ 业务脚本开始执行");
             commentary += '两胎月令格局一致（都是' + oldMZGod + '），核心天赋趋同；但太极不同，<b>六亲缘分、配偶条件、人际关系</b>会有明显分叉。<br><br>';
         }
         
-        commentary += '⭐ <b>一句话总结：</b>双胞胎如同同一块木料劈成两半，纹路相同但方向相反。长者宜顺先天之势开路，幼者宜寻后天之变深耕。互为镜像，互补方为圆满。';
+                var twinXiji = XIJI_RULES[d.pattern] || XIJI_RULES["杂格"];
+        var twinMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
+        commentary += '⭐ <b>一句话总结：</b>双胞胎如同同一块木料劈成两半，纹路相同但方向相反。长者宜顺先天之势开路，幼者宜寻后天之变深耕。互为镜像，互补方为圆满。<br><br><b>喜忌差异：</b>长胎格局「' + d.pattern + '」喜：' + twinXiji.joy.join(' ') + '，忌：' + twinXiji.taboo.join(' ') + '。<br>幼胎太极变换后，月令十神变为' + twinMZGod + '，对同一大运感应截然不同。<b>这是双胞胎命运分叉的根本原因。</b>';
         
         document.getElementById('twin-commentary').innerHTML = commentary;
         document.getElementById('twin-result').style.display = 'block';
