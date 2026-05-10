@@ -428,7 +428,20 @@
 
         /* --- Biography --- */
         .guide-section { border-top: 6px double var(--china-red); padding-top: 60px; }
-        .guide-item { margin-bottom: 70px; }
+        .guide-item { margin-bottom: 12px; }
+        .guide-card { margin-bottom: 8px; border: 1px solid #e0d5c5; border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.3s; background: rgba(255,255,255,0.5); }
+        [data-theme="dark"] .guide-card { border-color: #444; background: rgba(255,255,255,0.03); }
+        .guide-card:hover { border-color: var(--gold-accent); }
+        .guide-card-header { display: flex; align-items: center; padding: 10px 14px; gap: 10px; font-weight: bold; font-size: 0.95rem; }
+        .guide-card-icon { font-size: 1.2rem; }
+        .guide-card-title { flex: 1; }
+        .guide-card-arrow { transition: transform 0.3s; color: #999; }
+        .guide-card.expanded .guide-card-arrow { transform: rotate(180deg); }
+        .guide-card-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; padding: 0 14px; font-size: 0.88rem; line-height: 1.8; color: var(--ink-main); }
+        .guide-card.expanded .guide-card-body { max-height: 500px; padding: 6px 14px 14px; }
+        .pattern-summary-card { border: 2px solid var(--gold-accent); background: linear-gradient(135deg, #fef9f0, #fdf5e6); }
+        [data-theme="dark"] .pattern-summary-card { background: linear-gradient(135deg, #1a1a2e, #252540); }
+        [data-theme="red"] .pattern-summary-card { background: linear-gradient(135deg, #fef0d9, #fde8c8); }
         .guide-title { 
             font-family: 'Ma Shan Zheng', cursive; font-size: 2.2rem; color: var(--china-red); 
             margin-bottom: 30px; display: flex; align-items: center; 
@@ -1037,62 +1050,61 @@ document.addEventListener('touchend', function (e) {
     </div>
 
     <div id="result-area">
-        <div class="card">
-            <div class="role-header">
-                <span id="role-icon" class="role-icon">?</span>
-                <h2 id="role-title" class="role-title">鑑定中...</h2>
-                <div id="role-sub" class="role-sub">...</div>
-                <div id="role-tags" class="role-tags"></div>
-            </div>
-
-            <div class="activation-box" id="activation-area">
+        <!-- 格局总结卡片 -->
+        <div class="card pattern-summary-card" style="text-align:center;padding:20px 16px;">
+            <span id="role-icon" class="role-icon" style="font-size:2.5rem;">?</span>
+            <h2 id="role-title" class="role-title" style="margin:8px 0 4px;">鑑定中...</h2>
+            <div id="role-sub" class="role-sub" style="margin-bottom:6px;">...</div>
+            <div id="role-tags" class="role-tags" style="margin-bottom:10px;"></div>
+            <div class="activation-box" id="activation-area" style="margin:8px 0;">
                 <span class="activation-title" id="activation-status"></span>
                 <div class="activation-desc" id="activation-desc"></div>
             </div>
-
-            <div class="siling-bar">
-                📜 当令真神：<b id="siling-text">...</b>
-            </div>
-
-            <div class="pillars" id="pillars-box"></div>
-
-            <div class="wuxing-bar-container">
-                <div style="text-align:center; margin-bottom:15px; font-weight:bold; color:#888;">五行气数分布 (含地支藏干)</div>
-                <div class="wuxing-flex" id="wx-bar"></div>
-                <div class="wx-legend">
-                    <span><span class="dot" style="background:var(--metal);"></span>金</span>
-                    <span><span class="dot" style="background:var(--wood);"></span>木</span>
-                    <span><span class="dot" style="background:var(--water);"></span>水</span>
-                    <span><span class="dot" style="background:var(--fire);"></span>火</span>
-                    <span><span class="dot" style="background:var(--earth);"></span>土</span>
-                </div>
-            </div>
-
-            <div class="logic-panel" style="padding:12px 16px;">
-                <div id="pattern-reason" class="logic-text" style="margin-bottom:10px;"></div>
-                <div class="joy-taboo" style="margin-top:8px;">
-                    <span class="joy">喜用：<span id="txt-joy">...</span></span>
-                    <span class="taboo">忌讳：<span id="txt-taboo">...</span></span>
-                </div>
+            <div id="pattern-reason" class="logic-text" style="text-align:left;font-size:0.9rem;margin:10px 0;"></div>
+            <div class="joy-taboo" style="justify-content:center;gap:20px;">
+                <span class="joy">喜用：<span id="txt-joy">...</span></span>
+                <span class="taboo">忌讳：<span id="txt-taboo">...</span></span>
             </div>
         </div>
 
-        <div class="card guide-section">
-            <div class="guide-item" style="margin-bottom:12px;">
+        <!-- 四柱八字 -->
+        <div class="card" style="padding:15px;">
+            <div class="siling-bar" style="margin-bottom:12px;">
+                📜 当令真神：<b id="siling-text">...</b>
+            </div>
+            <div class="pillars" id="pillars-box"></div>
+        </div>
+
+        <!-- 五行气数 -->
+        <div class="card wuxing-bar-container" style="padding:15px;">
+            <div style="text-align:center;margin-bottom:12px;font-weight:bold;color:#888;">五行气数分布</div>
+            <div class="wuxing-flex" id="wx-bar"></div>
+            <div class="wx-legend">
+                <span><span class="dot" style="background:var(--metal);"></span>金</span>
+                <span><span class="dot" style="background:var(--wood);"></span>木</span>
+                <span><span class="dot" style="background:var(--water);"></span>水</span>
+                <span><span class="dot" style="background:var(--fire);"></span>火</span>
+                <span><span class="dot" style="background:var(--earth);"></span>土</span>
+            </div>
+        </div>
+
+        <!-- 五维评价卡片 -->
+        <div class="card guide-section" style="padding:15px;">
+            <div class="guide-item" style="margin-bottom:10px;">
                 <div class="guide-title" style="font-size:1rem;">🏮 元神本纪</div>
                 <div class="guide-text" id="dm-desc" style="font-size:0.9rem;"></div>
             </div>
             <div id="guide-content"></div>
         </div>
 
-        <!-- 大运流年区域 -->
-        <div class="card dayun-section" id="dayun-area" style="display:none;">
+        <!-- 大运流年 -->
+        <div class="card dayun-section" id="dayun-area" style="display:none;padding:15px;">
             <div class="dayun-title">🔮 天命大运 · 十年一轮回</div>
             <div class="dayun-grid" id="dayun-grid"></div>
         </div>
 
-        <!-- 神煞区域 -->
-        <div class="card shensha-section" id="shensha-area" style="display:none;">
+        <!-- 神煞 -->
+        <div class="card shensha-section" id="shensha-area" style="display:none;padding:15px;">
             <div class="shensha-title">✨ 命带神煞</div>
             <div class="shensha-grid" id="shensha-grid"></div>
         </div>
@@ -1102,7 +1114,7 @@ document.addEventListener('touchend', function (e) {
             <button class="btn-copy" onclick="window.copyResult()">📥 复制全文</button>
         </div>
 
-        <!-- 双胞胎对比 -->
+        <!-- 双胞胎 -->
         <button class="twin-btn" id="twin-btn" onclick="window.toggleTwinPanel()">👯 双胞胎对比模式</button>
         <div class="twin-panel" id="twin-panel">
             <h3>👯 孪生命运 · 同盘异路</h3>
@@ -1116,6 +1128,9 @@ document.addEventListener('touchend', function (e) {
 
         <div class="footer">FATE AUTHENTICATED BY GRANDMASTER · 2025</div>
     </div>
+</div>
+
+<!-- ==================== 新增: 主题切换按钮    </div>
 </div>
 
 <!-- ==================== 新增: 主题切换按钮 ==================== -->
@@ -2297,46 +2312,38 @@ console.log("✅ 业务脚本开始执行");
     window.renderUI = function(key, cmd, dm, mz, pillars, data, solar) {
         const xiji = XIJI_RULES[key] || XIJI_RULES["杂格"];
         const detail = data[currentGender === 1 ? 'male' : 'female'];
-
         safeSetText('role-icon', data.icon);
         safeSetText('role-title', data.name);
         safeSetText('role-sub', data.slogan);
         safeSetHTML('role-tags', `<span class="tag ssr">${key}</span>`);
-        safeSetHTML('siling-text', `${cmd.commander} <small>(${SHISHEN_MAP[dm][cmd.commander] || '真神'})</small> · 掌权 ${cmd.diffDays} 日`);
-        
-        safeSetText('pattern-reason', `此局定为【${key}】。\n\n${xiji.desc}`);
+        safeSetText('pattern-reason', xiji.desc);
         safeSetText('txt-joy', xiji.joy.join(" / "));
         safeSetText('txt-taboo', xiji.taboo.join(" / "));
-        safeSetText('dm-desc', getDMDesc(dm, mz));
-
+        safeSetHTML('siling-text', `${cmd.commander} <small>(${SHISHEN_MAP[dm][cmd.commander] || '真神'})</small> · 掌权 ${cmd.diffDays} 日`);
         let p_html = '';
         pillars.forEach(p => {
             const god = p.t.includes('日') ? '元神' : (SHISHEN_MAP[dm][p.g] || "");
             const colorG = WX_COLOR_DATA[WUXING_MAP[p.g]] || '#333';
             const colorZ = WX_COLOR_DATA[WUXING_MAP[p.z]] || '#333';
-            // 显示藏干
-            const hiddens = HIDDEN_STEMS[p.z] || [];
-            let hiddenStr = "";
-            hiddens.forEach(h => {
-                hiddenStr += `<div class="hs-row"><span class="hs-gan" style="color:${WX_COLOR_DATA[WUXING_MAP[h]]}">${h}</span><span class="hs-god">${SHISHEN_MAP[dm][h]}</span></div>`;
-            });
-
-            // 长生状态
+            const hiddens = HIDDEN_STEMS[p.z] || []; let hiddenStr = "";
+            hiddens.forEach(h => { hiddenStr += `<div class="hs-row"><span class="hs-gan" style="color:${WX_COLOR_DATA[WUXING_MAP[h]]}">${h}</span><span class="hs-god">${SHISHEN_MAP[dm][h]}</span></div>`; });
             const cs = CHANGSHENG_TABLE[p.g][p.z];
-
             p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${colorG}">${p.g}</div><div class="ofuda-char" style="color:${colorZ}">${p.z}</div><div class="ofuda-head">${p.t}</div><div class="hidden-stems">${hiddenStr}</div><div class="ofuda-cs">自坐${cs}</div></div>`;
         });
         document.getElementById('pillars-box').innerHTML = p_html;
-
-        document.getElementById('guide-content').innerHTML = `
-            <div class="guide-item"><div class="guide-title">⚔️ 事业与才情</div><div class="guide-text">${detail.c}</div></div>
-            <div class="guide-item"><div class="guide-title">💰 财富与气数</div><div class="guide-text">${detail.w}</div></div>
-            <div class="guide-item"><div class="guide-title">💞 情缘与羁绊</div><div class="guide-text">${detail.l}</div></div>
-            <div class="guide-item"><div class="guide-title">🌱 后代与传承</div><div class="guide-text">${detail.k}</div></div>
-            <div class="guide-item"><div class="guide-title">🛡️ 实战与锦囊</div><div class="guide-text">${detail.h}</div></div>
-        `;
-
-        // 渲染大运流年（传入喜忌数据）
+        safeSetText('dm-desc', getDMDesc(dm, mz));
+        const dims = [
+            {icon:'⚔️', title:'天赋与事业', text:detail.c},
+            {icon:'💰', title:'财富与气数', text:detail.w},
+            {icon:'💞', title:'情缘与羁绊', text:detail.l},
+            {icon:'🌱', title:'后代与传承', text:detail.k},
+            {icon:'🛡️', title:'实战与锦囊', text:detail.h}
+        ];
+        let gh = '';
+        dims.forEach(d => {
+            gh += `<div class="guide-card" onclick="this.classList.toggle('expanded')"><div class="guide-card-header"><span class="guide-card-icon">${d.icon}</span><span class="guide-card-title">${d.title}</span><span class="guide-card-arrow">▾</span></div><div class="guide-card-body">${d.text}</div></div>`;
+        });
+        document.getElementById('guide-content').innerHTML = gh;
         renderDayun(dm, pillars, xiji, solar);
     }
 
@@ -2533,28 +2540,67 @@ console.log("✅ 业务脚本开始执行");
             let cardClass = '';
             let cardStyle = '';
             let badge = '';
-            if (isJi) {
+            if (isJi && !isXiong) {
                 cardClass = 'dayun-card-ji';
                 badge = `<div style="font-size:0.7rem;color:#2e7d32;font-weight:bold;margin-top:5px;">★ ${reason}</div>`;
-            } else if (isXiong) {
+            } else if (isXiong && !isJi) {
                 cardClass = 'dayun-card-xiong';
                 badge = `<div style="font-size:0.7rem;color:#c62828;font-weight:bold;margin-top:5px;">☆ ${reason}</div>`;
+            } else {
+                cardClass = '';
+                badge = `<div style="font-size:0.7rem;color:#888;font-weight:bold;margin-top:5px;">◎ ${reason || '闲神过境'}</div>`;
             }
 
             // 背面运势解读文案
-            const backTexts = {
-                '正财': '财运亨通，利求财创业，收入增长',
-                '偏财': '意外之财，利投资投机，贵人相助',
-                '正官': '官运亨通，利事业晋升，名声鹊起',
-                '七杀': '压力与机遇并存，冲劲足但防是非',
-                '正印': '贵人扶持，利学业考试，思维清晰',
-                '偏印': '灵感迸发，利创意研究，防小人',
-                '食神': '福气满满，口福佳，利创作表达',
-                '伤官': '才华显露，利展示自我，防口舌',
-                '比肩': '朋友相助，合作共利，分财之象',
-                '劫财': '竞争激烈，防破财，宜守不宜攻'
+            // 喜/忌/平 三种背面文案
+            const backJi = {
+                '正财': '财运亨通，正财稳健，利工作加薪、实业投资',
+                '偏财': '意外之喜，利副业投资，贵人引财',
+                '正官': '职位晋升，名声鹊起，利考公考证',
+                '七杀': '权柄在握，以智取胜，杀有制则大贵',
+                '正印': '贵人提携，学业猛进，思路清晰',
+                '偏印': '灵感迸发，利研发创作，技艺精进',
+                '食神': '福气临门，口福人缘俱佳，心情舒畅',
+                '伤官': '才华展露，利演讲展示，一鸣惊人',
+                '比肩': '朋友相助，合作共赢，众人拾柴',
+                '劫财': '竞争虽烈，但能脱颖而出，独占鳌头',
+                '羊刃': '刚强有力，披荆斩棘，宜主动出击'
             };
-            const backText = backTexts[shishen] || '运势平稳，稳步前行';
+            const backXiong = {
+                '正财': '求财辛苦，收入不稳，防破财漏财',
+                '偏财': '投机不利，防被骗被坑，忌冲动投资',
+                '正官': '职场压力大，易与上司冲突，谨言慎行',
+                '七杀': '小人是非，健康受损，凡事三思后行',
+                '正印': '思虑过度，犹豫不决，防错失良机',
+                '偏印': '孤僻自闭，防小人暗算，忌闭门造车',
+                '食神': '安逸过度，易懈怠拖延，注意饮食健康',
+                '伤官': '口舌是非，易得罪人，防言多必失',
+                '比肩': '竞争激烈，易被分利，忌合伙创业',
+                '劫财': '破财难免，防亲友借贷，宜守不宜攻',
+                '羊刃': '刚极易折，防血光冲突，切忌冲动'
+            };
+            const backPing = {
+                '正财': '财运平平，按部就班，宜积累储备',
+                '偏财': '无大起伏，稳扎稳打，勿贪偏门',
+                '正官': '工作平稳，按章办事，宜提升内功',
+                '七杀': '压力适中，宜学习进修，蓄力待发',
+                '正印': '日常节奏，多读多思，修身养性',
+                '偏印': '静心钻研，厚积薄发，不急于求成',
+                '食神': '生活安逸，享受当下，知足常乐',
+                '伤官': '才华内敛，潜心修炼，等风来',
+                '比肩': '人际关系平稳，独善其身',
+                '劫财': '财运平平，量入为出，知足常乐',
+                '羊刃': '保持克制，以柔克刚，以静制动'
+            };
+            
+            let backText;
+            if (isJi && !isXiong) {
+                backText = (backJi[shishen] || backJi['正财']) + ' 【喜运】';
+            } else if (isXiong && !isJi) {
+                backText = (backXiong[shishen] || backXiong['正财']) + ' 【忌运】';
+            } else {
+                backText = (backPing[shishen] || backPing['正财']) + ' 【平运】';
+            }
 
             dayunHtml += `
                 <div class="dayun-card ${cardClass}" 
