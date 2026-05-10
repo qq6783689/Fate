@@ -450,6 +450,94 @@
         .btn-copy:hover { border-color: var(--china-red); color: var(--china-red); background: #fff5f5; }
 
         .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 100px; letter-spacing: 4px; text-transform: uppercase; }
+
+        /* 双胞胎对比面板 */
+        .twin-btn {
+            display: none;
+            margin: 15px auto;
+            padding: 8px 24px;
+            background: linear-gradient(135deg, #8e1818, #c41e3a);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+        .twin-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(142,24,24,0.3); }
+        .twin-panel {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fef9f0, #fdf5e6);
+            border: 2px solid var(--gold-accent);
+            border-radius: 12px;
+        }
+        [data-theme="dark"] .twin-panel { background: linear-gradient(135deg, #1a1a2e, #252540); border-color: #cfa972; }
+        [data-theme="red"] .twin-panel { background: linear-gradient(135deg, #fef0d9, #fde8c8); }
+        .twin-panel h3 {
+            text-align: center;
+            color: var(--china-red);
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        .twin-input-area {
+            text-align: center;
+            margin: 12px 0;
+        }
+        .twin-input-area label { font-size: 0.9rem; color: var(--ink-light); }
+        .twin-input-area input {
+            width: 60px;
+            text-align: center;
+            border: 2px solid var(--gold-accent);
+            border-radius: 6px;
+            padding: 4px;
+            font-size: 1rem;
+            margin: 0 8px;
+        }
+        .twin-compare-btn {
+            padding: 6px 18px;
+            background: var(--china-red);
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .twin-result {
+            display: none;
+            margin-top: 18px;
+        }
+        .twin-cols {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .twin-col {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid #e0d5c5;
+        }
+        [data-theme="dark"] .twin-col { background: rgba(255,255,255,0.05); border-color: #444; }
+        .twin-col h4 { text-align: center; margin-bottom: 10px; }
+        .twin-col .twin-pillars { font-size: 0.9rem; text-align: center; margin: 8px 0; }
+        .twin-diff { color: #c41e3a; font-weight: bold; }
+        .twin-same { color: #2d6a4f; }
+        .twin-commentary {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(207,169,114,0.15);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--ink-main);
+        }
+        .twin-commentary strong { color: var(--china-red); }
         
         @media (max-width: 600px) {
             .header h1 { font-size: 2.2rem; letter-spacing: 3px; }
@@ -613,6 +701,94 @@
             animation: slideDown 0.3s ease;
         }
         .footer { text-align: center; font-size: 0.8rem; color: #aaa; margin-top: 100px; letter-spacing: 4px; text-transform: uppercase; }
+
+        /* 双胞胎对比面板 */
+        .twin-btn {
+            display: none;
+            margin: 15px auto;
+            padding: 8px 24px;
+            background: linear-gradient(135deg, #8e1818, #c41e3a);
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+        .twin-btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(142,24,24,0.3); }
+        .twin-panel {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fef9f0, #fdf5e6);
+            border: 2px solid var(--gold-accent);
+            border-radius: 12px;
+        }
+        [data-theme="dark"] .twin-panel { background: linear-gradient(135deg, #1a1a2e, #252540); border-color: #cfa972; }
+        [data-theme="red"] .twin-panel { background: linear-gradient(135deg, #fef0d9, #fde8c8); }
+        .twin-panel h3 {
+            text-align: center;
+            color: var(--china-red);
+            font-family: 'Ma Shan Zheng', cursive;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+        .twin-input-area {
+            text-align: center;
+            margin: 12px 0;
+        }
+        .twin-input-area label { font-size: 0.9rem; color: var(--ink-light); }
+        .twin-input-area input {
+            width: 60px;
+            text-align: center;
+            border: 2px solid var(--gold-accent);
+            border-radius: 6px;
+            padding: 4px;
+            font-size: 1rem;
+            margin: 0 8px;
+        }
+        .twin-compare-btn {
+            padding: 6px 18px;
+            background: var(--china-red);
+            color: #fff;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .twin-result {
+            display: none;
+            margin-top: 18px;
+        }
+        .twin-cols {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .twin-col {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid #e0d5c5;
+        }
+        [data-theme="dark"] .twin-col { background: rgba(255,255,255,0.05); border-color: #444; }
+        .twin-col h4 { text-align: center; margin-bottom: 10px; }
+        .twin-col .twin-pillars { font-size: 0.9rem; text-align: center; margin: 8px 0; }
+        .twin-diff { color: #c41e3a; font-weight: bold; }
+        .twin-same { color: #2d6a4f; }
+        .twin-commentary {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(207,169,114,0.15);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--ink-main);
+        }
+        .twin-commentary strong { color: var(--china-red); }
     
         /* 真太阳时校正 */
         .solar-time-section {
@@ -2048,6 +2224,14 @@ console.log("✅ 业务脚本开始执行");
                     resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
 
+                // 保存双胞胎数据
+                window._lastScanData = {
+                    birthDate: date,
+                    pillars: pillars,
+                    pattern: pattern,
+                    dm: dm
+                };
+
                 // 保存到历史记录
                 saveToHistory({
                     pattern: pattern,
@@ -2123,6 +2307,102 @@ console.log("✅ 业务脚本开始执行");
         // 渲染大运流年（传入喜忌数据）
         renderDayun(dm, pillars, xiji, solar);
     }
+
+    // ==========================================
+    // 双胞胎模式
+    // ==========================================
+    window._lastScanData = null;
+
+    window.toggleTwinPanel = function() {
+        const panel = document.getElementById('twin-panel');
+        if (panel) {
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if (panel.style.display === 'block') {
+                panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    };
+
+    window.calcTwin = async function() {
+        if (!window._lastScanData) {
+            alert('请先完成一次鑑定');
+            return;
+        }
+        const minutes = parseInt(document.getElementById('twin-minutes').value) || 15;
+        const d = window._lastScanData;
+        
+        // 计算第二个双胞胎的时间（后出生，加分钟）
+        const twinDate = new Date(d.birthDate.getTime() + minutes * 60000);
+        
+        const twinSolar = Solar.fromYmdHms(
+            twinDate.getFullYear(), twinDate.getMonth() + 1, twinDate.getDate(),
+            twinDate.getHours(), twinDate.getMinutes(), twinDate.getSeconds()
+        );
+        const twinLunar = twinSolar.getLunar();
+        const twinBazi = twinLunar.getEightChar();
+        twinBazi.setSect(2);
+        
+        const twinPillars = [
+            { t: '年', g: twinBazi.getYearGan().toString(), z: twinBazi.getYearZhi().toString() },
+            { t: '月', g: twinBazi.getMonthGan().toString(), z: twinBazi.getMonthZhi().toString() },
+            { t: '日', g: twinBazi.getDayGan().toString(), z: twinBazi.getDayZhi().toString() },
+            { t: '时', g: twinBazi.getTimeGan().toString(), z: twinBazi.getTimeZhi().toString() },
+        ];
+        
+        // 比较两套四柱
+        const diffs = [];
+        let hasDiff = false;
+        for (let i = 0; i < 4; i++) {
+            const a = d.pillars[i], b = twinPillars[i];
+            if (a.g !== b.g || a.z !== b.z) {
+                diffs.push({ col: a.t, a: a.g+a.z, b: b.g+b.z });
+                hasDiff = true;
+            }
+        }
+        
+        const dm = d.pillars[2].g;
+        const colsHtml = `
+            <div class="twin-col">
+                <h4>👤 先出生（长）</h4>
+                <div class="twin-pillars">
+                    ${d.pillars.map((p,i) => {
+                        const god = i===2 ? '元神' : (SHISHEN_MAP[dm][p.g] || '');
+                        const isDiff = diffs.some(df => df.col === p.t);
+                        return `<span class="${isDiff ? 'twin-diff' : 'twin-same'}">${p.g}${p.z} ${god}</span>`;
+                    }).join(' · ')}
+                </div>
+            </div>
+            <div class="twin-col">
+                <h4>👤 后出生（幼）</h4>
+                <div class="twin-pillars">
+                    ${twinPillars.map((p,i) => {
+                        const god = i===2 ? '元神' : (SHISHEN_MAP[dm][p.g] || '');
+                        const isDiff = diffs.some(df => df.col === p.t);
+                        return `<span class="${isDiff ? 'twin-diff' : 'twin-same'}">${p.g}${p.z} ${god}</span>`;
+                    }).join(' · ')}
+                </div>
+            </div>`;
+        
+        document.getElementById('twin-cols').innerHTML = colsHtml;
+        
+        // 星露式双胞胎解读
+        let commentary;
+        if (hasDiff) {
+            const diffDesc = diffs.map(df => `${df.col}柱不同：${df.a} → ${df.b}`).join('；');
+            commentary = `<strong>⭐ 星露实战派解读：</strong><br><br>
+                <b>两盘差异：</b>${diffDesc}。双胞胎出生相隔 ${minutes} 分钟，${diffs.length} 柱发生变化。<br><br>
+                <b>核心规律：</b>双胞胎同八字，趋势一样，量不同。先出生者（长）往往承担更多家庭责任，运势起伏更明显；后出生者（幼）相对顺遂但格局层次可能略低。两命虽同源，但因出生环境和成长经历不同，最终人生轨迹会有显著分叉。<br><br>
+                <b>锦囊：</b>长者宜自立开拓，幼者宜守成深耕。两人互为镜像，各自的优势恰是对方的短板。`;
+        } else {
+            commentary = `<strong>⭐ 星露实战派解读：</strong><br><br>
+                <b>两盘相同：</b>双胞胎相隔 ${minutes} 分钟，四柱完全一致，八字完全相同。<br><br>
+                <b>核心规律：</b>星露云：「同八字趋势一样，但量不同。量由出生环境和面相决定。」同样的命盘，先出生者往往气势更足、起伏更大；后出生者相对平稳、但突破性略逊。这不是命理差异，而是出生顺序带来的心理定位和家庭角色不同所致。<br><br>
+                <b>锦囊：</b>同盘不同命，关键在于各人后天选择。长者宜借先天之势大胆开拓；幼者宜借后天之稳精益求精。双胞胎互为彼此最好的参照系。`;
+        }
+        
+        document.getElementById('twin-commentary').innerHTML = commentary;
+        document.getElementById('twin-result').style.display = 'block';
+    };
 
     // ==========================================
     // 大运流年核心计算
@@ -2292,6 +2572,10 @@ console.log("✅ 业务脚本开始执行");
 
             // 渲染神煞
             renderShensha(pillars);
+            
+            // 显示双胞胎按钮
+            const twinBtn = document.getElementById('twin-btn');
+            if (twinBtn) twinBtn.style.display = 'block';
         }
 
         /**
