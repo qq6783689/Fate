@@ -1061,10 +1061,7 @@ document.addEventListener('touchend', function (e) {
                 <div class="activation-desc" id="activation-desc"></div>
             </div>
             <div id="pattern-reason" class="logic-text" style="text-align:left;font-size:0.9rem;margin:10px 0;"></div>
-            <div class="joy-taboo" style="justify-content:center;gap:20px;">
-                <span class="joy">喜用：<span id="txt-joy">...</span></span>
-                <span class="taboo">忌讳：<span id="txt-taboo">...</span></span>
-            </div>
+            
         </div>
 
         <!-- 四柱八字 -->
@@ -2317,9 +2314,8 @@ console.log("✅ 业务脚本开始执行");
         safeSetText('role-sub', data.slogan);
         safeSetHTML('role-tags', `<span class="tag ssr">${key}</span>`);
         safeSetText('pattern-reason', xiji.desc);
-        safeSetText('txt-joy', xiji.joy.join(" / "));
-        safeSetText('txt-taboo', xiji.taboo.join(" / "));
-        safeSetHTML('siling-text', `${cmd.commander} <small>(${SHISHEN_MAP[dm][cmd.commander] || '真神'})</small> · 掌权 ${cmd.diffDays} 日`);
+
+        safeSetHTML('siling-text', `<b>${cmd.commander}</b>（${SHISHEN_MAP[dm][cmd.commander]||'?'}）司令 · 掌权${cmd.diffDays}日 · ${[pillars[0].g,pillars[1].g,pillars[2].g,pillars[3].g].includes(cmd.commander)?'<span style="color:#2e7d32">透干成格</span>':'<span style="color:#999">藏而不透</span>'}`);
         let p_html = '';
         pillars.forEach(p => {
             const god = p.t.includes('日') ? '元神' : (SHISHEN_MAP[dm][p.g] || "");
@@ -2331,6 +2327,11 @@ console.log("✅ 业务脚本开始执行");
             p_html += `<div class="ofuda"><div class="ofuda-god">${god}</div><div class="ofuda-char" style="color:${colorG}">${p.g}</div><div class="ofuda-char" style="color:${colorZ}">${p.z}</div><div class="ofuda-head">${p.t}</div><div class="hidden-stems">${hiddenStr}</div><div class="ofuda-cs">自坐${cs}</div></div>`;
         });
         document.getElementById('pillars-box').innerHTML = p_html;
+        const ganList = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+        const zhiList2 = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+        const tyGan = ganList[(ganList.indexOf(pillars[1].g)+1)%10];
+        const tyZhi = zhiList2[(zhiList2.indexOf(pillars[1].z)+3)%12];
+        document.getElementById('pillars-box').innerHTML += '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--gold-accent);">胎元：' + tyGan + tyZhi + ' <small style="color:#999">月干进一·月支进三</small></div>';
         safeSetText('dm-desc', getDMDesc(dm, mz));
         const dims = [
             {icon:'⚔️', title:'天赋与事业', text:detail.c},
