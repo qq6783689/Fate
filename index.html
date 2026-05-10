@@ -1068,20 +1068,19 @@ document.addEventListener('touchend', function (e) {
                 </div>
             </div>
 
-            <div class="logic-panel">
-                <div class="label" style="border:none; padding:0; margin-bottom:15px; font-size:1.4rem;">🔮 格局奥义</div>
-                <div id="pattern-reason" class="logic-text"></div>
-                <div class="joy-taboo">
-                    <span class="joy">★ 喜用：<span id="txt-joy">...</span></span>
-                    <span class="taboo">★ 忌讳：<span id="txt-taboo">...</span></span>
+            <div class="logic-panel" style="padding:12px 16px;">
+                <div id="pattern-reason" class="logic-text" style="margin-bottom:10px;"></div>
+                <div class="joy-taboo" style="margin-top:8px;">
+                    <span class="joy">喜用：<span id="txt-joy">...</span></span>
+                    <span class="taboo">忌讳：<span id="txt-taboo">...</span></span>
                 </div>
             </div>
         </div>
 
         <div class="card guide-section">
-            <div class="guide-item">
-                <div class="guide-title">🏮 本纪 · 元神</div>
-                <div class="guide-text" id="dm-desc"></div>
+            <div class="guide-item" style="margin-bottom:12px;">
+                <div class="guide-title" style="font-size:1rem;">🏮 元神本纪</div>
+                <div class="guide-text" id="dm-desc" style="font-size:0.9rem;"></div>
             </div>
             <div id="guide-content"></div>
         </div>
@@ -1647,6 +1646,24 @@ function updateSolarTime() {
             } 
         },
         
+        "魁罡格": { 
+            name: "⚡ 魁罡入命", tags: ["SSR","刚毅"], icon: "⚡", slogan: "壬辰庚戌，刚毅果决。", 
+            male: { 
+                c:"<b>[天赋传记]</b> 魁罡格，日柱为壬辰、庚辰、庚戌、戊戌四者之一。此格之人刚毅果决，胆识过人，不怒自威。天生领袖气质，适合军警、法政、管理、竞技等需强硬手腕的领域。最忌见财官弱化其刚性，喜七杀增威、食伤泄秀。", 
+                w:"<b>[财富逻辑]</b> 掌权得财。财富随地位而来，不宜投机取巧。格局纯粹则大贵，混杂则起伏不定。", 
+                l:"<b>[情感羁绊]</b> 刚强易折。对伴侣要求高，易因性格强势导致摩擦。需找温婉包容之人互补。", 
+                k:"<b>[后代传承]</b> 子女多刚强。继承你的意志力，但需教导柔和之道。", 
+                h:"<b>[实战锦囊]</b> 魁罡最忌破格——地支辰戌相冲或天干见财官太过则层次大降。保持刚正不阿的本色是立身之本。" 
+            }, 
+            female: { 
+                c:"<b>[天赋传记]</b> 女中豪杰。性格刚强不让须眉，在职场中是能打硬仗的中坚力量。", 
+                w:"<b>[财富逻辑]</b> 独立自强。靠自己双手致富，不屑依附他人。", 
+                l:"<b>[情感羁绊]</b> 宜晚婚。性格太刚，年轻时易有波折，成熟后更懂经营。", 
+                k:"<b>[后代传承]</b> 教子有方。你的坚毅是孩子最好的榜样。", 
+                h:"<b>[实战锦囊]</b> 刚极易折，学会示弱是最高级的坚强。注意情绪管理，少动怒。" 
+            } 
+        },
+        
         "伤官生财": { name: "⚗️ 炼金术士", tags: ["SSR","爆发"], icon: "💸", slogan: "万物皆可交易。", male: { c:"<b>[天赋传记]</b> 创业奇才。脑子灵活，点石成金。适合科技、媒体、电商等轻资产行业。", w:"<b>[财富逻辑]</b> 现金流极强。周转快，但花销也大。", l:"<b>[情感羁绊]</b> 颜控。喜欢漂亮的伴侣。", k:"<b>[后代传承]</b> 自由生长。", h:"<b>[实战锦囊]</b> 防脱发失眠。用脑过度。" }, female: { c:"<b>[天赋传记]</b> 带货女王。口才极佳，感染力强。", w:"[财富逻辑]</b> 购买力极强。喜欢购物解压。", l:"<b>[情感羁绊]</b> 挑剔。眼光毒辣。", k:"<b>[后代传承]</b> 倾力投入。", h:"<b>[实战锦囊]</b> 通乳腺。注意淋巴健康。" } },
         "食神生财": { name: "🎐 逍遥财主", tags: ["SR","安稳"], icon: "💰", slogan: "快乐才是第一生产力。", male: { c:"<b>[天赋传记]</b> 快乐赚钱。适合餐饮、娱乐、服务业。你做事讲究顺其自然。", w:"<b>[财富逻辑]</b> 细水长流。财源不断。", l:"<b>[情感羁绊]</b> 温馨浪漫。懂得享受生活。", k:"<b>[后代传承]</b> 福星。晚年享福。", h:"<b>[实战锦囊]</b> 防肥胖。注意饮食节制。" }, female: { c:"<b>[天赋传记]</b> 生活美学家。", w:"<b>[财富逻辑]</b> 物质优渥。不缺零花钱。", l:"<b>[情感羁绊]</b> 撒娇好命。", k:"<b>[后代传承]</b> 慈母多福。", h:"<b>[实战锦囊]</b> 多运动。保持活力。" } },
         "真从儿格": { name: "🌟 绝代才子 (真)", tags: ["SSR","名流"], icon: "🎨", slogan: "才华横溢，顺势流芳。", male: { c:"<b>[天赋传记]</b> 真从儿格，满盘食伤日主无根。人生使命不是权力金钱而是输出——思想、作品、表演必须被世界看见。适合艺术、演艺、文学、学术等需要极致创造力的领域。你不是管理者而是创造者，成功不依赖管理别人而依赖作品影响力。", w:"<b>[财富逻辑]</b> 技艺生财名利双收。财富是才华的副产品，全心创作时金钱自动流向你。最喜行财运（食伤生财），最忌印运（克食伤压制创造力）。", l:"<b>[情感羁绊]</b> 浪漫多情但不羁。像风一样自由，难以被关系完全束缚。伴侣需要极大包容力和对你才华的欣赏。可能晚婚或不婚。", k:"<b>[后代传承]</b> 晚年享福。子女多半聪明过人有成，宽松环境让他们成长为独立自信的人。", h:"<b>[实战锦囊]</b> 忌印星克制。才华是顺势而发，如果有人试图规范你反而扼杀最珍贵的东西。保持独立保持叛逆是长寿秘诀。" }, female: { c:"<b>[天赋传记]</b> 艺术女神。美貌和才华同样耀眼，天生是舞台中心，适合做演员、歌手、作家或独立艺术家。", w:"<b>[财富逻辑]</b> 粉丝经济。收入来自受众直接支持，经营好个人品牌和社群财富源源不断。", l:"<b>[情感羁绊]</b> 宁缺毋滥。对伴侣精神层面要求极高，找不到灵魂共鸣宁愿独身。", k:"<b>[后代传承]</b> 母凭子贵。孩子常是人生下半场贵人，成就让人骄傲。", h:"<b>[实战锦囊]</b> 情绪化是双刃剑。创造力依赖情感波动，过度会伤身。通过艺术表达释放而非压抑。" } },
@@ -1703,6 +1720,8 @@ function updateSolarTime() {
         "杂格": { desc: "格局未清，五行杂居。全凭扶抑调候，需看日主底蕴与通关。后天努力可扭乾坤。", joy: ["扶助用神"], taboo: ["克害用神"] },
 
         "水火既济": { desc: "水日主生于夏令，火旺水衰，喜金生水、水帮身、湿土护水。水火既济，阴阳调和，主聪明绝顶，随机应变，富贵双全。最忌火土再旺，水涸则危。", joy: ["💧 水 (帮身)","⛰️ 金 (生水)","🌱 湿土 (护水)"], taboo: ["🔥 火 (涸水)","☀️ 燥土 (克水)"] },
+
+        "魁罡格": { desc: "魁罡入命，刚毅果决。最忌财官弱化刚性，喜七杀增威。辰戌相冲则破格。", joy: ["🗡️ 七杀","🎨 食伤"], taboo: ["💰 财星","📜 官星"] },
 
         "土金伤官": { desc: "土日主生于夏，火炎土燥，必用壬水调候。金泄土气而生水，为通关之妙。此格见壬即贵，无壬则土燥金脆，才华难展。", joy: ["💧 壬水 (调候)","⛰️ 金 (泄秀)"], taboo: ["🔥 火 (炎燥)","☀️ 燥土 (埋金)"] }
     }
@@ -2091,6 +2110,8 @@ console.log("✅ 业务脚本开始执行");
         if (hasKill && hasSeal) return "杀印相生";
         if (hasHurt && hasSeal && hasRoot(dm, pillars)) return "伤官配印";
         if (climate.special) return climate.special;
+        const kuiGangGZ = ["壬辰","庚辰","庚戌","戊戌"];
+        if (kuiGangGZ.includes(pillars[2].g + pillars[2].z)) return "魁罡格";
         if (YANG_REN_MAP[dm]===mz) return "阳刃格";
         if (WUXING_MAP[dm]===WUXING_MAP[mz] && mz!==YANG_REN_MAP[dm]) return "建禄格";
         if (mzMainGod==="劫财") return "月劫格";
@@ -2583,32 +2604,55 @@ console.log("✅ 业务脚本开始执行");
 
     window.calcTwin = function() {
         if (!window._lastScanData) { alert('请先完成一次鉴定'); return; }
-        const d = window._lastScanData;
-        const taijiSelect = document.getElementById('twin-taiji');
-        const taijiPillar = taijiSelect && taijiSelect.value === 'hour' ? d.pillars[3] : d.pillars[1];
-        const newDM = taijiPillar.g;
-        const taijiName = taijiSelect && taijiSelect.value === 'hour' ? '时柱' : '月柱';
-        const colsHtml = '<div class="twin-col"><h4>👤 长胎（日元：' + d.dm + '）</h4><div class="twin-pillars" style="font-size:1.1rem;letter-spacing:2px;">' + d.pillars.map(function(p) { var god = SHISHEN_MAP[d.dm][p.g] || ''; return p.g + p.z + '<small style="color:#888">' + god + '</small>'; }).join(' · ') + '</div></div><div class="twin-col"><h4>👤 幼胎（太极：' + newDM + '）</h4><div class="twin-pillars" style="font-size:1.1rem;letter-spacing:2px;">' + d.pillars.map(function(p) { var god = SHISHEN_MAP[newDM][p.g] || ''; var isSelf = p.g === newDM; return p.g + p.z + '<small style="color:' + (isSelf ? '#c41e3a' : '#888') + '">' + (isSelf ? '太极' : god) + '</small>'; }).join(' · ') + '</div></div>';
+        var d = window._lastScanData;
+        var taijiSelect = document.getElementById('twin-taiji');
+        var taijiPillar = taijiSelect && taijiSelect.value === 'hour' ? d.pillars[3] : d.pillars[1];
+        var newDM = taijiPillar.g;
+        var taijiName = taijiSelect && taijiSelect.value === 'hour' ? '时柱' : '月柱';
+        
+        // Build comparison table
+        var cols = ['年柱','月柱','日柱','时柱'];
+        var rows = '';
+        for (var i = 0; i < 4; i++) {
+            var p = d.pillars[i];
+            var oldGod = SHISHEN_MAP[d.dm][p.g] || '';
+            var newGod = SHISHEN_MAP[newDM][p.g] || '';
+            var isSelfOld = p.g === d.dm;
+            var isSelfNew = p.g === newDM;
+            var oldLabel = isSelfOld ? '<b style="color:#c41e3a">日元</b>' : oldGod;
+            var newLabel = isSelfNew ? '<b style="color:#c41e3a">太极</b>' : newGod;
+            var changed = oldGod !== newGod;
+            rows += '<tr><td style="font-weight:bold;white-space:nowrap">' + cols[i] + '</td>' +
+                '<td style="font-size:1.1rem;letter-spacing:2px">' + p.g + p.z + '</td>' +
+                '<td style="' + (changed ? 'color:#c0392b' : '') + '">' + oldLabel + '</td>' +
+                '<td style="' + (changed ? 'color:#c0392b' : '') + '">' + newLabel + '</td></tr>';
+        }
+        
+        var colsHtml = '<table style="width:100%;border-collapse:collapse;text-align:center;font-size:0.9rem">' +
+            '<tr style="border-bottom:2px solid #e0d5c5"><th></th><th>干支</th><th>长胎十神<br><small>日元=' + d.dm + '</small></th><th>幼胎十神<br><small>太极=' + newDM + '</small></th></tr>' +
+            rows + '</table>';
+        
         document.getElementById('twin-cols').innerHTML = colsHtml;
-        var oldGods = d.pillars.map(function(p) { return SHISHEN_MAP[d.dm][p.g]; });
-        var newGods = d.pillars.map(function(p) { return SHISHEN_MAP[newDM][p.g]; });
+        
+        // Commentary
         var oldMZGod = SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.pillars[1].z]];
         var newMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
-        var commentary = '<strong>☯️ 日元变换太极法解读：</strong><br><br>';
-        commentary += '<b>原理：</b>双胞胎同盘而出，命理以「变太极」分判。长胎以日柱为太极（日元：' + d.dm + '），幼胎以' + taijiName + '为太极（新日元：' + newDM + '），同一四柱从不同太极观之，十神格局迥异，命运自然分途。<br><br>';
-        commentary += '<b>格局变化：</b>长胎月令为<b>' + oldMZGod + '</b>，幼胎月令变为<b>' + newMZGod + '</b>。';
-        var oldDayGod = SHISHEN_MAP[d.dm][d.pillars[2].g];
-        var newDaySelf = SHISHEN_MAP[newDM][d.pillars[2].g];
-        commentary += '长胎日柱坐<b>' + oldDayGod + '</b>，幼胎视原日柱为<b>' + newDaySelf + '</b>。<br><br>';
-        if (oldMZGod === newMZGod) {
-            commentary += '<b>格局一致：</b>两胎月令十神相同，核心禀赋趋同，但太极不同导致六亲关系、事业取向产生分叉。';
+        
+        var commentary = '<strong>☯️ 白话解读</strong><br><br>';
+        commentary += '同一个八字，长胎以「<b>' + d.dm + '</b>」为日元看世界，幼胎改用「<b>' + newDM + '</b>」为太极看世界。<br><br>';
+        
+        if (oldMZGod !== newMZGod) {
+            commentary += '月令在长胎眼里是<b>' + oldMZGod + '</b>，在幼胎眼里变成了<b>' + newMZGod + '</b>——这直接导致两人的<b>天赋方向、事业选择完全不同</b>。<br><br>';
         } else {
-            commentary += '<b>格局分途：</b>月令十神不同，两胎天赋方向明显分化。长胎偏向' + oldMZGod + '属性发展，幼胎偏向' + newMZGod + '属性发展。';
+            commentary += '两胎月令格局一致（都是' + oldMZGod + '），核心天赋趋同；但太极不同，<b>六亲缘分、配偶条件、人际关系</b>会有明显分叉。<br><br>';
         }
-        commentary += '<br><br><b>实战锦囊：</b>双胞胎如同同一块木料劈成两半，纹路相同但方向相反。长者宜顺先天之势，幼者宜寻后天之变。两命互补方为圆满。';
+        
+        commentary += '⭐ <b>一句话总结：</b>双胞胎如同同一块木料劈成两半，纹路相同但方向相反。长者宜顺先天之势开路，幼者宜寻后天之变深耕。互为镜像，互补方为圆满。';
+        
         document.getElementById('twin-commentary').innerHTML = commentary;
         document.getElementById('twin-result').style.display = 'block';
     };
+;
 
         /**
          * 神煞系统计算与渲染
@@ -2849,6 +2893,91 @@ console.log("✅ 业务脚本开始执行");
                         return pillars.some(p => kwList.includes(p.z));
                     },
                     desc: '诸事多磨，亦主智慧'
+                },
+                // V3.2 新增神煞
+                {
+                    name: '天德贵人',
+                    icon: '🌟',
+                    type: 'ji',
+                    weight: '★★★',
+                    check: () => {
+                        const lookup = {
+                            '寅':'丁','卯':'申','辰':'壬','巳':'辛','午':'亥','未':'甲',
+                            '申':'癸','酉':'寅','戌':'丙','亥':'乙','子':'巳','丑':'庚'
+                        };
+                        return lookup[yearZhi] && pillars.some(p => p.g === lookup[yearZhi]);
+                    },
+                    desc: '天德合月，福泽深厚，逢凶化吉'
+                },
+                {
+                    name: '月德贵人',
+                    icon: '🌙',
+                    type: 'ji',
+                    weight: '★★★',
+                    check: () => {
+                        const lookup = {
+                            '寅':'丙','卯':'甲','辰':'壬','巳':'庚','午':'丙','未':'甲',
+                            '申':'壬','酉':'庚','戌':'丙','亥':'甲','子':'壬','丑':'庚'
+                        };
+                        return lookup[yearZhi] && pillars.some(p => p.g === lookup[yearZhi]);
+                    },
+                    desc: '月德护身，心地善良，贵人暗助'
+                },
+                {
+                    name: '福星贵人',
+                    icon: '🍀',
+                    type: 'ji',
+                    weight: '★★',
+                    check: () => {
+                        const lookup = {
+                            '甲':'丑','乙':'巳','丙':'寅','丁':'未',
+                            '戊':'卯','己':'申','庚':'辰','辛':'午',
+                            '壬':'未','癸':'巳'
+                        };
+                        return lookup[dayGan] && pillars.some(p => lookup[dayGan] === p.z);
+                    },
+                    desc: '福星高照，一生少灾，晚景安泰'
+                },
+                {
+                    name: '魁罡',
+                    icon: '⚡',
+                    type: 'ping',
+                    weight: '★★',
+                    check: () => {
+                        const dayGZ = pillars[2].g + pillars[2].z;
+                        return ['壬辰','庚辰','庚戌','戊戌'].includes(dayGZ);
+                    },
+                    desc: '魁罡入命，刚毅果决，宜掌权柄'
+                },
+                {
+                    name: '金舆',
+                    icon: '🚗',
+                    type: 'ji',
+                    weight: '★',
+                    check: () => {
+                        const lookup = {
+                            '甲':'辰','乙':'巳','丙':'未','丁':'申',
+                            '戊':'未','己':'申','庚':'戌','辛':'亥',
+                            '壬':'丑','癸':'寅'
+                        };
+                        return lookup[dayGan] && pillars.some(p => lookup[dayGan] === p.z);
+                    },
+                    desc: '金舆引路，出行顺遂，车马之福'
+                },
+                {
+                    name: '红鸾',
+                    icon: '💕',
+                    type: 'ji',
+                    weight: '★★',
+                    check: () => {
+                        const lookup = {
+                            '子':'卯','丑':'寅','寅':'丑','卯':'子',
+                            '辰':'亥','巳':'戌','午':'酉','未':'申',
+                            '申':'未','酉':'午','戌':'巳','亥':'辰'
+                        };
+                        return lookup[yearZhi] && pillars.some(p => lookup[yearZhi] === p.z);
+                    },
+                    desc: '红鸾星动，桃花正缘，婚恋吉兆'
                 }
             ];
 
@@ -2867,7 +2996,7 @@ console.log("✅ 业务脚本开始执行");
 
             // 更新标题，显示命中数量
             const titleEl = area.querySelector('.shensha-title');
-            titleEl.innerHTML = `✨ 命带神煞 <small>（命中 ${found.length} 个）</small>`;
+            titleEl.innerHTML = `✨ 命带神煞 <small>（${found.length}个 / 共21种）</small>`;
 
             // 渲染
             let html = '';
