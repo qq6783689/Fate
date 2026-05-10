@@ -1107,7 +1107,7 @@ document.addEventListener('touchend', function (e) {
         <button class="twin-btn" id="twin-btn" onclick="window.toggleTwinPanel()">👯 双胞胎对比模式</button>
         <div class="twin-panel" id="twin-panel">
             <h3>👯 孪生命运 · 同盘异路</h3>
-            <p style="text-align:center;color:var(--ink-light);font-size:0.85rem;">日元变换太极法：长用日柱，幼用月柱</p>
+            <p style="text-align:center;color:var(--ink-light);font-size:0.85rem;">日元变换太极法：长用日柱，幼用 <select id="twin-taiji" style="border:1px solid var(--gold-accent);border-radius:4px;padding:2px 6px;font-size:0.85rem;"><option value="month">月柱</option><option value="hour">时柱</option></select> 为太极</p>
             <button class="twin-compare-btn" onclick="window.calcTwin()" style="display:block;margin:10px auto;">🔮 变换太极 · 对比鑑定</button>
             <div class="twin-result" id="twin-result">
                 <div class="twin-cols" id="twin-cols"></div>
@@ -2412,29 +2412,101 @@ console.log("✅ 业务脚本开始执行");
             const ageStart = startAge + i * 10;
             const yearStart = birthYear + ageStart;
 
-            // ========== 吉凶判断 V3.0 动态评估 ==========
+            // ========== 吉凶判断 V3.1 动态评估 ==========
+            // 优先级：天干冲合 > 制化关系 > 十二长生 > 调候贡献 > 格局喜忌
             const goodGods = ['正财','偏财','正官','正印','偏印','食神','比肩'];
             const badGods = ['七杀','伤官','劫财','羊刃'];
             let isJi = false, isXiong = false;
             let reasons = [];
+            
+            // 基础十神属性
             if (goodGods.includes(shishen)) { isJi = true; reasons.push('善神临宫'); }
             else if (badGods.includes(shishen)) { isXiong = true; reasons.push('凶神主事'); }
-            if (shishen==='七杀') { if (pillars.some(p => SHISHEN_MAP[dm][p.g]==='食神')) { isJi=true; isXiong=false; reasons.push('杀有食制'); } else if (pillars.some(p => ['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { isJi=true; isXiong=false; reasons.push('杀有印化'); } }
-            if (shishen==='伤官') { if (pillars.some(p => ['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { isJi=true; isXiong=false; reasons.push('伤官配印'); } }
+            
+            // ======== 第一优先：大运天干与原局天干冲合反应 ========
+            const allStems = pillars.map(p => p.g);
+            // 冲
+            const dyClashes = detectGanClash([...allStems, dayunGan]).filter(c => c.a===dayunGan || c.b===dayunGan);
+            // 合
+            const allWithDY = [...allStems, dayunGan];
+            const dyCombines = [];
+            for (let x = 0; x < allWithDY.length; x++) {
+                if (allWithDY[x] === dayunGan) continue;
+                if (GAN_COMBINE[allWithDY[x]] === dayunGan) {
+                    dyCombines.push({yuanJu: allWithDY[x], dayun: dayunGan});
+                }
+            }
+            
+            let overrideByReaction = false;
+            
+            // 冲反应
+            if (dyClashes.length > 0) {
+                const og = dyClashes[0].a===dayunGan ? dyClashes[0].b : dyClashes[0].a;
+                const ogGod = SHISHEN_MAP[dm][og];
+                if (['七杀','伤官','劫财'].includes(ogGod)) {
+                    isJi = true; isXiong = false; overrideByReaction = true;
+                    reasons = ['冲去忌神·拨云见日'];
+                } else if (['正印','偏印','正官','正财'].includes(ogGod)) {
+                    isXiong = true; isJi = false; overrideByReaction = true;
+                    reasons = ['冲克用神·根基动摇'];
+                }
+            }
+            
+            // 合反应（星露：天干合比冲更微妙，合走忌神则吉，合走喜神则凶）
+            if (!overrideByReaction && dyCombines.length > 0) {
+                const og = dyCombines[0].yuanJu;
+                const ogGod = SHISHEN_MAP[dm][og];
+                if (['七杀','伤官','劫财'].includes(ogGod)) {
+                    isJi = true; isXiong = false; overrideByReaction = true;
+                    reasons = ['合去忌神·化敌为友'];
+                } else if (['正印','偏印','正官','正财','食神'].includes(ogGod)) {
+                    isXiong = true; isJi = false; overrideByReaction = true;
+                    reasons = ['合用神·明珠暗投'];
+                } else {
+                    // 合比劫或合本身 → 略吉（羁绊忌神或稳定）
+                    reasons.push('天干有合·羁绊调和');
+                }
+            }
+            
+            // ======== 第二优先：制化关系（非覆盖时叠加） ========
+            if (!overrideByReaction) {
+                if (shishen==='七杀') {
+                    if (pillars.some(p => SHISHEN_MAP[dm][p.g]==='食神')) { isJi=true; isXiong=false; reasons.push('杀有食制'); }
+                    else if (pillars.some(p => ['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { isJi=true; isXiong=false; reasons.push('杀有印化'); }
+                }
+                if (shishen==='伤官') {
+                    if (pillars.some(p => ['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { isJi=true; isXiong=false; reasons.push('伤官配印'); }
+                }
+            }
+            
+            // ======== 第三：十二长生 ========
             const dyCS = CHANGSHENG_TABLE[dayunGan][dayunZhi];
             const csScore = CS_STRENGTH[dyCS] || 1;
-            if (csScore >= 4) { reasons.push('大运临旺地'); if (isXiong) { isJi=true; isXiong=false; reasons.push('旺运化凶'); } }
-            else if (csScore <= 0.5) { reasons.push('大运坐绝地'); if (isJi) { isJi=false; isXiong=true; reasons.push('绝运损吉'); } }
+            if (csScore >= 4) {
+                reasons.push('大运临旺地');
+                if (isXiong && !overrideByReaction) { isJi=true; isXiong=false; reasons.push('旺运化凶'); }
+            } else if (csScore <= 0.5) {
+                reasons.push('大运坐绝地');
+                if (isJi && !overrideByReaction) { isJi=false; isXiong=true; reasons.push('绝运损吉'); }
+            }
+            
+            // ======== 第四：调候贡献 ========
             const tiaoHouGans = getTiaoHouGans(dm, mz);
-            if (tiaoHouGans.includes(dayunGan)) { const thInYuan = tiaoHouGans.some(th => pillars.some(p => p.g===th)); if (!thInYuan) { isJi=true; isXiong=false; reasons.push('大运补调候·雪中送炭'); } else { reasons.push('调候加力·锦上添花'); } }
-            const allStems = pillars.map(p => p.g); allStems.push(dayunGan);
-            const dyClashes = detectGanClash(allStems).filter(c => c.a===dayunGan || c.b===dayunGan);
-            if (dyClashes.length > 0) { const og = dyClashes[0].a===dayunGan ? dyClashes[0].b : dyClashes[0].a; const ogGod = SHISHEN_MAP[dm][og]; if (['七杀','伤官','劫财'].includes(ogGod)) { isJi=true; isXiong=false; reasons.push('冲去忌神·拨云见日'); } else if (['正印','偏印','正官','正财'].includes(ogGod)) { isXiong=true; isJi=false; reasons.push('冲克用神·根基动摇'); } }
-            const joyText = xiji.joy.join(''); const tabooText = xiji.taboo.join('');
-            const SHISHEN_KEYWORDS = {'正财':['财星','偏财','财'],'偏财':['财星','偏财','财'],'正官':['官杀','正官','官'],'七杀':['官杀','七杀','杀'],'正印':['印星','正印','印'],'偏印':['印星','偏印','印','枭'],'食神':['食伤','食神','食'],'伤官':['食伤','伤官','伤'],'比肩':['比劫','比肩','比'],'劫财':['比劫','劫财','劫'],'羊刃':['比劫','劫财','劫']};
-            const kw = SHISHEN_KEYWORDS[shishen] || [shishen];
-            if (kw.some(k => joyText.includes(k))) { isJi=true; isXiong=false; reasons.push('喜用神到位'); }
-            else if (kw.some(k => tabooText.includes(k))) { isXiong=true; isJi=false; reasons.push('忌神逢运'); }
+            if (tiaoHouGans.includes(dayunGan)) {
+                const thInYuan = tiaoHouGans.some(th => pillars.some(p => p.g===th));
+                if (!thInYuan) { isJi=true; isXiong=false; reasons.push('大运补调候·雪中送炭'); }
+                else { reasons.push('调候加力·锦上添花'); }
+            }
+            
+            // ======== 第五：格局喜忌修正 ========
+            if (!overrideByReaction) {
+                const joyText = xiji.joy.join(''); const tabooText = xiji.taboo.join('');
+                const SHISHEN_KEYWORDS = {'正财':['财星','偏财','财'],'偏财':['财星','偏财','财'],'正官':['官杀','正官','官'],'七杀':['官杀','七杀','杀'],'正印':['印星','正印','印'],'偏印':['印星','偏印','印','枭'],'食神':['食伤','食神','食'],'伤官':['食伤','伤官','伤'],'比肩':['比劫','比肩','比'],'劫财':['比劫','劫财','劫'],'羊刃':['比劫','劫财','劫']};
+                const kw = SHISHEN_KEYWORDS[shishen] || [shishen];
+                if (kw.some(k => joyText.includes(k))) { isJi=true; isXiong=false; reasons.push('喜用神到位'); }
+                else if (kw.some(k => tabooText.includes(k))) { isXiong=true; isJi=false; reasons.push('忌神逢运'); }
+            }
+            
             const reason = reasons.length > 0 ? reasons.slice(0,2).join('·') : '平稳过渡';
 
             let cardClass = '';
@@ -2512,7 +2584,10 @@ console.log("✅ 业务脚本开始执行");
     window.calcTwin = function() {
         if (!window._lastScanData) { alert('请先完成一次鉴定'); return; }
         const d = window._lastScanData;
-        const newDM = d.pillars[1].g;
+        const taijiSelect = document.getElementById('twin-taiji');
+        const taijiPillar = taijiSelect && taijiSelect.value === 'hour' ? d.pillars[3] : d.pillars[1];
+        const newDM = taijiPillar.g;
+        const taijiName = taijiSelect && taijiSelect.value === 'hour' ? '时柱' : '月柱';
         const colsHtml = '<div class="twin-col"><h4>👤 长胎（日元：' + d.dm + '）</h4><div class="twin-pillars" style="font-size:1.1rem;letter-spacing:2px;">' + d.pillars.map(function(p) { var god = SHISHEN_MAP[d.dm][p.g] || ''; return p.g + p.z + '<small style="color:#888">' + god + '</small>'; }).join(' · ') + '</div></div><div class="twin-col"><h4>👤 幼胎（太极：' + newDM + '）</h4><div class="twin-pillars" style="font-size:1.1rem;letter-spacing:2px;">' + d.pillars.map(function(p) { var god = SHISHEN_MAP[newDM][p.g] || ''; var isSelf = p.g === newDM; return p.g + p.z + '<small style="color:' + (isSelf ? '#c41e3a' : '#888') + '">' + (isSelf ? '太极' : god) + '</small>'; }).join(' · ') + '</div></div>';
         document.getElementById('twin-cols').innerHTML = colsHtml;
         var oldGods = d.pillars.map(function(p) { return SHISHEN_MAP[d.dm][p.g]; });
@@ -2520,7 +2595,7 @@ console.log("✅ 业务脚本开始执行");
         var oldMZGod = SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.pillars[1].z]];
         var newMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
         var commentary = '<strong>☯️ 日元变换太极法解读：</strong><br><br>';
-        commentary += '<b>原理：</b>双胞胎同盘而出，命理以「变太极」分判。长胎以日柱为太极（日元：' + d.dm + '），幼胎以月柱为太极（新日元：' + newDM + '），同一四柱从不同太极观之，十神格局迥异，命运自然分途。<br><br>';
+        commentary += '<b>原理：</b>双胞胎同盘而出，命理以「变太极」分判。长胎以日柱为太极（日元：' + d.dm + '），幼胎以' + taijiName + '为太极（新日元：' + newDM + '），同一四柱从不同太极观之，十神格局迥异，命运自然分途。<br><br>';
         commentary += '<b>格局变化：</b>长胎月令为<b>' + oldMZGod + '</b>，幼胎月令变为<b>' + newMZGod + '</b>。';
         var oldDayGod = SHISHEN_MAP[d.dm][d.pillars[2].g];
         var newDaySelf = SHISHEN_MAP[newDM][d.pillars[2].g];
