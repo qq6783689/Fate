@@ -1060,6 +1060,9 @@ document.addEventListener('touchend', function (e) {
                 <span class="activation-title" id="activation-status"></span>
                 <div class="activation-desc" id="activation-desc"></div>
             </div>
+            <div class="bingyao-box" id="bingyao-area" style="display:none;margin:8px 0;padding:10px 14px;background:rgba(207,169,114,0.1);border-radius:8px;font-size:0.85rem;text-align:left;">
+                <span id="bingyao-text" style="color:var(--ink-main);line-height:1.7;"></span>
+            </div>
             <div id="pattern-reason" class="logic-text" style="text-align:left;font-size:0.9rem;margin:10px 0;"></div>
             
         </div>
@@ -1115,7 +1118,7 @@ document.addEventListener('touchend', function (e) {
         <button class="twin-btn" id="twin-btn" onclick="window.toggleTwinPanel()">👯 双胞胎对比模式</button>
         <div class="twin-panel" id="twin-panel">
             <h3>👯 孪生命运 · 同盘异路</h3>
-            <p style="text-align:center;color:var(--ink-light);font-size:0.85rem;">日元变换太极法：长用日柱，幼用 <select id="twin-taiji" style="border:1px solid var(--gold-accent);border-radius:4px;padding:2px 6px;font-size:0.85rem;"><option value="month">月柱</option><option value="hour">时柱</option></select> 为太极</p>
+            <p style="text-align:center;color:var(--ink-light);font-size:0.85rem;">日元变换太极法：长用日柱，幼用 <select id="twin-taiji" style="border:1px solid var(--gold-accent);border-radius:4px;padding:2px 6px;font-size:0.85rem;"><option value="month">月柱</option><option value="hour">时柱</option></select> 为太极<br><small style="color:#999;">选月柱：幼胎性格/天赋差异大 · 选时柱：晚年/子女运差异大 · 可两边都试看哪个更贴合实际</small></p>
             <button class="twin-compare-btn" onclick="window.calcTwin()" style="display:block;margin:10px auto;">🔮 变换太极 · 对比鑑定</button>
             <div class="twin-result" id="twin-result">
                 <div class="twin-cols" id="twin-cols"></div>
@@ -2132,6 +2135,57 @@ console.log("✅ 业务脚本开始执行");
         return fallback[mzMainGod] || "杂格";
     }
 
+        // 病药分析：识别原局核心矛盾与解药
+    window.analyzeBingYao = function(dm, pillars, pattern) {
+        const dmEl = WUXING_MAP[dm];
+        const allGans = pillars.map(p=>p.g);
+        const allZhis = pillars.map(p=>p.z);
+        const xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
+        
+        // 1. 找病：五行偏枯、冲战、调候缺失
+        let bing = [], yao = [];
+        const wuxCount = {金:0,木:0,水:0,火:0,土:0};
+        allGans.forEach(g=>{ if(WUXING_MAP[g]) wuxCount[WUXING_MAP[g]]+=2; });
+        allZhis.forEach(z=>{ if(WUXING_MAP[z]) wuxCount[WUXING_MAP[z]]+=1; });
+        // 藏干加权
+        pillars.forEach(p=>{ const h=HIDDEN_STEMS[p.z]||[]; h.forEach((s,i)=>{if(WUXING_MAP[s])wuxCount[WUXING_MAP[s]]+=(i===0?1:0.5);}); });
+        
+        const maxWx = Object.entries(wuxCount).sort((a,b)=>b[1]-a[1])[0];
+        const minWx = Object.entries(wuxCount).sort((a,b)=>a[1]-b[1])[0];
+        if (maxWx[1] >= 8) { bing.push(maxWx[0]+'过旺（占比过高）'); yao.push('泄'+maxWx[0]+'或克'+maxWx[0]); }
+        if (minWx[1] <= 1) { bing.push(minWx[0]+'过弱（几乎不见）'); yao.push('补'+minWx[0]); }
+        
+        // 2. 冲战检测
+        const clashes = detectGanClash(allGans);
+        if (clashes.length>0) {
+            clashes.forEach(c=>{
+                const ga=SHISHEN_MAP[dm][c.a], gb=SHISHEN_MAP[dm][c.b];
+                bing.push(c.a+c.b+'冲（'+ga+'战'+gb+'）');
+                // 通关：找能调和二者的五行
+                const wxCyc={木:'火',火:'土',土:'金',金:'水',水:'木'};
+                const wxA=WUXING_MAP[c.a], wxB=WUXING_MAP[c.b];
+                if (wxCyc[wxA]===wxB) yao.push('以水通关'); // 金木冲用水
+                else if (wxCyc[wxB]===wxA) yao.push('以木通关'); // etc
+            });
+        }
+        
+        // 3. 调候缺失
+        const mz=pillars[1].z;
+        const thGans = getTiaoHouGans(dm, mz);
+        const thMissing = thGans.filter(t=>!allGans.includes(t));
+        if (thMissing.length>0) { bing.push('缺调候：需'+thMissing.join('/')+'而原局无'); yao.push('大运逢'+thMissing.join('或')+'则激活'); }
+        
+        // 4. 格局特定病药
+        const tabooHint = xiji.taboo.join('').replace(/[^一-龥]/g,'').slice(0,20);
+        if (tabooHint) { bing.push('格局忌：'+tabooHint); }
+        const joyHint = xiji.joy.join('').replace(/[^一-龥]/g,'').slice(0,20);
+        if (joyHint) { yao.push('格局喜：'+joyHint); }
+        
+        if (bing.length===0) { bing.push('五行相对均衡，无明显病处'); yao.push('顺势而为，以月令所喜为方向'); }
+        
+        return {bing: bing.slice(0,3), yao: [...new Set(yao)].slice(0,3)};
+    };
+
     window.getDMDesc = function(dm, mz) {
         const season = ["亥","子","丑"].includes(mz) ? "冬" : ["巳","午","未"].includes(mz) ? "夏" : ["寅","卯","辰"].includes(mz) ? "春" : "秋";
         return `你是生于${season}季的【${dm}】。`;
@@ -2331,7 +2385,7 @@ console.log("✅ 业务脚本开始执行");
         const zhiList2 = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
         const tyGan = ganList[(ganList.indexOf(pillars[1].g)+1)%10];
         const tyZhi = zhiList2[(zhiList2.indexOf(pillars[1].z)+3)%12];
-        document.getElementById('pillars-box').innerHTML += '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--gold-accent);">胎元：' + tyGan + tyZhi + ' <small style="color:#999">月干进一·月支进三</small></div>';
+        document.getElementById('pillars-box').innerHTML += '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--gold-accent);">胎元：' + tyGan + tyZhi + ' <small style="color:#999">月干进一·月支进三</small></div><div style="text-align:center;font-size:0.75rem;color:#aaa;margin-top:2px;">胎元表先天禀赋，代表出生前的孕育环境。生扶日元则根基深厚，克泄日元则先天不足。仅作日元参考，不参与大运。</div>';
         safeSetText('dm-desc', getDMDesc(dm, mz));
         const dims = [
             {icon:'⚔️', title:'天赋与事业', text:detail.c},
@@ -2345,6 +2399,14 @@ console.log("✅ 业务脚本开始执行");
             gh += `<div class="guide-card" onclick="this.classList.toggle('expanded')"><div class="guide-card-header"><span class="guide-card-icon">${d.icon}</span><span class="guide-card-title">${d.title}</span><span class="guide-card-arrow">▾</span></div><div class="guide-card-body">${d.text}</div></div>`;
         });
         document.getElementById('guide-content').innerHTML = gh;
+        // 病药分析
+        const by = analyzeBingYao(dm, pillars, key);
+        const byArea = document.getElementById('bingyao-area');
+        if (byArea) {
+            byArea.style.display = 'block';
+            document.getElementById('bingyao-text').innerHTML = 
+                '<b>🩺 病：</b>' + by.bing.join('；') + '<br><b>💊 药：</b>' + by.yao.join('；');
+        }
         renderDayun(dm, pillars, xiji, solar);
     }
 
@@ -2683,9 +2745,20 @@ console.log("✅ 业务脚本开始执行");
             commentary += '两胎月令格局一致（都是' + oldMZGod + '），核心天赋趋同；但太极不同，<b>六亲缘分、配偶条件、人际关系</b>会有明显分叉。<br><br>';
         }
         
-                var twinXiji = XIJI_RULES[d.pattern] || XIJI_RULES["杂格"];
-        var twinMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
-        commentary += '⭐ <b>一句话总结：</b>双胞胎如同同一块木料劈成两半，纹路相同但方向相反。长者宜顺先天之势开路，幼者宜寻后天之变深耕。互为镜像，互补方为圆满。<br><br><b>喜忌差异：</b>长胎格局「' + d.pattern + '」喜：' + twinXiji.joy.join(' ') + '，忌：' + twinXiji.taboo.join(' ') + '。<br>幼胎太极变换后，月令十神变为' + twinMZGod + '，对同一大运感应截然不同。<b>这是双胞胎命运分叉的根本原因。</b>';
+                // 幼胎格局快速判定（基于新太极）
+        var twinCmd = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
+        var twinPatternHint = '以' + newDM + '为太极，月令为' + twinCmd;
+        if (['正财','偏财'].includes(twinCmd)) twinPatternHint += '，偏向求财发展';
+        else if (['正官','七杀'].includes(twinCmd)) twinPatternHint += '，偏向权柄管理';
+        else if (['正印','偏印'].includes(twinCmd)) twinPatternHint += '，偏向学术修养';
+        else if (['食神','伤官'].includes(twinCmd)) twinPatternHint += '，偏向才艺创作';
+        else twinPatternHint += '，偏向自主独立';
+        
+        commentary += '⭐ <b>一句话总结：</b>双胞胎如同一块木料劈成两半，纹路相同方向相反。长者宜顺先天之势开路，幼者宜寻后天之变深耕。<br><br>';
+        commentary += '<b>幼胎格局倾向：</b>' + twinPatternHint + '。<br>';
+        commentary += '<b>大运感应差异：</b>长胎以' + d.dm + '为日元，喜印比生扶——大运见印比为佳；幼胎以' + newDM + '为太极，喜忌完全翻转——';
+        commentary += '长胎的吉运可能恰是幼胎的平运或忌运。具体需以幼胎太极重新排大运方可精确判断。<br><br>';
+        commentary += '<b>太极选择建议：</b>若双胞胎性格/天赋差异明显，选月柱为太极；若晚年际遇/子女缘分差异大，选时柱为太极。可两方对比，择更贴合实际者。';
         
         document.getElementById('twin-commentary').innerHTML = commentary;
         document.getElementById('twin-result').style.display = 'block';
