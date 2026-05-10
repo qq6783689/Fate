@@ -2492,7 +2492,48 @@ console.log("✅ 业务脚本开始执行");
             renderShensha(pillars);
             
             // 显示双胞胎按钮
+            const twinBtn = document.getElementById('twin-btn');
+            if (twinBtn) twinBtn.style.display = 'block';
         }
+
+    // ==========================================
+    // 双胞胎模式 - 日元变换太极法
+    // ==========================================
+    window._lastScanData = null;
+
+    window.toggleTwinPanel = function() {
+        const panel = document.getElementById('twin-panel');
+        if (panel) {
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+            if (panel.style.display === 'block') panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    };
+
+    window.calcTwin = function() {
+        if (!window._lastScanData) { alert('请先完成一次鉴定'); return; }
+        const d = window._lastScanData;
+        const newDM = d.pillars[1].g;
+        const colsHtml = '<div class="twin-col"><h4>👤 长胎（日元：' + d.dm + '）</h4><div class="twin-pillars" style="font-size:1.1rem;letter-spacing:2px;">' + d.pillars.map(function(p) { var god = SHISHEN_MAP[d.dm][p.g] || ''; return p.g + p.z + '<small style="color:#888">' + god + '</small>'; }).join(' · ') + '</div></div><div class="twin-col"><h4>👤 幼胎（太极：' + newDM + '）</h4><div class="twin-pillars" style="font-size:1.1rem;letter-spacing:2px;">' + d.pillars.map(function(p) { var god = SHISHEN_MAP[newDM][p.g] || ''; var isSelf = p.g === newDM; return p.g + p.z + '<small style="color:' + (isSelf ? '#c41e3a' : '#888') + '">' + (isSelf ? '太极' : god) + '</small>'; }).join(' · ') + '</div></div>';
+        document.getElementById('twin-cols').innerHTML = colsHtml;
+        var oldGods = d.pillars.map(function(p) { return SHISHEN_MAP[d.dm][p.g]; });
+        var newGods = d.pillars.map(function(p) { return SHISHEN_MAP[newDM][p.g]; });
+        var oldMZGod = SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.pillars[1].z]];
+        var newMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
+        var commentary = '<strong>☯️ 日元变换太极法解读：</strong><br><br>';
+        commentary += '<b>原理：</b>双胞胎同盘而出，命理以「变太极」分判。长胎以日柱为太极（日元：' + d.dm + '），幼胎以月柱为太极（新日元：' + newDM + '），同一四柱从不同太极观之，十神格局迥异，命运自然分途。<br><br>';
+        commentary += '<b>格局变化：</b>长胎月令为<b>' + oldMZGod + '</b>，幼胎月令变为<b>' + newMZGod + '</b>。';
+        var oldDayGod = SHISHEN_MAP[d.dm][d.pillars[2].g];
+        var newDaySelf = SHISHEN_MAP[newDM][d.pillars[2].g];
+        commentary += '长胎日柱坐<b>' + oldDayGod + '</b>，幼胎视原日柱为<b>' + newDaySelf + '</b>。<br><br>';
+        if (oldMZGod === newMZGod) {
+            commentary += '<b>格局一致：</b>两胎月令十神相同，核心禀赋趋同，但太极不同导致六亲关系、事业取向产生分叉。';
+        } else {
+            commentary += '<b>格局分途：</b>月令十神不同，两胎天赋方向明显分化。长胎偏向' + oldMZGod + '属性发展，幼胎偏向' + newMZGod + '属性发展。';
+        }
+        commentary += '<br><br><b>实战锦囊：</b>双胞胎如同同一块木料劈成两半，纹路相同但方向相反。长者宜顺先天之势，幼者宜寻后天之变。两命互补方为圆满。';
+        document.getElementById('twin-commentary').innerHTML = commentary;
+        document.getElementById('twin-result').style.display = 'block';
+    };
 
         /**
          * 神煞系统计算与渲染
