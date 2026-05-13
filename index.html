@@ -550,6 +550,7 @@
             color: var(--ink-main);
         }
         .twin-commentary strong { color: var(--china-red); }
+        .twin-dayun-line { line-height: 2.2; margin: 8px 0; padding: 10px; background: rgba(207,169,114,0.08); border-radius: 6px; font-size: 0.85rem; }
         
         @media (max-width: 600px) {
             .header h1 { font-size: 2.2rem; letter-spacing: 3px; }
@@ -801,6 +802,7 @@
             color: var(--ink-main);
         }
         .twin-commentary strong { color: var(--china-red); }
+        .twin-dayun-line { line-height: 2.2; margin: 8px 0; padding: 10px; background: rgba(207,169,114,0.08); border-radius: 6px; font-size: 0.85rem; }
     
         /* 真太阳时校正 */
         .solar-time-section {
@@ -1116,7 +1118,7 @@ document.addEventListener('touchend', function (e) {
         <button class="twin-btn" id="twin-btn" onclick="window.toggleTwinPanel()">👯 双胞胎对比模式</button>
         <div class="twin-panel" id="twin-panel">
             <h3>👯 孪生命运 · 同盘异路</h3>
-            <p style="text-align:center;color:var(--ink-light);font-size:0.85rem;">日元变换太极法：长用日柱，幼用 <select id="twin-taiji" style="border:1px solid var(--gold-accent);border-radius:4px;padding:2px 6px;font-size:0.85rem;"><option value="month">月柱</option><option value="hour">时柱</option></select> 为太极<br><small style="color:#999;">选月柱：幼胎性格/天赋差异大 · 选时柱：晚年/子女运差异大 · 可两边都试看哪个更贴合实际</small></p>
+            <p style="text-align:center;color:var(--ink-light);font-size:0.85rem;">日元变换太极法：长用日柱，幼用 <select id="twin-taiji" style="border:1px solid var(--gold-accent);border-radius:4px;padding:2px 6px;font-size:0.85rem;"><option value="month">月柱</option><option value="hour">时柱</option></select> 为太极<br><small style="color:#999;">选月柱：月令决定天赋格局差异 · 选时柱：时柱影响晚年与子女运 · 建议两边都试，对比得分后选择</small></p>
             <button class="twin-compare-btn" onclick="window.calcTwin()" style="display:block;margin:10px auto;">🔮 变换太极 · 对比鑑定</button>
             <div class="twin-result" id="twin-result">
                 <div class="twin-cols" id="twin-cols"></div>
@@ -2352,7 +2354,15 @@ console.log("✅ 业务脚本开始执行");
                 window._lastScanData = {
                     pillars: pillars,
                     pattern: pattern,
-                    dm: dm
+                    dm: dm,
+                    dmElement: WUXING_MAP[dm],
+                    climate: climate,
+                    xiji: xiji,
+                    solarYear: solar.getYear(),
+                    solarMonth: solar.getMonth(),
+                    solarDay: solar.getDay(),
+                    mz: mz,
+                    cmd: cmd
                 };
 
                 // 保存到历史记录
@@ -2725,7 +2735,8 @@ console.log("✅ 业务脚本开始执行");
         }
 
     // ==========================================
-    // 双胞胎模式 - 日元变换太极法
+    // 双胞胎模式 - 日元变换太极法 V2.0
+    // 改进：大运文字展示 + 太极选择多维评分 + 胎元参与
     // ==========================================
     window._lastScanData = null;
 
@@ -2737,15 +2748,58 @@ console.log("✅ 业务脚本开始执行");
         }
     };
 
+    // 幼胎太极选择评分（月柱 vs 时柱）
+    window.scoreTaiji = function(d, newDM, taiji) {
+        var score = 0, reasons = [];
+        if (taiji === 'month') {
+            // 月柱太极：看月令对新日元的十神
+            var mzGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.mz]];
+            if (['正财','偏财','正官','食神'].includes(mzGod)) { score += 3; reasons.push('月令得吉神('+mzGod+')'); }
+            else if (['正印','偏印'].includes(mzGod)) { score += 2; reasons.push('月令印绶生身'); }
+            else if (mzGod === '七杀') { score += 1; reasons.push('月令七杀，需制化方能成格'); }
+            // 人元司令检测
+            if (d.cmd) {
+                var cmdGod = SHISHEN_MAP[newDM][d.cmd.commander];
+                if (['正财','偏财','正官','食神','正印','偏印'].includes(cmdGod)) { score += 2; reasons.push('人元司令' + d.cmd.commander + '为吉神('+cmdGod+')'); }
+            }
+            // 日主有根
+            if (hasRoot(newDM, d.pillars)) { score += 2; reasons.push('幼胎日主有根，太极稳固'); }
+            else { score -= 1; reasons.push('幼胎日主无根，太极飘摇'); }
+        } else {
+            // 时柱太极：看时柱十神 + 日时关系
+            var hgGod = SHISHEN_MAP[newDM][d.pillars[3].g];
+            if (['正印','偏印','食神','正财'].includes(hgGod)) { score += 3; reasons.push('时干得吉神('+hgGod+')'); }
+            else if (['偏财','正官'].includes(hgGod)) { score += 2; reasons.push('时干见' + hgGod); }
+            // 日时关系
+            if (ZHI_LIUHE[d.pillars[2].z] === d.pillars[3].z) { score += 2; reasons.push('日时六合，晚年顺遂'); }
+            if (WUXING_MAP[d.pillars[2].g] === WUXING_MAP[d.pillars[3].g]) { score += 1; reasons.push('日时比和'); }
+            // 幼胎日主根在时柱
+            var hourRoots = ROOT_MAP[newDM] || [];
+            if (hourRoots.includes(d.pillars[3].z)) { score += 2; reasons.push('幼胎日主根在时柱'); }
+        }
+        // 胎元加持（通用）
+        var ganList = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+        var zhiList2 = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+        var tyGan = ganList[(ganList.indexOf(d.pillars[1].g)+1)%10];
+        var tyZhi = zhiList2[(zhiList2.indexOf(d.pillars[1].z)+3)%12];
+        var tyGod = SHISHEN_MAP[newDM][tyGan] || '';
+        if (['比肩','劫财','正印','偏印'].includes(tyGod)) { score += 1; reasons.push('胎元生扶幼胎太极'); }
+        // 十二长生
+        var cs = CHANGSHENG_TABLE[newDM][taiji==='month'?d.pillars[1].z:d.pillars[3].z];
+        if (['帝旺','临官','长生'].includes(cs)) { score += 1; reasons.push('太极坐' + cs + '地'); }
+        return {score:score, reasons:reasons};
+    };
+
     window.calcTwin = function() {
         if (!window._lastScanData) { alert('请先完成一次鉴定'); return; }
         var d = window._lastScanData;
         var taijiSelect = document.getElementById('twin-taiji');
-        var taijiPillar = taijiSelect && taijiSelect.value === 'hour' ? d.pillars[3] : d.pillars[1];
+        var useMonth = taijiSelect && taijiSelect.value === 'month';
+        var taijiPillar = useMonth ? d.pillars[1] : d.pillars[3];
         var newDM = taijiPillar.g;
-        var taijiName = taijiSelect && taijiSelect.value === 'hour' ? '时柱' : '月柱';
+        var taijiName = useMonth ? '月柱' : '时柱';
         
-        // Build comparison table
+        // === 十神对比表 ===
         var cols = ['年柱','月柱','日柱','时柱'];
         var rows = '';
         for (var i = 0; i < 4; i++) {
@@ -2762,17 +2816,21 @@ console.log("✅ 业务脚本开始执行");
                 '<td style="' + (changed ? 'color:#c0392b' : '') + '">' + oldLabel + '</td>' +
                 '<td style="' + (changed ? 'color:#c0392b' : '') + '">' + newLabel + '</td></tr>';
         }
-        
-        var colsHtml = '<table style="width:100%;border-collapse:collapse;text-align:center;font-size:0.9rem">' +
+        document.getElementById('twin-cols').innerHTML = 
+            '<table style="width:100%;border-collapse:collapse;text-align:center;font-size:0.9rem">' +
             '<tr style="border-bottom:2px solid #e0d5c5"><th></th><th>干支</th><th>长胎十神<br><small>日元=' + d.dm + '</small></th><th>幼胎十神<br><small>太极=' + newDM + '</small></th></tr>' +
             rows + '</table>';
         
-        document.getElementById('twin-cols').innerHTML = colsHtml;
+        // === 太极选择评分（左右对比） ===
+        var monthResult = window.scoreTaiji(d, d.pillars[1].g, 'month');
+        var hourResult = window.scoreTaiji(d, d.pillars[3].g, 'hour');
+        var suggestTaiji = monthResult.score >= hourResult.score ? '月柱' : '时柱';
+        var scoreDiff = Math.abs(monthResult.score - hourResult.score);
+        var confidence = scoreDiff >= 4 ? '明确' : (scoreDiff >= 2 ? '倾向' : '两者皆可');
         
-        // Commentary
-        var oldMZGod = SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.pillars[1].z]];
-        var newMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
-        
+        // === 白话解读 ===
+        var oldMZGod = SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.mz]];
+        var newMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.mz]];
         var commentary = '<strong>☯️ 白话解读</strong><br><br>';
         commentary += '同一个八字，长胎以「<b>' + d.dm + '</b>」为日元看世界，幼胎改用「<b>' + newDM + '</b>」为太极看世界。<br><br>';
         
@@ -2782,28 +2840,73 @@ console.log("✅ 业务脚本开始执行");
             commentary += '两胎月令格局一致（都是' + oldMZGod + '），核心天赋趋同；但太极不同，<b>六亲缘分、配偶条件、人际关系</b>会有明显分叉。<br><br>';
         }
         
-                // 幼胎格局重新判定
-        var twinMZGod = SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.pillars[1].z]];
-        var twinDayGod = SHISHEN_MAP[newDM][d.pillars[2].g];
+        commentary += '⭐ <b>长胎格局：</b>' + d.pattern + '，以' + d.dm + '为日元<br>';
+        commentary += '⭐ <b>幼胎太极：</b>以<b>' + newDM + '</b>为新日元。原月柱对幼胎而言是<b>' + SHISHEN_MAP[newDM][d.pillars[1].g] + '</b>，原日柱变为<b>' + SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.mz]] + '</b><br><br>';
         
-        // 太极选择标准
-        var monthScore = 0, hourScore = 0;
-        // 月柱太极得分：月令十神是否为吉神
-        if (['正财','偏财','正官','正印','偏印','食神'].includes(twinMZGod)) monthScore += 2;
-        // 时柱太极得分：时柱是否见喜用
-        var hourGanGod = SHISHEN_MAP[newDM][d.pillars[3].g];
-        if (['正印','偏印','食神','正财'].includes(hourGanGod)) hourScore += 2;
-        // 日支与时支关系
-        if (ZHI_LIUHE[d.pillars[2].z] === d.pillars[3].z) hourScore += 1;
-        var suggestTaiji = monthScore >= hourScore ? '月柱' : '时柱';
-        var suggestReason = monthScore >= hourScore ? '月令十神为' + twinMZGod + '，天赋方向清晰' : '时柱与日柱关系紧密，晚年际遇影响大';
+        // 太极建议
+        commentary += '<b>🎯 太极建议：</b>' + suggestTaiji + '（置信度：' + confidence + '）<br>';
+        commentary += '&nbsp;&nbsp;月柱得分 ' + monthResult.score + '：' + (monthResult.reasons.join('、') || '无特别优势') + '<br>';
+        commentary += '&nbsp;&nbsp;时柱得分 ' + hourResult.score + '：' + (hourResult.reasons.join('、') || '无特别优势') + '<br><br>';
         
-        commentary += '⭐ <b>长胎格局：</b>' + d.pattern + '，以' + d.dm + '为日元。月令为<b>' + SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.pillars[1].z]] + '</b>。<br>';
-        commentary += '⭐ <b>幼胎太极：</b>以<b>' + newDM + '</b>为新日元。原月柱' + d.pillars[1].g + d.pillars[1].z + '对幼胎而言是<b>' + twinDayGod + '</b>，原日柱' + d.pillars[2].g + d.pillars[2].z + '变为<b>' + twinMZGod + '</b>。<br><br>';
+        // 胎元信息
+        var ganList = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+        var zhiList2 = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+        var tyGan = ganList[(ganList.indexOf(d.pillars[1].g)+1)%10];
+        var tyZhi = zhiList2[(zhiList2.indexOf(d.pillars[1].z)+3)%12];
+        commentary += '🌙 <b>胎元：</b>' + tyGan + tyZhi + '（月干进一·月支进三）——双胞胎共此胎元，先天禀赋同源<br><br>';
         
-        commentary += '<b>建议太极：</b>' + suggestTaiji + '（' + suggestReason + '）<br><br>';
+        // === 幼胎8步大运文字展示 ===
+        var mGan = d.pillars[1].g, mZhi = d.pillars[1].z;
+        var monthIdx = JIAZI_60.indexOf(mGan + mZhi);
+        var isYang = ['甲','丙','戊','庚','壬'].includes(d.pillars[0].g[0]);
+        var shunPai = (currentGender === 1 && isYang) || (currentGender === 0 && !isYang);
+        // 复刻起运计算
+        var birthYearVal = d.solarYear || (new Date().getFullYear());
+        var dayunHtml = '';
+        var startAge = (function(){
+            try {
+                var solar = Solar.fromYmd(birthYearVal, d.solarMonth||1, d.solarDay||1);
+                var prevYearJQ = Solar.fromYmd(birthYearVal-1,1,1).getLunar().getJieQiTable();
+                var yearJQ = Solar.fromYmd(birthYearVal,1,1).getLunar().getJieQiTable();
+                var nextYearJQ = Solar.fromYmd(birthYearVal+1,1,1).getLunar().getJieQiTable();
+                var jieNames = ['立春','惊蛰','清明','立夏','芒种','小暑','立秋','白露','寒露','立冬','大雪','小寒'];
+                var jieList = [];
+                for (var t=0;t<3;t++) {
+                    var tbl = t===0?prevYearJQ:(t===1?yearJQ:nextYearJQ);
+                    for (var n=0;n<jieNames.length;n++) { if(tbl[jieNames[n]]) jieList.push(tbl[jieNames[n]]); }
+                }
+                var prevJ=null,nextJ=null,minP=Infinity,minN=Infinity;
+                for (var j=0;j<jieList.length;j++) {
+                    var dd = jieList[j].subtract(solar);
+                    if (dd<0) { if(-dd<minP){minP=-dd;prevJ=jieList[j];} }
+                    else { if(dd<minN){minN=dd;nextJ=jieList[j];} }
+                }
+                var days = shunPai ? (nextJ?minN:3) : (prevJ?minP:3);
+                if (days<1) days=3;
+                return Math.max(0, Math.floor(days/3));
+            } catch(e) { return 3; }
+        })();
         
-        commentary += '<b>大运差异：</b>同一大运' + d.pillars[1].g + d.pillars[1].z + '起运——长胎视角下为月柱大运，幼胎视角下大运干支对' + newDM + '的十神关系完全不同。长胎的每一步大运，幼胎可能走出截然不同的吉凶曲线。<br><br>';
+        for (var i = 0; i < 8; i++) {
+            var dyIdx = shunPai ? (monthIdx + i + 1) % 60 : (monthIdx - i - 1 + 60) % 60;
+            var dyGZ = JIAZI_60[dyIdx];
+            var dyG = dyGZ[0], dyZ = dyGZ[1];
+            var ss = SHISHEN_MAP[newDM][dyG] || '未知';
+            var age = startAge + i*10;
+            var yr = birthYearVal + age;
+            // 简单吉凶判断（复用主大运逻辑的前两层）
+            var goodGods = ['正财','偏财','正官','正印','偏印','食神','比肩'];
+            var badGods = ['七杀','伤官','劫财','羊刃'];
+            var label = goodGods.includes(ss) ? '吉' : (badGods.includes(ss) ? '凶' : '平');
+            var labelColor = label==='吉'?'#2e7d32':(label==='凶'?'#c62828':'#888');
+            dayunHtml += '<span style="display:inline-block;margin:3px 8px;font-size:0.82rem;">' +
+                age+'-'+(age+9)+'岁 <b>'+dyGZ+'</b> ' +
+                '<span style="color:'+labelColor+'">'+ss+'('+label+')</span></span>';
+        }
+        
+        commentary += '<b>🔄 幼胎大运轨迹（以' + newDM + '为太极）：</b><br>';
+        commentary += '<div style="line-height:2;margin:8px 0;">' + dayunHtml + '</div>';
+        commentary += '<small style="color:#999">注：大运干支不变，但十神因太极转换而完全不同。同一干支对长胎和幼胎可能是相反的吉凶。</small><br><br>';
         
         commentary += '<b>一句话：</b>双胞胎同盘不同命，根源不在八字本身，而在<b>以谁为太极看世界</b>。选对太极，两命皆可顺遂。';
         
