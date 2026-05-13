@@ -1,1 +1,4 @@
-%SystemDrive%/  
+%SystemDrive%/
+
+# Fate code analysis files (auto-generated extracts)
+analysis/

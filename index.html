@@ -2587,7 +2587,8 @@ console.log("✅ 业务脚本开始执行");
             // 第六层：格局喜忌（±1）
             const joyText = xiji.joy.join(''); const tabooText = xiji.taboo.join('');
             const SHISHEN_KEYWORDS = {'正财':['财星','偏财','财'],'偏财':['财星','偏财','财'],'正官':['官杀','正官','官'],'七杀':['官杀','七杀','杀'],'正印':['印星','正印','印'],'偏印':['印星','偏印','印','枭'],'食神':['食伤','食神','食'],'伤官':['食伤','伤官','伤'],'比肩':['比劫','比肩','比'],'劫财':['比劫','劫财','劫'],'羊刃':['比劫','劫财','劫']};
-            const kw = SHISHEN_KEYWORDS[shishen]||[shishen];
+            const dyWx = WUXING_MAP[dayunGan];
+            const kw = [...(SHISHEN_KEYWORDS[shishen]||[shishen]), dyWx, dayunGan];
             if (kw.some(k=>joyText.includes(k))) { score+=1; reasons.push('格局喜用'); }
             else if (kw.some(k=>tabooText.includes(k))) { score-=1; reasons.push('格局所忌'); }
             
