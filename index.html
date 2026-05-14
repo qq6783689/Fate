@@ -2382,16 +2382,7 @@ console.log("✅ 业务脚本开始执行");
                 }
 
                 const patternData = GAME_DB[pattern] || GAME_DB['杂格'];
-                renderUI(pattern, cmd, dm, mz, pillars, patternData, solar);
-                renderWuxingBar(pillars);
-
-                // 滚动到结果区
-                setTimeout(() => {
-                    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-
-                // 保存双胞胎数据
-                const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
+const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 window._lastScanData = {
                     pillars: pillars,
                     pattern: pattern,
@@ -2406,6 +2397,16 @@ console.log("✅ 业务脚本开始执行");
                     cmd: cmd
                 };
 
+                                renderUI(pattern, cmd, dm, mz, pillars, patternData, solar);
+                renderWuxingBar(pillars);
+
+                // 滚动到结果区
+                setTimeout(() => {
+                    resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+
+                // 保存双胞胎数据
+                
                 // 保存到历史记录
                 saveToHistory({
                     pattern: pattern,
