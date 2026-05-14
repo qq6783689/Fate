@@ -1647,7 +1647,7 @@ function updateSolarTime() {
         },
 
         "杂格": { 
-            name: "🌱 潜龙勿用", tags: ["N","潜力"], icon: "", slogan: "时运未到，潜心修炼。", 
+            name: "🌱 潜龙勿用", tags: ["N","潜力"], icon: "", slogan: "你不是不行，只是还没轮到你上场。", 
             male: { 
                 c:"<b>[天赋传记]</b> 杂格，即八字中无明显成格之象，五行力量比较均衡或杂乱。你是一个多面手，什么都懂一点，但什么都不精。你可能没有特别突出的单一强项，但胜在综合能力不错，适应性强。你适合在中小企业做全能型人才，或者自己做点小生意。你的成功需要比别人付出更多的努力，需要后天大运的配合。", 
                 w:"<b>[财富逻辑]</b> 勤劳致富。你没有暴富的命，只有勤劳的手。多劳多得是你的财富铁律。建议沉下心来，学习一门手艺或技术，深耕细作，也能达到小康水平。不要想着走捷径，脚踏实地才是硬道理。", 
@@ -2682,65 +2682,68 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             if (zhiKw.some(k=>joyText.includes(k))) { score+=0.5; reasons.push('支气得喜'); }
             else if (zhiKw.some(k=>tabooText.includes(k))) { score-=0.5; reasons.push('支气犯忌'); }
             
-            // 综合判定：>=2吉 <=-2凶 其余平运
-            const isJi = score >= 2;
-            const isXiong = score <= -2;
-            const reason = (score===0 || (score>=-1 && score<=1)) ? '闲神过境' : reasons.slice(-3).join('·');
-
-            let cardClass = '';
-            let cardStyle = '';
-            let badge = '';
-            if (isJi && !isXiong) {
+            // 综合判定 V3.3：五档制（星露：喜忌是动态的，没有绝对的吉凶）
+            let cardClass = '', cardStyle = '', badge = '';
+            const summary = reasons.length ? reasons.slice(-3).join('·') : '闲神过境';
+            if (score >= 3) {
                 cardClass = 'dayun-card-ji';
-                badge = `<div style="font-size:0.7rem;color:#2e7d32;font-weight:bold;margin-top:5px;">★ ${reason}</div>`;
-            } else if (isXiong && !isJi) {
+                badge = `<div style="font-size:0.7rem;color:#1b5e20;font-weight:bold;margin-top:5px;">★★ 大吉 · ${summary}</div>`;
+            } else if (score >= 1) {
+                cardClass = 'dayun-card-ji';
+                badge = `<div style="font-size:0.7rem;color:#2e7d32;font-weight:bold;margin-top:5px;">★ 小吉 · ${summary}</div>`;
+            } else if (score <= -3) {
                 cardClass = 'dayun-card-xiong';
-                badge = `<div style="font-size:0.7rem;color:#c62828;font-weight:bold;margin-top:5px;">☆ ${reason}</div>`;
+                badge = `<div style="font-size:0.7rem;color:#b71c1c;font-weight:bold;margin-top:5px;">☆☆ 大凶 · ${summary}</div>`;
+            } else if (score <= -1) {
+                cardClass = 'dayun-card-xiong';
+                badge = `<div style="font-size:0.7rem;color:#c62828;font-weight:bold;margin-top:5px;">☆ 小凶 · ${summary}</div>`;
             } else {
                 cardClass = '';
-                badge = `<div style="font-size:0.7rem;color:#888;font-weight:bold;margin-top:5px;">◎ ${reason || '闲神过境'}</div>`;
+                badge = `<div style="font-size:0.7rem;color:#888;font-weight:bold;margin-top:5px;">◎ 平运 · ${summary}</div>`;
             }
+            const isJi = score >= 1;
+            const isXiong = score <= -1;
 
             // 背面运势解读文案
             // 喜/忌/平 三种背面文案
             const backJi = {
-                '正财': '财运亨通，正财稳健，利工作加薪、实业投资',
-                '偏财': '意外之喜，利副业投资，贵人引财',
-                '正官': '职位晋升，名声鹊起，利考公考证',
-                '七杀': '权柄在握，以智取胜，杀有制则大贵',
-                '正印': '贵人提携，学业猛进，思路清晰',
-                '偏印': '灵感迸发，利研发创作，技艺精进',
-                '食神': '福气临门，口福人缘俱佳，心情舒畅',
-                '伤官': '才华展露，利演讲展示，一鸣惊人',
-                '比肩': '朋友相助，合作共赢，众人拾柴',
-                '劫财': '竞争虽烈，但能脱颖而出，独占鳌头',
-                '羊刃': '刚强有力，披荆斩棘，宜主动出击'
+                '正财': '正财入库，加薪升职水到渠成，实业投资回报丰厚',
+                '偏财': '横财就手，副业风口一抓一个准，贵人主动送钱上门',
+                '正官': '官星高照，考公上岸升职三连跳，名声就是印钞机',
+                '七杀': '杀化为权，危机就是你的跳板，越压越猛越战越强',
+                '正印': '贵人铺路，学啥会啥考啥过啥，脑子比 ChatGPT 还快',
+                '偏印': '灵感炸裂，冷门领域挖出金矿，一招鲜吃遍天',
+                '食神': '福星高照，吃好喝好人缘爆棚，躺着都有好事找上门',
+                '伤官': '才华喷涌，一开口就是全场焦点，流量和机会同时爆炸',
+                '比肩': '兄弟合伙，众人拾柴火焰高，团队作战无往不利',
+                '劫财': '狼性爆发，竞争中杀出重围，别人的天花板是你的地板',
+                '羊刃': '锋芒毕露，遇神杀神遇佛杀佛，主动出击就是最优解'
             };
             const backXiong = {
-                '正财': '求财辛苦，收入不稳，防破财漏财',
-                '偏财': '投机不利，防被骗被坑，忌冲动投资',
-                '正官': '职场压力大，易与上司冲突，谨言慎行',
-                '七杀': '小人是非，健康受损，凡事三思后行',
-                '正印': '思虑过度，犹豫不决，防错失良机',
-                '偏印': '孤僻自闭，防小人暗算，忌闭门造车',
-                '食神': '安逸过度，易懈怠拖延，注意饮食健康',
-                '伤官': '口舌是非，易得罪人，防言多必失',
-                '比肩': '竞争激烈，易被分利，忌合伙创业',
-                '劫财': '破财难免，防亲友借贷，宜守不宜攻',
-                '羊刃': '刚极易折，防血光冲突，切忌冲动'
+                '正财': '辛苦钱难赚，加班加到秃收入还缩水，捂紧钱包别乱花',
+                '偏财': '投资踩雷预警，你以为是抄底其实是抄家，手痒就是亏',
+                '正官': '职场水逆，领导找茬同事甩锅，闭嘴干活才是保命符',
+                '七杀': '压力山大，小人环伺健康亮红灯，能苟则苟别硬刚',
+                '正印': '脑子浆糊，越想越乱越想越错，不如躺平等风来',
+                '偏印': '钻牛角尖模式开启，防背刺防暗算，别信任何人画的饼',
+                '食神': '舒适区陷阱，越躺越废越吃越胖，动起来才有转机',
+                '伤官': '嘴炮误事，你说的每句大实话都是别人捅你的刀',
+                '比肩': '卷王扎堆，你的蛋糕正在被瓜分，单打独斗比抱团靠谱',
+                '劫财': '破财预警，借钱=送钱，投资=捐款，捂紧口袋过寒冬',
+                '羊刃': '暴脾气上头，一言不合就开干，冲动一时后悔十年'
             };
             const backPing = {
-                '正财': '财运平平，按部就班，宜积累储备',
-                '偏财': '无大起伏，稳扎稳打，勿贪偏门',
-                '正官': '工作平稳，按章办事，宜提升内功',
-                '七杀': '压力适中，宜学习进修，蓄力待发',
-                '正印': '日常节奏，多读多思，修身养性',
-                '偏印': '静心钻研，厚积薄发，不急于求成',
-                '食神': '生活安逸，享受当下，知足常乐',
-                '伤官': '才华内敛，潜心修炼，等风来',
-                '比肩': '人际关系平稳，独善其身',
-                '劫财': '财运平平，量入为出，知足常乐',
-                '羊刃': '保持克制，以柔克刚，以静制动'
+                '正财': '细水长流，该赚的不会少不该赚的别妄想，稳字当头',
+                '偏财': '波澜不惊，没有惊喜也没有惊吓，踏实存钱就是赢',
+                '正官': '按部就班，不求有功但求无过，偷偷考证惊艳所有人',
+                '七杀': '压力可控，把焦虑转化成学习动力，蓄力等一波爆发',
+                '正印': '日常养生模式，多读书少内耗，脑子清醒就是最大的资本',
+                '偏印': '潜心打磨期，别急着亮剑，厚积薄发才是王道',
+                '食神': '佛系时光，吃好睡好心情好，放空本身就是生产力',
+                '伤官': '才华潜伏期，别急着证明自己，你的时代还没到',
+                '比肩': '独行侠模式，不卷也不躺，按自己的节奏来',
+                '劫财': '量入为出，不借不贷不担保，平平淡淡才是真',
+                '羊刃': '收刀入鞘，不是怂是智慧，以静制动方为高手'
             };
             
             let backText;
@@ -2959,7 +2962,8 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
         commentary += '<div style="line-height:2;margin:8px 0;">' + dayunHtml + '</div>';
         commentary += '<small style="color:#999">注：大运干支不变，但十神因太极转换而完全不同。同一干支对长胎和幼胎可能是相反的吉凶。</small><br><br>';
         
-        commentary += '<b>一句话：</b>双胞胎同盘不同命，根源不在八字本身，而在<b>以谁为太极看世界</b>。选对太极，两命皆可顺遂。';
+        commentary += '<b>💡 星露说：</b>双胞胎同盘不同命，根源不在八字本身，而在<b>以谁为太极看世界</b>。长胎以日主为「我」，幼胎改用月柱（或时柱）为「我」——<b>同一个八字，两个完全不同的坐标系</b>。选对太极，两命皆可顺遂。<br><br>';
+        commentary += '<small style="color:#999;">💡 胎元是精卵结合那个月（月干进一·月支进三），双胞胎共此胎元，先天禀赋同源。星露：自己或孩子八字不好怎么办？看胎元！</small>';
         
         document.getElementById('twin-commentary').innerHTML = commentary;
         document.getElementById('twin-result').style.display = 'block';
