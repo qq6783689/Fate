@@ -2690,13 +2690,8 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             else if (shishen==='七杀' && pillars.some(p=>['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { score+=1; reasons.push('杀有印化'); }
             if (shishen==='伤官' && pillars.some(p=>['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { score+=1; reasons.push('伤官配印'); }
             
-            // 第四层：十二长生（±1）
+            // 第四层：十二长生（天干在支的状态）
             const dyCS = CHANGSHENG_TABLE[dayunGan][dayunZhi];
-            // 日主在大运地支的状态
-            const dmCS = CHANGSHENG_TABLE[dm][dayunZhi];
-            const dmCsScore = CS_STRENGTH[dmCS]||1;
-            if (dmCsScore>=4) { score+=1; reasons.push('日主得地'); }
-            else if (dmCsScore<=0.5) { score-=1; reasons.push('日主失地'); }
             const csScore = CS_STRENGTH[dyCS]||1;
             if (csScore>=4) { score+=1; reasons.push('临旺地'); }
             else if (csScore<=0.5) { score-=1; reasons.push('坐绝地'); }
@@ -2853,7 +2848,13 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 (firstHalf>secondHalf+2?' · 前半生优于后半生':'') +
                 (secondHalf>firstHalf+2?' · 后半生优于前半生':'') +
                 '</small></div>';
-            dayunGrid.insertAdjacentHTML('afterend', trendHtml);
+            let trendBox = document.getElementById('dayun-trend-box');
+            if (!trendBox) {
+                trendBox = document.createElement('div');
+                trendBox.id = 'dayun-trend-box';
+                dayunGrid.parentNode.insertBefore(trendBox, dayunGrid.nextSibling);
+            }
+            trendBox.innerHTML = trendHtml;
 
             // 渲染神煞
             renderShensha(pillars);
