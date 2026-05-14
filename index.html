@@ -2196,6 +2196,20 @@ console.log("✅ 业务脚本开始执行");
         if (hasKill && hasSeal) return "杀印相生";
         if (hasHurt && hasSeal && hasRoot(dm, pillars)) return "伤官配印";
         if (climate.special) return climate.special;
+        // === 3.5 化气格检测（传统外格）===
+        const hqPartner = GAN_COMBINE[dm];
+        const hqTarget = {'甲己':'土','乙庚':'金','丙辛':'水','丁壬':'木','戊癸':'火'};
+        const hqPair = [dm,hqPartner].sort().join('');
+        const hqWx = hqTarget[hqPair];
+        if (hqWx && stems.includes(hqPartner)) {
+            const mzWx = WUXING_MAP[ZHI_MAIN_QI[mz]];
+            if (mzWx === hqWx) return "化气格";
+        }
+        if (hqWx && stems.includes(hqPartner)) {
+            const hqSupport = pillars.some(p => WUXING_MAP[ZHI_MAIN_QI[p.z]] === hqWx);
+            if (hqSupport) return "化气格";
+        }
+
         const kuiGangGZ = ["壬辰","庚辰","庚戌","戊戌"];
         if (kuiGangGZ.includes(pillars[2].g + pillars[2].z)) return "魁罡格";
         if (YANG_REN_MAP[dm]===mz) return "阳刃格";
