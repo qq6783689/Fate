@@ -2523,6 +2523,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
         document.getElementById('guide-content').innerHTML = gh;
         // 病药分析
         const by = analyzeBingYao(dm, pillars, key);
+        window._lastBingYao = by; // 供大运病药层使用
         const byArea = document.getElementById('bingyao-area');
         if (byArea) {
             byArea.style.display = 'block';
@@ -2610,6 +2611,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
 
         // ========== 生成8步大运 ==========
         let dayunHtml = '';
+        const dayunScores = []; // 收集每步大运分数用于走势分析
         for (let i = 0; i < 8; i++) {
             let dayunIndex;
             if (shunPai) {
@@ -2690,6 +2692,11 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             
             // 第四层：十二长生（±1）
             const dyCS = CHANGSHENG_TABLE[dayunGan][dayunZhi];
+            // 日主在大运地支的状态
+            const dmCS = CHANGSHENG_TABLE[dm][dayunZhi];
+            const dmCsScore = CS_STRENGTH[dmCS]||1;
+            if (dmCsScore>=4) { score+=1; reasons.push('日主得地'); }
+            else if (dmCsScore<=0.5) { score-=1; reasons.push('日主失地'); }
             const csScore = CS_STRENGTH[dyCS]||1;
             if (csScore>=4) { score+=1; reasons.push('临旺地'); }
             else if (csScore<=0.5) { score-=1; reasons.push('坐绝地'); }
@@ -2715,6 +2722,18 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const zhiKw = [...(SHISHEN_KEYWORDS[zhiSS]||[zhiSS]), zhiWx2, zhiQi];
             if (zhiKw.some(k=>joyText.includes(k))) { score+=0.5; reasons.push('支气得喜'); }
             else if (zhiKw.some(k=>tabooText.includes(k))) { score-=0.5; reasons.push('支气犯忌'); }
+            dayunScores.push(score); // 收集走势数据
+            
+            // 第七层：病药检测（大运是否解原局之病）
+            const by = window._lastBingYao;
+            if (by && by.bing.length>0) {
+                const bingText = by.bing.join('');
+                const yaoText = by.yao.join('');
+                const dyWx2 = WUXING_MAP[dayunGan];
+                // 大运带来的是药还是加重了病？
+                if (yaoText.includes(dyWx2)||yaoText.includes(dayunGan)||yaoText.includes(shishen)) { score+=1.5; reasons.push('解原局之病'); }
+                if (bingText.includes(dyWx2)||bingText.includes(dayunGan)||bingText.includes(shishen)) { score-=1.5; reasons.push('加重原局之病'); }
+            }
             
             // 综合判定 V3.3：五档制（喜忌是动态的，没有绝对的吉凶）
             let cardClass = '', cardStyle = '', badge = '';
@@ -2813,6 +2832,28 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
 
             dayunGrid.innerHTML = dayunHtml;
             dayunArea.style.display = 'block';
+
+            // === 走势总结 ===
+            const jiCount = dayunScores.filter(s=>s>=1).length;
+            const xiongCount = dayunScores.filter(s=>s<=-1).length;
+            const pingCount = 8 - jiCount - xiongCount;
+            let trendText = '', trendIcon = '';
+            const firstHalf = dayunScores.slice(0,4).reduce((a,b)=>a+b,0);
+            const secondHalf = dayunScores.slice(4,8).reduce((a,b)=>a+b,0);
+            if (jiCount>=6) { trendText='一路高歌，八步大运六步以上为吉，命中带贵'; trendIcon='🚀'; }
+            else if (xiongCount>=6) { trendText='命途多舛，需借风水积德改运，逆境中磨砺心性'; trendIcon='⚠️'; }
+            else if (firstHalf>secondHalf+4) { trendText='先盛后衰，前半生顺遂，中年后需守成防变'; trendIcon='📉'; }
+            else if (secondHalf>firstHalf+4) { trendText='先苦后甜，早年磨砺皆为铺垫，中晚年大器晚成'; trendIcon='📈'; }
+            else if (jiCount>=4&&xiongCount<=2) { trendText='稳中有升，偶有波折但总体向好，守住节奏即可'; trendIcon='✅'; }
+            else if (jiCount<=2&&xiongCount>=4) { trendText='阻力重重，需借大运择业避凶，不可逆势硬闯'; trendIcon='🔄'; }
+            else { trendText='吉凶参半，人生如潮汐有起有落，顺势而为方是上策'; trendIcon='🌊'; }
+            const trendHtml = '<div class="dayun-trend" style="margin-top:16px;padding:12px 16px;background:rgba(207,169,114,0.1);border-radius:8px;font-size:0.88rem;text-align:center;line-height:1.8;">' +
+                '<b>'+trendIcon+' 走势总览：</b>'+trendText+'<br>' +
+                '<small style="color:#666;">八步大运：' + jiCount + '吉 ' + pingCount + '平 ' + xiongCount + '凶' +
+                (firstHalf>secondHalf+2?' · 前半生优于后半生':'') +
+                (secondHalf>firstHalf+2?' · 后半生优于前半生':'') +
+                '</small></div>';
+            dayunGrid.insertAdjacentHTML('afterend', trendHtml);
 
             // 渲染神煞
             renderShensha(pillars);
