@@ -2612,10 +2612,12 @@ console.log("✅ 业务脚本开始执行");
                 const og=dyClashes[0].a===dayunGan?dyClashes[0].b:dyClashes[0].a;
                 const ogGod=SHISHEN_MAP[dm][og];
                 if (['七杀','伤官','劫财'].includes(ogGod)) { score+=2; reasons=['冲去忌神']; }
+                else if (tiaoHouGans.includes(og)) { score-=3; reasons=['冲破调候真神']; }
                 else if (['正印','偏印','正官','正财'].includes(ogGod)) { score-=2; reasons=['冲克用神']; }
             } else if (dyCombines.length>0) {
                 const og=dyCombines[0].yuanJu; const ogGod=SHISHEN_MAP[dm][og];
                 if (['七杀','伤官','劫财'].includes(ogGod)) { score+=2; reasons=['合去忌神']; }
+                else if (tiaoHouGans.includes(og)) { score-=3; reasons=['合去调候真神']; }
                 else if (['正印','偏印','正官','正财','食神'].includes(ogGod)) { score-=2; reasons=['合用神']; }
                 else { score+=1; reasons.push('天干有合'); }
             }
@@ -2671,6 +2673,13 @@ console.log("✅ 业务脚本开始执行");
             const kw = [...(SHISHEN_KEYWORDS[shishen]||[shishen]), dyWx, dayunGan];
             if (kw.some(k=>joyText.includes(k))) { score+=1; reasons.push('格局喜用'); }
             else if (kw.some(k=>tabooText.includes(k))) { score-=1; reasons.push('格局所忌'); }
+            // 地支本气喜忌（权重减半）
+            const zhiQi = ZHI_MAIN_QI[dayunZhi];
+            const zhiSS = SHISHEN_MAP[dm][zhiQi];
+            const zhiWx2 = WUXING_MAP[zhiQi];
+            const zhiKw = [...(SHISHEN_KEYWORDS[zhiSS]||[zhiSS]), zhiWx2, zhiQi];
+            if (zhiKw.some(k=>joyText.includes(k))) { score+=0.5; reasons.push('支气得喜'); }
+            else if (zhiKw.some(k=>tabooText.includes(k))) { score-=0.5; reasons.push('支气犯忌'); }
             
             // 综合判定：>=2吉 <=-2凶 其余平运
             const isJi = score >= 2;
