@@ -2597,6 +2597,7 @@ console.log("✅ 业务脚本开始执行");
             const badGods = ['七杀','伤官','劫财','羊刃'];
             let score = 0;
             let reasons = [];
+            const tiaoHouGans = getTiaoHouGans(dm, mz); // 提前声明，供冲合层使用
             
             // 第一层：十神本性（±1）
             if (goodGods.includes(shishen)) { score += 1; reasons.push('善神'); }
@@ -2659,7 +2660,6 @@ console.log("✅ 业务脚本开始执行");
             else if (csScore<=0.5) { score-=1; reasons.push('坐绝地'); }
             
             // 第五层：调候贡献（+1）
-            const tiaoHouGans = getTiaoHouGans(dm, mz);
             if (tiaoHouGans.includes(dayunGan)) {
                 const thInYuan = tiaoHouGans.some(th=>pillars.some(p=>p.g===th));
                 score += (thInYuan?0.5:1);
