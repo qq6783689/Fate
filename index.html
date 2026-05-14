@@ -2391,13 +2391,14 @@ console.log("✅ 业务脚本开始执行");
                 }, 100);
 
                 // 保存双胞胎数据
+                const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 window._lastScanData = {
                     pillars: pillars,
                     pattern: pattern,
                     dm: dm,
                     dmElement: WUXING_MAP[dm],
                     climate: climate,
-                    xiji: xiji,
+                    xiji: _xiji,
                     solarYear: solar.getYear(),
                     solarMonth: solar.getMonth(),
                     solarDay: solar.getDay(),
