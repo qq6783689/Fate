@@ -2696,10 +2696,10 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             // 判断合局五行是否利于原局
             const dmWx = WUXING_MAP[dm];
             const wxCycle = {'木':'火土金水','火':'土金水木','土':'金水木火','金':'水木火土','水':'木火土金'};
-            const wxHelp = dmWx + (wxCycle[dmWx]||'')[0]; // 帮日主的五行：同我、生我
+            const wxHelp = dmWx + (wxCycle[dmWx]||'')[3]; // 帮日主的五行：同我、生我
             if (zhiHeScore>0) {
-                const joyWx = wxHelp[0]===dmWx ? [dmWx, wxHelp[1]] : [dmWx, wxHelp[0], wxHelp[1]];
-                // 简化的合局五行判断
+                // 喜用五行 = [同我, 生我]
+                const joyWx = [dmWx, (wxCycle[dmWx]||'')[3]];
                 const heWxTest = (function(){
                     if (['申','子','辰'].includes(dayunZhi)) return '水';
                     if (['亥','卯','未'].includes(dayunZhi)) return '木';
@@ -2707,7 +2707,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                     if (['巳','酉','丑'].includes(dayunZhi)) return '金';
                     return '';
                 })();
-                if (heWxTest && !joyWx.some(w=>w===heWxTest||(wxCycle[heWxTest]||'').includes(w))) {
+                if (heWxTest && !joyWx.includes(heWxTest)) {
                     zhiHeScore = -zhiHeScore;
                     reasons[reasons.length-1] = reasons[reasons.length-1].replace('合','合(不利)');
                 }
@@ -2731,7 +2731,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const dyCS = CHANGSHENG_TABLE[dayunGan][dayunZhi];
             const csScore = CS_STRENGTH[dyCS]||1;
             if (csScore>=4) { score+=1; reasons.push('临旺地'); }
-            else if (csScore<=0.5) { score-=1; reasons.push('坐绝地'); }
+            else if (csScore<=0.3) { score-=1; reasons.push('坐死绝'); }
             
             // 第五层：调候贡献（+1）
             if (tiaoHouGans.includes(dayunGan)) {
