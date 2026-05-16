@@ -2638,7 +2638,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             
             // 第一层：十神本性（±1，原局已有则减半）
             const sameGodCount = pillars.filter(p => SHISHEN_MAP[dm][p.g]===shishen).length;
-            const l1Weight = sameGodCount>=2 ? 0.5 : 1;
+            const l1Weight = sameGodCount>=1 ? 0.5 : 1;
             if (goodGods.includes(shishen)) { score += l1Weight; reasons.push(l1Weight<1?'善神(已有)':'善神'); }
             else if (badGods.includes(shishen)) { score -= l1Weight; reasons.push(l1Weight<1?'凶神(已有)':'凶神'); }
             
@@ -2696,7 +2696,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 }
             }
             if (zhiHeScore===0 && ZHI_LIUHE[dyZhi]) {
-                if (zhiList.includes(ZHI_LIUHE[dyZhi])) { zhiHeScore=0.5; reasons.push('地支六合'); }
+                if (zhiList.includes(ZHI_LIUHE[dyZhi])) { zhiHeScore=0.3; reasons.push('六合(轻)'); }
             }
             // 判断合局五行是否利于原局
             const dmWx = WUXING_MAP[dm];
