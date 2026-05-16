@@ -2917,10 +2917,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             else if (jiCount<=2&&xiongCount>=4) { trendText='逆风多于顺风，但没到绝望的时候。抓住那两三步好运，照样翻身'; trendIcon='🔄'; }
             else { trendText='吉凶参半，平平稳稳。人生本就是修修补补，流水线断了再接上'; trendIcon='🌊'; }
             const trendHtml = '<div class="dayun-trend" style="margin-top:16px;padding:12px 16px;background:rgba(207,169,114,0.1);border-radius:8px;font-size:0.88rem;text-align:center;line-height:1.8;">' +
-                '<b>'+trendIcon+' 走势总览：</b>'+trendText +
-                (firstHalf>secondHalf+2?'<br><small style="color:#666;">· 前半生发力更猛</small>':'') +
-                (secondHalf>firstHalf+2?'<br><small style="color:#666;">· 后半生更有后劲</small>':'') +
-                '</div>';
+                '<b>'+trendIcon+' 走势总览：</b>'+trendText+'</div>';
             let trendBox = document.getElementById('dayun-trend-box');
             if (!trendBox) {
                 trendBox = document.createElement('div');
