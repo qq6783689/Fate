@@ -2636,9 +2636,11 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             let reasons = [];
             const tiaoHouGans = getTiaoHouGans(dm, mz); // 提前声明，供冲合层使用
             
-            // 第一层：十神本性（±1）
-            if (goodGods.includes(shishen)) { score += 1; reasons.push('善神'); }
-            else if (badGods.includes(shishen)) { score -= 1; reasons.push('凶神'); }
+            // 第一层：十神本性（±1，原局已有则减半）
+            const sameGodCount = pillars.filter(p => SHISHEN_MAP[dm][p.g]===shishen).length;
+            const l1Weight = sameGodCount>=2 ? 0.5 : 1;
+            if (goodGods.includes(shishen)) { score += l1Weight; reasons.push(l1Weight<1?'善神(已有)':'善神'); }
+            else if (badGods.includes(shishen)) { score -= l1Weight; reasons.push(l1Weight<1?'凶神(已有)':'凶神'); }
             
             // 第二层：冲合反应（±2，强覆盖）
             const dyClashes = detectGanClash([...pillars.map(p=>p.g), dayunGan]).filter(c => c.a===dayunGan||c.b===dayunGan);
@@ -2659,7 +2661,9 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 const pair = [og,dayunGan].sort().join('');
                 const hqWx2 = hqTest[pair];
                 const mzWx2 = WUXING_MAP[ZHI_MAIN_QI[mz]];
-                const isHua = hqWx2 && mzWx2===hqWx2;
+                // 真化需：月令支持化神 + 被合天干在支无根（有根则合而不化）
+                const ogHasRoot = hasRoot(og, pillars);
+                const isHua = hqWx2 && mzWx2===hqWx2 && !ogHasRoot;
                 // 争合检测：原局是否有另一个天干也能合 dayunGan
                 const zhengHe = dyCombines.length>=2;
                 if (zhengHe) {
