@@ -2181,6 +2181,7 @@ console.log("✅ 业务脚本开始执行");
     // ==========================================
     window.determinePattern = function(climate, pillars, dm, mz, cmd) {
         const stems = [pillars[0].g, pillars[1].g, pillars[2].g, pillars[3].g];
+        const stemsExclDM = [pillars[0].g, pillars[1].g, pillars[3].g];
         const zhis = pillars.map(p => p.z);
         const dmRooted = hasRoot(dm, pillars);
         const dmElement = WUXING_MAP[dm];
@@ -2191,7 +2192,7 @@ console.log("✅ 业务脚本开始执行");
              if (dmElement === '火') { if ((zhis.includes('巳')&&zhis.includes('酉'))||(zhis.includes('申')&&zhis.includes('酉'))) { mzMainGod='偏财'; } }
         }
         // === 2. 从格判定 V3.0 (藏干+十二长生+收紧阈值) ===
-        const stemsSupportCount = stems.filter(s => { const god = SHISHEN_MAP[dm][s]; return ["正印","偏印","比肩","劫财"].includes(god); }).length;
+        const stemsSupportCount = stemsExclDM.filter(s => { const god = SHISHEN_MAP[dm][s]; return ["正印","偏印","比肩","劫财"].includes(god); }).length;
         let hiddenSupportScore = 0;
         for (let p of pillars) { const hidden = HIDDEN_STEMS[p.z] || []; for (let i = 0; i < hidden.length; i++) { const h = hidden[i]; const hGod = SHISHEN_MAP[dm][h]; if (['比肩','劫财','正印','偏印'].includes(hGod)) hiddenSupportScore += (i===0?1:(i===1?0.7:0.3)); } }
         const totalSupportScore = stemsSupportCount + hiddenSupportScore;
