@@ -1901,62 +1901,40 @@ console.log("✅ 业务脚本开始执行");
     window.exportCard = async function() {
         const btn = document.querySelector('.export-btn');
         const originalText = btn.innerHTML;
-
         try {
-            btn.disabled = true;
-            btn.innerHTML = '⏳ 生成中...';
-
-            // 获取结果区域
+            btn.disabled = true; btn.innerHTML = '⏳ 生成中...';
             const resultArea = document.getElementById('result-area');
-            if (!resultArea || resultArea.style.display === 'none') {
-                showError('请先进行八字鑑定');
-                return;
-            }
+            if (!resultArea || resultArea.style.display === 'none') { showError('请先进行八字鑑定'); return; }
 
-            // 简化配置，提升移动端兼容性
-            const canvas = await html2canvas(resultArea, {
-                scale: 1.5,          // 略微降低分辨率，提升移动端稳定性
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#fdfbf7',
-                logging: false,
-                ignoreElements: (el) => {
-                    // 忽略按钮区域
-                    return el.classList && el.classList.contains('action-bar');
-                }
-            });
+            var patternName = document.getElementById('role-title').textContent || '';
+            var slogan = document.getElementById('role-sub').textContent || '';
+            var pillarsText = document.getElementById('pillars-box').innerText || '';
+            // Extract just the gan-zhi pairs
+            var pMatch = pillarsText.match(/([一-鿿]{2})\s+([一-鿿])\s+([一-鿿])/g);
+            var shortP = pMatch ? pMatch.map(function(m){var parts=m.split(/\s+/);return parts[1]+parts[2];}).join(' ') : pillarsText.substring(0,40);
+            var dmText = (document.getElementById('dm-desc').textContent || '').replace(/\n/g,'').substring(0,40);
 
-            // 添加品牌尾注到 canvas
-            const ctx = canvas.getContext('2d');
-            const h = canvas.height, w = canvas.width;
-            ctx.fillStyle = 'rgba(207,169,114,0.08)';
-            ctx.font = 'bold 48px "Ma Shan Zheng", cursive';
-            ctx.textAlign = 'center';
-            ctx.fillText('天 命 鑑 定', w/2, h-60);
-            // 底部品牌条
-            ctx.fillStyle = 'rgba(139,90,43,0.15)';
-            ctx.fillRect(0, h-30, w, 30);
-            ctx.fillStyle = '#8b5a2b';
-            ctx.font = '14px "Noto Serif SC", serif';
-            ctx.fillText('Powered by 天命鑑定 · 宗师列传 | 仅供娱乐，命运在自己手中', w/2, h-10);
-
-            // 下载图片
-            const link = document.createElement('a');
-            const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-            link.download = `天命鑑定_${dateStr}.png`;
-            link.href = canvas.toDataURL('image/png', 0.9);
+            var card = document.createElement('div');
+            card.style.cssText = 'width:400px;padding:28px 22px;text-align:center;font-family:"Noto Serif SC",serif;background:linear-gradient(135deg,#fdf8f0,#faf3e6);border:2px solid #cfa972;border-radius:14px;position:fixed;left:-9999px;top:0;z-index:-1;';
+            card.innerHTML = 
+                '<div style="font-size:2rem;font-weight:900;color:#8b2500;letter-spacing:3px;margin-bottom:6px;">' + patternName + '</div>' +
+                '<div style="font-size:1rem;color:#8b5a2b;font-style:italic;margin-bottom:16px;">' + (slogan||'...') + '</div>' +
+                '<div style="font-size:0.9rem;color:#555;letter-spacing:4px;margin-bottom:8px;font-weight:bold;">' + shortP + '</div>' +
+                '<div style="font-size:0.8rem;color:#cfa972;margin-bottom:20px;">' + dmText + '</div>' +
+                '<div style="border-top:1px solid #e8d5c0;padding-top:14px;font-size:0.7rem;color:#aaa;letter-spacing:2px;">天命鑑定 · 宗师列传</div>';
+            document.body.appendChild(card);
+            
+            var canvas = await html2canvas(card, { scale: 2, backgroundColor: '#fdf8f0', logging: false });
+            document.body.removeChild(card);
+            
+            var link = document.createElement('a');
+            var ds = new Date().toISOString().slice(0,10).replace(/-/g,'');
+            link.download = 'share_' + ds + '.png';
+            link.href = canvas.toDataURL('image/png', 0.95);
             link.click();
-
-            logDebug('EXPORT', '分享卡片已生成');
-            showError('✅ 分享卡片已保存到相册！');
-
-        } catch (error) {
-            console.error('导出失败:', error);
-            showError('生成失败，请截图保存即可');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-        }
+            showError('✅ 分享卡片已保存！');
+        } catch(e) { showError('生成失败，请截图保存'); }
+        finally { btn.disabled = false; btn.innerHTML = originalText; }
     }
 
     /**
