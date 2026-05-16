@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>天命鑑定 · 封面生成器</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;700&display=swap');
+  body { margin:0; padding:40px; background:#1a1a1a; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+  .cover {
+    width:800px; height:800px;
+    background:linear-gradient(160deg, #1a0a0a 0%, #2d1212 30%, #3d1a1a 60%, #1a0a0a 100%);
+    border-radius:16px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    position:relative; overflow:hidden;
+    font-family:'Noto Serif SC', serif;
+  }
+  .cover::before {
+    content:''; position:absolute; top:0; left:0; right:0; bottom:0;
+    background:radial-gradient(ellipse at 30% 20%, rgba(207,169,114,0.15) 0%, transparent 60%),
+               radial-gradient(ellipse at 70% 80%, rgba(142,24,24,0.1) 0%, transparent 60%);
+  }
+  .cover-inner { position:relative; z-index:1; text-align:center; padding:60px; }
+  .cover-icon { font-size:6rem; margin-bottom:20px; }
+  .cover-title {
+    font-family:'Ma Shan Zheng', cursive;
+    font-size:4.5rem; color:#cfa972;
+    letter-spacing:12px; margin-bottom:8px;
+    text-shadow: 2px 2px 20px rgba(207,169,114,0.3);
+  }
+  .cover-subtitle {
+    font-size:1.3rem; color:rgba(207,169,114,0.6);
+    letter-spacing:6px; margin-bottom:40px;
+  }
+  .cover-features {
+    display:flex; gap:24px; flex-wrap:wrap; justify-content:center;
+    margin-bottom:50px;
+  }
+  .cover-feat {
+    padding:12px 20px;
+    border:1px solid rgba(207,169,114,0.3);
+    border-radius:8px;
+    color:#d4b896;
+    font-size:0.95rem;
+    letter-spacing:2px;
+  }
+  .cover-footer {
+    font-size:0.8rem; color:rgba(207,169,114,0.4);
+    letter-spacing:4px;
+  }
+  .btn { margin-top:30px; padding:12px 30px; background:#8e1818; color:#fff; border:none; border-radius:8px; font-size:1rem; cursor:pointer; }
+  .btn:hover { background:#a51d1d; }
+</style>
+</head>
+<body>
+<div style="text-align:center;">
+  <div class="cover" id="cover">
+    <div class="cover-inner">
+      <div class="cover-icon">🏯</div>
+      <div class="cover-title">天 命 鑑 定</div>
+      <div class="cover-subtitle">宗 师 列 传</div>
+      <div class="cover-features">
+        <div class="cover-feat">30+ 格局判定</div>
+        <div class="cover-feat">七层大运评分</div>
+        <div class="cover-feat">双胞胎对比</div>
+        <div class="cover-feat">年龄匹配文案</div>
+      </div>
+      <div class="cover-footer">了解自己的特质和方向</div>
+    </div>
+  </div>
+  <button class="btn" onclick="downloadCover()">📥 下载封面图</button>
+</div>
+<script src="html2canvas.min.js"></script>
+<script>
+async function downloadCover() {
+  const el = document.getElementById('cover');
+  const canvas = await html2canvas(el, { scale: 2, backgroundColor: null });
+  const a = document.createElement('a');
+  a.download = 'cover.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+</script>
+</body>
+</html>
