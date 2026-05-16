@@ -3073,14 +3073,29 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             var ss = SHISHEN_MAP[newDM][dyG] || '未知';
             var age = startAge + i*10;
             var yr = birthYearVal + age;
-            // 简单吉凶判断（复用主大运逻辑的前两层）
+            // 幼胎大运评分（L1十神+L5调候+L6喜忌）
+            var tScore = 0; var tReasons = [];
+            // L1: 十神本性
             var goodGods = ['正财','偏财','正官','正印','偏印','食神','比肩'];
             var badGods = ['七杀','伤官','劫财','羊刃'];
-            var label = goodGods.includes(ss) ? '吉' : (badGods.includes(ss) ? '凶' : '平');
+            if (goodGods.includes(ss)) { tScore += 1; tReasons.push('吉神'); }
+            else if (badGods.includes(ss)) { tScore -= 1; tReasons.push('忌神'); }
+            // L5: 调候（简化版）
+            var tTiaoHou = getTiaoHouGans(newDM, d.mz);
+            if (tTiaoHou.includes(dyG)) { tScore += 1; tReasons.push('调候'); }
+            else { var dyHid = HIDDEN_STEMS[dyZ] || []; if (dyHid.some(h=>tTiaoHou.includes(h))) { tScore += 0.5; tReasons.push('支调候'); } }
+            // L6: 喜忌
+            var tXiji = (XIJI_RULES[d.pattern] || XIJI_RULES['杂格']) || {joy:[],taboo:[]};
+            var tKw = [ss, WUXING_MAP[dyG], dyG];
+            if (tKw.some(k=>tXiji.joy.join('').includes(k))) { tScore += 0.5; }
+            else if (tKw.some(k=>tXiji.taboo.join('').includes(k))) { tScore -= 0.5; }
+            // 判定
+            var label = tScore >= 1 ? '吉' : (tScore <= -1 ? '凶' : '平');
+            var tTip = tReasons.slice(-2).join('·');
             var labelColor = label==='吉'?'#2e7d32':(label==='凶'?'#c62828':'#888');
             dayunHtml += '<span style="display:inline-block;margin:3px 8px;font-size:0.82rem;">' +
                 age+'-'+(age+9)+'岁 <b>'+dyGZ+'</b> ' +
-                '<span style="color:'+labelColor+'">'+ss+'('+label+')</span></span>';
+                '<span style="color:'+labelColor+'" title="'+tTip+'">'+ss+'('+label+')</span></span>';
         }
         
         commentary += '<b>🔄 幼胎大运轨迹（以' + newDM + '为太极）：</b><br>';
