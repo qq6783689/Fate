@@ -5,7 +5,10 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>天命鑑定 · 宗师列传（天干气势优先版）</title>
+    <title>天命鑑定 · 宗师列传 | AI八字命盘深度解析</title>
+    <meta name="description" content="免费在线八字排盘，AI智能格局判定，大运走势分析，双胞胎换太极对比，一键生成精美命盘分享卡片。">
+    <meta property="og:title" content="天命鑑定 · 宗师列传">
+    <meta property="og:description" content="AI八字命盘深度解析，30+格局精准判定，七层大运评分，一键分享">
     <script src="lunar.js"></script>
     <script src="html2canvas.min.js"></script>
     <style>
@@ -1126,7 +1129,7 @@ document.addEventListener('touchend', function (e) {
             </div>
         </div>
 
-        <div class="footer">FATE AUTHENTICATED BY GRANDMASTER · 2025</div>
+        <div class="footer" style="padding:20px;text-align:center;border-top:1px solid rgba(207,169,114,0.3);margin-top:30px;"><div style="font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;color:var(--china-red);letter-spacing:4px;">天 命 鑑 定</div><div style="font-size:0.75rem;color:#999;margin-top:4px;">宗师列传 · 极意完整版 V3.4 | 仅供娱乐，命运在自己手中</div></div>
     </div>
 </div>
 
@@ -1923,11 +1926,25 @@ console.log("✅ 业务脚本开始执行");
                 }
             });
 
+            // 添加品牌尾注到 canvas
+            const ctx = canvas.getContext('2d');
+            const h = canvas.height, w = canvas.width;
+            ctx.fillStyle = 'rgba(207,169,114,0.08)';
+            ctx.font = 'bold 48px "Ma Shan Zheng", cursive';
+            ctx.textAlign = 'center';
+            ctx.fillText('天 命 鑑 定', w/2, h-60);
+            // 底部品牌条
+            ctx.fillStyle = 'rgba(139,90,43,0.15)';
+            ctx.fillRect(0, h-30, w, 30);
+            ctx.fillStyle = '#8b5a2b';
+            ctx.font = '14px "Noto Serif SC", serif';
+            ctx.fillText('Powered by 天命鑑定 · 宗师列传 | 仅供娱乐，命运在自己手中', w/2, h-10);
+
             // 下载图片
             const link = document.createElement('a');
             const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             link.download = `天命鑑定_${dateStr}.png`;
-            link.href = canvas.toDataURL('image/png', 0.9); // 略微压缩，加快速度
+            link.href = canvas.toDataURL('image/png', 0.9);
             link.click();
 
             logDebug('EXPORT', '分享卡片已生成');
