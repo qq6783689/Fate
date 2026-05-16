@@ -3117,6 +3117,10 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             var wxSheng = {'木':'水','火':'木','土':'火','金':'土','水':'金'};
             if (tDmWeak && (dyWx===dmWx2 || wxSheng[dmWx2]===dyWx)) { tScore += 0.5; tReasons.push('扶抑得宜'); }
             else if (!tDmWeak && (dyWx===dmWx2 || wxSheng[dyWx]===dmWx2)) { tScore -= 0.5; tReasons.push('扶抑不宜'); }
+            // 地支本气扶抑
+            var zhiQiWx = WUXING_MAP[ZHI_MAIN_QI[dyZ]] || '';
+            if (tDmWeak && (zhiQiWx===dmWx2 || wxSheng[dmWx2]===zhiQiWx)) { tScore += 0.3; }
+            else if (!tDmWeak && (zhiQiWx===dmWx2 || wxSheng[zhiQiWx]===dmWx2)) { tScore -= 0.3; }
             // 旺相休囚死
             var wxState = getWxState(dyWx, d.mz);
             if (wxState==='旺') { tScore += 0.5; tReasons.push('当令'); }
