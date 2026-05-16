@@ -2742,7 +2742,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const dyCS = CHANGSHENG_TABLE[dayunGan][dayunZhi];
             const csScore = CS_STRENGTH[dyCS]||1;
             if (csScore>=4) { score+=1; reasons.push('临旺地'); }
-            else if (csScore<=0.3) { score-=1; reasons.push('坐死绝'); }
+            // 胎墓死绝仅表示天干无力，地支作用才是关键，不扣分
             
             // 第五层：调候贡献（+1）
             if (tiaoHouGans.includes(dayunGan)) {
@@ -2884,18 +2884,17 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const firstHalf = dayunScores.slice(0,4).reduce((a,b)=>a+b,0);
             const secondHalf = dayunScores.slice(4,8).reduce((a,b)=>a+b,0);
             if (jiCount>=6) { trendText='好运占多数，哪怕原局普通，大运来修破车也能修好一阵'; trendIcon='🚀'; }
-            else if (xiongCount>=6) { trendText='八步大运六步为忌，原局再好也经不起大运来拆，关键几步抓住就翻身'; trendIcon='⚠️'; }
-            else if (firstHalf>secondHalf+4) { trendText='前半生顺，中年后走下坡——享福要趁早，下半场守成为上'; trendIcon='📉'; }
-            else if (secondHalf>firstHalf+4) { trendText='先苦后甜，早年吃苦是存本钱，中晚年才是收割期'; trendIcon='📈'; }
-            else if (jiCount>=4&&xiongCount<=2) { trendText='稳中有升，偶有波折但总体向好。好车偶尔进修理厂，出来还是好车'; trendIcon='✅'; }
-            else if (jiCount<=2&&xiongCount>=4) { trendText='阻力占多数，但别灰心——大运流年来修破车的时候也要抓住'; trendIcon='🔄'; }
-            else { trendText='吉凶参半，人生本来就是修修补补，流水线断了再续上就行'; trendIcon='🌊'; }
+            else if (xiongCount>=6) { trendText='大运多逆风，但原局好就是好车，偶尔进修理厂出来还是好车'; trendIcon='⚠️'; }
+            else if (firstHalf>secondHalf+4) { trendText='前半程发力猛，后半程需守成。已打下底子，不贪就是赢'; trendIcon='📉'; }
+            else if (secondHalf>firstHalf+4) { trendText='早期韬光养晦，中晚年才是你的主场。年轻时吃的苦都是存本钱'; trendIcon='📈'; }
+            else if (jiCount>=4&&xiongCount<=2) { trendText='稳中有升，波折不大，总体向好。该吃吃该喝喝，啥事不往心里搁'; trendIcon='✅'; }
+            else if (jiCount<=2&&xiongCount>=4) { trendText='逆风多于顺风，但没到绝望的时候。抓住那两三步好运，照样翻身'; trendIcon='🔄'; }
+            else { trendText='吉凶参半，平平稳稳。人生本就是修修补补，流水线断了再接上'; trendIcon='🌊'; }
             const trendHtml = '<div class="dayun-trend" style="margin-top:16px;padding:12px 16px;background:rgba(207,169,114,0.1);border-radius:8px;font-size:0.88rem;text-align:center;line-height:1.8;">' +
-                '<b>'+trendIcon+' 走势总览：</b>'+trendText+'<br>' +
-                '<small style="color:#666;">八步大运：' + jiCount + '吉 ' + pingCount + '平 ' + xiongCount + '凶' +
-                (firstHalf>secondHalf+2?' · 前半生优于后半生':'') +
-                (secondHalf>firstHalf+2?' · 后半生优于前半生':'') +
-                '</small></div>';
+                '<b>'+trendIcon+' 走势总览：</b>'+trendText +
+                (firstHalf>secondHalf+2?'<br><small style="color:#666;">· 前半生发力更猛</small>':'') +
+                (secondHalf>firstHalf+2?'<br><small style="color:#666;">· 后半生更有后劲</small>':'') +
+                '</div>';
             let trendBox = document.getElementById('dayun-trend-box');
             if (!trendBox) {
                 trendBox = document.createElement('div');
