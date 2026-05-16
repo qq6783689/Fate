@@ -2885,11 +2885,11 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 backText = (backPing[shishen] || backPing['正财']) + ' 【平运】';
             }
             var ageNote = '';
-            if (ageStart < 20) ageNote = '· 学业为重，打好基础比什么都强';
-            else if (ageStart < 35) ageNote = '· 闯荡黄金期，敢拼才有未来';
-            else if (ageStart < 50) ageNote = '· 稳住基本盘，家和万事兴';
-            else if (ageStart < 65) ageNote = '· 守成为上，健康第一';
-            else ageNote = '· 颐养天年，儿孙自有儿孙福';
+            if (ageStart < 20) ageNote = '| 少年时期：学业为重，根基扎稳比什么都强，别急着赚钱';
+            else if (ageStart < 35) ageNote = '| 青年时期：这是你闯荡的黄金期，敢拼敢试错，跌倒了爬起来就是';
+            else if (ageStart < 50) ageNote = '| 壮年时期：稳住基本盘，上有老下有小，家和比什么都重要';
+            else if (ageStart < 65) ageNote = '| 中年时期：守成为上，健康是最大资本，别拿命换钱';
+            else ageNote = '| 晚年时期：儿孙自有儿孙福，为自己活一回，健康就是最大的赢家';
             backText += ' ' + ageNote;
 
             dayunHtml += `
