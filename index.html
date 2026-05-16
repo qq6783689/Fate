@@ -2721,7 +2721,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const zhiClash = {'子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳'};
             const oppZhi = zhiClash[dayunZhi];
             if (oppZhi && zhiList.includes(oppZhi) && zhiHeScore===0) {
-                zhiHeScore = -1; reasons.push('地支相冲');
+                zhiHeScore = -0.5; reasons.push('地支冲(轻)');
             }
             if (zhiHeScore===0) {
                 const sanhui=[['寅','卯','辰'],['巳','午','未'],['申','酉','戌'],['亥','子','丑']];
