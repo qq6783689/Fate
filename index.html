@@ -2417,6 +2417,11 @@ console.log("✅ 业务脚本开始执行");
                 } else if (tiaoHouPresent.length > 0) { activated = true; activationStatus = '⚖️ 气数两极化 · 调候受限'; activationDesc = '日主过于极端，调候之力打折。'; }
                 if (dmScore > 8 && WUXING_MAP[dm]==='金' && isWinter && tiaoHouPresent.length===0) { activated = true; activationStatus = '❄️ 金寒水冷 · 急需暖局'; activationDesc = '冬金极寒无火调候，大运逢火方可破冰。'; }
                 if (dmScore > 8 && WUXING_MAP[dm]==='木' && isSummer && tiaoHouPresent.length===0) { activated = true; activationStatus = '☀️ 夏木焦枯 · 急需润局'; activationDesc = '夏日之木无水润泽，大运逢水方得生机。'; }
+                // 调候藏而不透：用神在藏干中，需等大运引出
+                if (!activated && !tiaoHouSkipped && tiaoHouPresent.length===0) {
+                    const hiddenTH = tiaoHouGans.filter(th => pillars.some(p => { const h = HIDDEN_STEMS[p.z] || []; return h.includes(th); }));
+                    if (hiddenTH.length>0) { activated = true; activationStatus = '🔒 用神藏而不透 · 待时而出'; activationDesc = '调候真神' + hiddenTH.join('、') + '深藏地支未透天干，需等大运引出方显其效。'; }
+                }
                 const climate = { special: null };
                 if (WUXING_MAP[dm]==='金' && isWinter) { climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官') ? '金水伤官' : '金水食神'; }
                 if (WUXING_MAP[dm]==='木' && ['寅','卯','辰'].includes(mz)) { const hf = pillars.some(p => WUXING_MAP[p.g]==='火'); if (hf) climate.special = '木火通明'; }
