@@ -2766,6 +2766,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             if (csScore>=4) { score+=1; reasons.push('临旺地'); }
             // 胎墓死绝仅表示天干无力，地支作用才是关键，不扣分
             // 旺相休囚死：大运天干五行的季节性
+            const dyWx = WUXING_MAP[dayunGan]; // 提前声明，供旺相休囚死使用
             const seasonWx = getWxState(dyWx, mz);
             if (seasonWx==='旺') { score+=0.5; reasons.push('当令得时'); }
             else if (seasonWx==='死') { score-=0.3; reasons.push('失时无力'); }
