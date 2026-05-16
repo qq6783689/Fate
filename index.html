@@ -2651,9 +2651,10 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             if (dyClashes.length>0) {
                 const og=dyClashes[0].a===dayunGan?dyClashes[0].b:dyClashes[0].a;
                 const ogGod=SHISHEN_MAP[dm][og];
+                const ogRoot = hasRoot(og, pillars); // 被冲天干有根则抗冲
                 if (['七杀','伤官','劫财'].includes(ogGod)) { score+=2; reasons=['冲去忌神']; }
-                else if (tiaoHouGans.includes(og)) { score-=3; reasons=['冲破调候真神']; }
-                else if (['正印','偏印','正官','正财'].includes(ogGod)) { score-=2; reasons=['冲克用神']; }
+                else if (tiaoHouGans.includes(og)) { score-=(ogRoot?2:3); reasons.push(ogRoot?'冲损调候(有根)':'冲破调候真神'); }
+                else if (['正印','偏印','正官','正财'].includes(ogGod)) { score-=(ogRoot?1:2); reasons.push(ogRoot?'冲克用神(有根)':'冲克用神'); }
             } else if (dyCombines.length>0) {
                 const og=dyCombines[0].yuanJu; const ogGod=SHISHEN_MAP[dm][og];
                 // 判断是否真化：月令支持化神才化，否则只是合绊
@@ -2715,6 +2716,12 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                     zhiHeScore = -zhiHeScore;
                     reasons[reasons.length-1] = reasons[reasons.length-1].replace('合','合(不利)');
                 }
+            }
+            // 地支冲检测（天干冲>地支冲，只给-1）
+            const zhiClash = {'子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳'};
+            const oppZhi = zhiClash[dayunZhi];
+            if (oppZhi && zhiList.includes(oppZhi) && zhiHeScore===0) {
+                zhiHeScore = -1; reasons.push('地支相冲');
             }
             if (zhiHeScore===0) {
                 const sanhui=[['寅','卯','辰'],['巳','午','未'],['申','酉','戌'],['亥','子','丑']];
