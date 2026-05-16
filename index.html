@@ -2884,6 +2884,13 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             } else {
                 backText = (backPing[shishen] || backPing['正财']) + ' 【平运】';
             }
+            var ageNote = '';
+            if (ageStart < 20) ageNote = '· 学业为重，打好基础比什么都强';
+            else if (ageStart < 35) ageNote = '· 闯荡黄金期，敢拼才有未来';
+            else if (ageStart < 50) ageNote = '· 稳住基本盘，家和万事兴';
+            else if (ageStart < 65) ageNote = '· 守成为上，健康第一';
+            else ageNote = '· 颐养天年，儿孙自有儿孙福';
+            backText += ' ' + ageNote;
 
             dayunHtml += `
                 <div class="dayun-card ${cardClass}" 
