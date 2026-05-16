@@ -2654,10 +2654,28 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 else if (['正印','偏印','正官','正财'].includes(ogGod)) { score-=2; reasons=['冲克用神']; }
             } else if (dyCombines.length>0) {
                 const og=dyCombines[0].yuanJu; const ogGod=SHISHEN_MAP[dm][og];
-                if (['七杀','伤官','劫财'].includes(ogGod)) { score+=2; reasons=['合去忌神']; }
-                else if (tiaoHouGans.includes(og)) { score-=3; reasons=['合去调候真神']; }
-                else if (['正印','偏印','正官','正财','食神'].includes(ogGod)) { score-=2; reasons=['合用神']; }
-                else { score+=1; reasons.push('天干有合'); }
+                // 判断是否真化：月令支持化神才化，否则只是合绊
+                const hqTest = {'甲己':'土','乙庚':'金','丙辛':'水','丁壬':'木','戊癸':'火'};
+                const pair = [og,dayunGan].sort().join('');
+                const hqWx2 = hqTest[pair];
+                const mzWx2 = WUXING_MAP[ZHI_MAIN_QI[mz]];
+                const isHua = hqWx2 && mzWx2===hqWx2;
+                // 争合检测：原局是否有另一个天干也能合 dayunGan
+                const zhengHe = dyCombines.length>=2;
+                if (zhengHe) {
+                    reasons.push('天干争合·力弱');
+                } else if (isHua) {
+                    if (['七杀','伤官','劫财'].includes(ogGod)) { score+=2; reasons=['合化去忌']; }
+                    else if (tiaoHouGans.includes(og)) { score-=3; reasons=['合化调候真神']; }
+                    else if (['正印','偏印','正官','正财','食神'].includes(ogGod)) { score-=2; reasons=['合用神']; }
+                    else { score+=1; reasons.push('天干合化'); }
+                } else {
+                    // 合绊：力量减半
+                    if (['七杀','伤官','劫财'].includes(ogGod)) { score+=1; reasons=['合绊忌神']; }
+                    else if (tiaoHouGans.includes(og)) { score-=1.5; reasons=['合绊调候用神']; }
+                    else if (['正印','偏印','正官','正财','食神'].includes(ogGod)) { score-=1; reasons=['合绊用神']; }
+                    else { reasons.push('天干合绊·力弱'); }
+                }
             }
             
             // 地支三合六合：大运地支与原局合局改变五行气势
@@ -2674,6 +2692,25 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             }
             if (zhiHeScore===0 && ZHI_LIUHE[dyZhi]) {
                 if (zhiList.includes(ZHI_LIUHE[dyZhi])) { zhiHeScore=0.5; reasons.push('地支六合'); }
+            }
+            // 判断合局五行是否利于原局
+            const dmWx = WUXING_MAP[dm];
+            const wxCycle = {'木':'火土金水','火':'土金水木','土':'金水木火','金':'水木火土','水':'木火土金'};
+            const wxHelp = dmWx + (wxCycle[dmWx]||'')[0]; // 帮日主的五行：同我、生我
+            if (zhiHeScore>0) {
+                const joyWx = wxHelp[0]===dmWx ? [dmWx, wxHelp[1]] : [dmWx, wxHelp[0], wxHelp[1]];
+                // 简化的合局五行判断
+                const heWxTest = (function(){
+                    if (['申','子','辰'].includes(dayunZhi)) return '水';
+                    if (['亥','卯','未'].includes(dayunZhi)) return '木';
+                    if (['寅','午','戌'].includes(dayunZhi)) return '火';
+                    if (['巳','酉','丑'].includes(dayunZhi)) return '金';
+                    return '';
+                })();
+                if (heWxTest && !joyWx.some(w=>w===heWxTest||(wxCycle[heWxTest]||'').includes(w))) {
+                    zhiHeScore = -zhiHeScore;
+                    reasons[reasons.length-1] = reasons[reasons.length-1].replace('合','合(不利)');
+                }
             }
             if (zhiHeScore===0) {
                 const sanhui=[['寅','卯','辰'],['巳','午','未'],['申','酉','戌'],['亥','子','丑']];
@@ -2828,20 +2865,20 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             dayunGrid.innerHTML = dayunHtml;
             dayunArea.style.display = 'block';
 
-            // === 走势总结 ===
+            // === 走势总结（喜忌是动态的，看当下不看终身）===
             const jiCount = dayunScores.filter(s=>s>=1).length;
             const xiongCount = dayunScores.filter(s=>s<=-1).length;
             const pingCount = 8 - jiCount - xiongCount;
             let trendText = '', trendIcon = '';
             const firstHalf = dayunScores.slice(0,4).reduce((a,b)=>a+b,0);
             const secondHalf = dayunScores.slice(4,8).reduce((a,b)=>a+b,0);
-            if (jiCount>=6) { trendText='一路高歌，八步大运六步以上为吉，命中带贵'; trendIcon='🚀'; }
-            else if (xiongCount>=6) { trendText='命途多舛，需借风水积德改运，逆境中磨砺心性'; trendIcon='⚠️'; }
-            else if (firstHalf>secondHalf+4) { trendText='先盛后衰，前半生顺遂，中年后需守成防变'; trendIcon='📉'; }
-            else if (secondHalf>firstHalf+4) { trendText='先苦后甜，早年磨砺皆为铺垫，中晚年大器晚成'; trendIcon='📈'; }
-            else if (jiCount>=4&&xiongCount<=2) { trendText='稳中有升，偶有波折但总体向好，守住节奏即可'; trendIcon='✅'; }
-            else if (jiCount<=2&&xiongCount>=4) { trendText='阻力重重，需借大运择业避凶，不可逆势硬闯'; trendIcon='🔄'; }
-            else { trendText='吉凶参半，人生如潮汐有起有落，顺势而为方是上策'; trendIcon='🌊'; }
+            if (jiCount>=6) { trendText='好运占多数，哪怕原局普通，大运来修破车也能修好一阵'; trendIcon='🚀'; }
+            else if (xiongCount>=6) { trendText='八步大运六步为忌，原局再好也经不起大运来拆，关键几步抓住就翻身'; trendIcon='⚠️'; }
+            else if (firstHalf>secondHalf+4) { trendText='前半生顺，中年后走下坡——享福要趁早，下半场守成为上'; trendIcon='📉'; }
+            else if (secondHalf>firstHalf+4) { trendText='先苦后甜，早年吃苦是存本钱，中晚年才是收割期'; trendIcon='📈'; }
+            else if (jiCount>=4&&xiongCount<=2) { trendText='稳中有升，偶有波折但总体向好。好车偶尔进修理厂，出来还是好车'; trendIcon='✅'; }
+            else if (jiCount<=2&&xiongCount>=4) { trendText='阻力占多数，但别灰心——大运流年来修破车的时候也要抓住'; trendIcon='🔄'; }
+            else { trendText='吉凶参半，人生本来就是修修补补，流水线断了再续上就行'; trendIcon='🌊'; }
             const trendHtml = '<div class="dayun-trend" style="margin-top:16px;padding:12px 16px;background:rgba(207,169,114,0.1);border-radius:8px;font-size:0.88rem;text-align:center;line-height:1.8;">' +
                 '<b>'+trendIcon+' 走势总览：</b>'+trendText+'<br>' +
                 '<small style="color:#666;">八步大运：' + jiCount + '吉 ' + pingCount + '平 ' + xiongCount + '凶' +
