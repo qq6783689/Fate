@@ -3129,7 +3129,8 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 var cnt = sh.filter(z=>zhiList2.includes(z)||z===dyZ).length;
                 if (cnt>=2 && (zhiList2.includes(dyZ)||sh.includes(dyZ))) {
                     var heWx = ['水','木','火','金'][s];
-                    if (heWx===dmWx2 || wxSheng[dmWx2]===heWx) { tScore += 1; tReasons.push('合局帮身'); }
+                    var heBonus = cnt===3 ? 2 : 1; // 全合+2, 半合+1
+                    if (heWx===dmWx2 || wxSheng[dmWx2]===heWx) { tScore += heBonus; tReasons.push(cnt===3?'三合帮身':'半合帮身'); }
                     else { tScore -= 0.5; tReasons.push('合局泄身'); }
                     break;
                 }
