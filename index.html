@@ -2702,7 +2702,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const dmWx = WUXING_MAP[dm];
             const wxCycle = {'木':'火土金水','火':'土金水木','土':'金水木火','金':'水木火土','水':'木火土金'};
             const wxHelp = dmWx + (wxCycle[dmWx]||'')[3]; // 帮日主的五行：同我、生我
-            if (zhiHeScore>0) {
+            if (zhiHeScore>=1) { // 仅三合/半合翻转喜忌，六合不翻转
                 // 喜用五行 = [同我, 生我]
                 const joyWx = [dmWx, (wxCycle[dmWx]||'')[3]];
                 const heWxTest = (function(){
