@@ -1829,7 +1829,7 @@ function updateSolarTime() {
         "伤官合杀": { desc: "伤杀两旺，合杀为权。以智慧谋略化解危机，典型的'险中求贵'之格。凶物互制，反而成贵。", joy: ["📜 印星","💪 比劫"], taboo: ["💰 财星","🗡️ 官杀"] },
         "食神制杀": { desc: "七杀有力，食神制之。身强杀浅，权柄极重。喜食印，忌财杀。", joy: ["🎨 食神","📜 印星"], taboo: ["💰 财星","🗡️ 官杀"] },
         "杀印相生": { desc: "杀势汹汹，赖印化之。化煞为权，主武职或掌握实权的管理者。喜印比，忌财。", joy: ["📜 印星","💪 比劫"], taboo: ["💰 财星","🗡️ 官杀"] },
-        "正财格": { desc: "财星当令，求财有道。身强任财，身弱喜印比。步步为营之富。最忌比劫夺财或官杀泄财。", joy: ["💪 比劫","📜 印星"], taboo: ["💰 财 (身弱)","🗡️ 官杀"] },
+        "正财格": { desc: "财星当令，求财有道。身强任财，身弱靠比劫。步步为营之富。最忌比劫夺财或官杀泄财。", joy: ["💪 比劫"], taboo: ["💰 财 (身弱)","🗡️ 官杀","📜 印星 (财坏印)"] },
         "偏财格": { desc: "偏财当令，慷慨大方。喜官杀护财，喜食伤生财。最忌比劫分夺。财大气粗之格。", joy: ["🗡️ 官杀","🎨 食伤"], taboo: ["💪 比劫","🔥 印星 (泄气)"] },
         "正官格": { desc: "正官纯正，贵气天然。喜财生官，喜印护官。最忌伤官见官，所谓'伤官见官，为祸百端'。", joy: ["💰 财星","📜 印星"], taboo: ["🎨 伤官","🗡️ 七杀"] },
         "七杀格": { desc: "杀神威严，攻身最狠。需制化方成大格。无制则压力重重，灾厄丛生。有制则为'化煞为权'。", joy: ["🎨 食伤 (制)","📜 印星 (化)"], taboo: ["💰 财星 (助杀)"] },
@@ -2406,7 +2406,10 @@ console.log("✅ 业务脚本开始执行");
                 const tiaoHouRooted = tiaoHouGans.some(th => pillars.some(p => { const h = HIDDEN_STEMS[p.z] || []; return h.includes(th); }));
                 const dmScore = calcDMStrength(dm, pillars);
                 const dmExtreme = dmScore < 5 || dmScore > 20;
+                // 星露：特别弱或特别强时调候用不了，只有40%-60%均衡时调候才有效
+                const tiaoHouSkipped = dmExtreme;
                 let activated = false, activationStatus = '', activationDesc = '';
+                if (tiaoHouSkipped) { activationStatus = '调候暂不可用（日主过强或过弱）'; activationDesc = '星露：特别弱或特别强时调候用不了，等大运来调平衡再激活'; } else
                 if (!dmExtreme) {
                     if (tiaoHouPresent.length >= 2) { activated = true; activationStatus = '🔥 紫气东来 · 格局变贵'; activationDesc = '局中调候真神并透，层次倍增，名利双收之象。'; }
                     else if (tiaoHouPresent.length === 1 && tiaoHouRooted) { activated = true; activationStatus = '✨ 调候有根 · 气数渐旺'; activationDesc = '调候真神虽只透其一，但地支有根，大运逢旺地可展宏图。'; }
