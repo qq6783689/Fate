@@ -3004,7 +3004,8 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
         var hourResult = window.scoreTaiji(d, d.pillars[3].g, 'hour');
         var suggestTaiji = monthResult.score >= hourResult.score ? '月柱' : '时柱';
         var scoreDiff = Math.abs(monthResult.score - hourResult.score);
-        var confidence = scoreDiff >= 4 ? '明确' : (scoreDiff >= 2 ? '倾向' : '两者皆可');
+        var confidence = scoreDiff >= 4 ? '参考' : (scoreDiff >= 2 ? '参考' : '分差不大');
+        // 算法仅是参考，最终以实际人生经历为准
         
         // === 白话解读 ===
         var oldMZGod = SHISHEN_MAP[d.dm][ZHI_MAIN_QI[d.mz]];
@@ -3022,7 +3023,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
         commentary += '⭐ <b>幼胎太极：</b>以<b>' + newDM + '</b>为新日元。原月柱对幼胎而言是<b>' + SHISHEN_MAP[newDM][d.pillars[1].g] + '</b>，原日柱变为<b>' + SHISHEN_MAP[newDM][ZHI_MAIN_QI[d.mz]] + '</b><br><br>';
         
         // 太极建议
-        commentary += '<b>🎯 太极建议：</b>' + suggestTaiji + '（置信度：' + confidence + '）<br>';
+        commentary += '<b>🎯 算法参考：</b>' + suggestTaiji + '（' + confidence + '）——仅作参考，<b>最终以你的真实经历为准</b><br>';
         commentary += '&nbsp;&nbsp;月柱得分 ' + monthResult.score + '：' + (monthResult.reasons.join('、') || '无特别优势') + '<br>';
         commentary += '&nbsp;&nbsp;时柱得分 ' + hourResult.score + '：' + (hourResult.reasons.join('、') || '无特别优势') + '<br><br>';
         
@@ -3087,7 +3088,7 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
         commentary += '<small style="color:#999">注：大运干支不变，但十神因太极转换而完全不同。同一干支对长胎和幼胎可能是相反的吉凶。</small><br><br>';
         
         commentary += '<b>💡 为什么换太极？</b>同一个八字，长胎以日主为「我」看世界，幼胎改用月柱或时柱为「我」——<b>同一个八字，两个完全不同的坐标系</b>。十神变了，吉凶方向就变了，这就是双胞胎同盘不同命的根源。<br><br>';
-        commentary += '<b>🔑 怎么选月柱还是时柱？</b>很简单——<b>和你的真实经历对比</b>。先看月柱太极的描述，再切时柱太极的描述。哪个太极下的大运轨迹更贴合你的实际人生（比如这几年顺不顺、在哪方面顺），哪个就是对的。<br><br>';
+        commentary += '<b>🔑 怎么选？对比真实经历</b><br>先看月柱太极的大运，再看时柱太极的大运。关键不是看评分，而是看<b>哪个太极下的大运轨迹更贴合你的真实人生</b>：<br>· 这几年顺不顺？顺的话当前大运在哪个太极下是吉？<br>· 事业转折点（升职/跳槽/考研）落在哪步大运？那步运在哪个太极下更合理？<br>· 别只看第一步，把八步大运拉通了和你的人生对比<br><br>';
         commentary += '<b>💡 小技巧：</b>如果你现在运势不错、事业家庭都顺，那当前大运在你「对的太极」下应该是吉运。反过来，如果这几年屡屡碰壁，可能你一直在用错误的坐标系看自己。<br><br>';
         commentary += '<small style="color:#999;">🌙 胎元（月干进一·月支进三）是精卵结合那个月，双胞胎共此胎元，先天禀赋同源。八字不好？看胎元——胎元能补原局缺的根和调候。</small>';
         
