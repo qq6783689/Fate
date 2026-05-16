@@ -2763,8 +2763,8 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const zhiSS = SHISHEN_MAP[dm][zhiQi];
             const zhiWx2 = WUXING_MAP[zhiQi];
             const zhiKw = [...(SHISHEN_KEYWORDS[zhiSS]||[zhiSS]), zhiWx2, zhiQi];
-            if (zhiKw.some(k=>joyText.includes(k))) { score+=0.5; reasons.push('支气得喜'); }
-            else if (zhiKw.some(k=>tabooText.includes(k))) { score-=0.5; reasons.push('支气犯忌'); }
+            if (zhiKw.some(k=>joyText.includes(k))) { score+=0.3; reasons.push('支气得喜'); }
+            else if (zhiKw.some(k=>tabooText.includes(k))) { score-=0.3; reasons.push('支气犯忌'); }
             dayunScores.push(score); // 收集走势数据
             
             // 第七层：病药检测（大运是否解原局之病）
