@@ -1168,7 +1168,7 @@ document.addEventListener('touchend', function (e) {
 
         <div style="text-align:center;margin:40px 0 20px;padding:24px 16px;background:linear-gradient(135deg,#fef9f0,#fdf5e6);border:1px dashed #cfa972;border-radius:12px;"><div style="font-size:1rem;color:#8b5a2b;margin-bottom:12px;font-weight:bold;">☕ 如果这份报告对你有帮助</div><div style="font-size:0.85rem;color:#999;margin-bottom:16px;">每一份支持都能让这个工具变得更好</div><a href="https://ifdian.net/a/aab7777" target="_blank" style="display:inline-block;padding:12px 32px;background:linear-gradient(135deg,#946ce6,#7c3aed);color:#fff;border-radius:8px;text-decoration:none;font-size:1rem;font-weight:bold;margin-top:8px;box-shadow:0 2px 8px rgba(124,58,237,0.3);">❤️ 支持作者 · 让工具持续更新</a></div>
 
-<div class="footer" style="padding:20px;text-align:center;border-top:1px solid rgba(207,169,114,0.3);margin-top:30px;"><div style="font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;color:var(--china-red);letter-spacing:4px;">天 命 鑑 定</div><div style="font-size:0.75rem;color:#999;margin-top:4px;">宗师列传 · 极意完整版 V3.5 | 仅供娱乐，命运在自己手中</div></div>
+<div class="footer" style="padding:20px;text-align:center;border-top:1px solid rgba(207,169,114,0.3);margin-top:30px;"><div style="font-family:'Ma Shan Zheng',cursive;font-size:1.4rem;color:var(--china-red);letter-spacing:4px;">天 命 鑑 定</div><div style="font-size:0.75rem;color:#999;margin-top:4px;">宗师列传 · 极意完整版 V3.6 | 仅供娱乐，命运在自己手中</div></div>
     </div>
 </div>
 
@@ -1937,7 +1937,62 @@ console.log("✅ 业务脚本开始执行");
     /**
      * 生成分享卡片并下载（移动端优化版）
      */
-    window.exportCard = async function() {        var btn = document.querySelector('.export-btn');        var orig = btn.innerHTML;        try {            btn.disabled = true; btn.innerHTML = '\u23f3';            var d = window._lastScanData;            if (!d || !d.pillars) { showError('\u8bf7\u5148\u8fdb\u884c\u9451\u5b9a'); return; }            var patternKey = d.pattern || '';            var gameData = typeof GAME_DB !== "undefined" && GAME_DB[patternKey];            var displayName = (gameData && gameData.name) || patternKey;            var slogan = (gameData && gameData.male && gameData.male.c && gameData.male.c.replace(/<[^>]+>/g,'')) || document.getElementById('role-sub').textContent || '';            var dm = d.dm || '';            var tags = document.getElementById('role-tags').textContent || '';            var qrImg = new Image();            qrImg.crossOrigin = 'Anonymous';            await new Promise(function(resolve) {                qrImg.onload = resolve;                qrImg.onerror = resolve;                qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=http://8.137.196.149/&margin=6';            });            var qrDataUrl = '';            if (qrImg.src && qrImg.naturalWidth > 0) {                var qrc = document.createElement('canvas');                qrc.width = 70; qrc.height = 70;                qrc.getContext('2d').drawImage(qrImg, 0, 0);                qrDataUrl = qrc.toDataURL();            }            var card = document.createElement('div');            card.style.cssText = 'width:380px;padding:28px 20px;text-align:center;background:linear-gradient(135deg,#fdf8f0,#faf3e6);border:2px solid #cfa972;border-radius:14px;position:fixed;left:-9999px;top:0;z-index:-1;';            var qrHtml = '';            if (qrDataUrl) {                qrHtml = '<div style="margin-top:14px;"><img src="'+qrDataUrl+'" style="width:60px;height:60px;display:block;margin:0 auto;"><div style="font-size:0.5rem;color:#aaa;margin-top:4px;letter-spacing:2px;">\u626b\u4e00\u626b \u00b7 \u6d4b\u4f60\u7684\u5929\u547d</div></div>';            }            card.innerHTML =                 '<div style="position:relative;padding:36px 20px;text-align:center;">'+                '<div style="position:absolute;top:10px;left:10px;width:24px;height:24px;border-top:2px solid #cfa972;border-left:2px solid #cfa972;border-radius:2px;"></div>'+                '<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-top:2px solid #cfa972;border-right:2px solid #cfa972;border-radius:2px;"></div>'+                '<div style="position:absolute;bottom:10px;left:10px;width:24px;height:24px;border-bottom:2px solid #cfa972;border-left:2px solid #cfa972;border-radius:2px;"></div>'+                '<div style="position:absolute;bottom:10px;right:10px;width:24px;height:24px;border-bottom:2px solid #cfa972;border-right:2px solid #cfa972;border-radius:2px;"></div>'+                '<div style="font-size:1.5rem;font-weight:900;color:#8b2500;letter-spacing:2px;margin-bottom:4px;">'+displayName+'</div>'+                '<div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#cfa972,transparent);margin:8px auto;"></div>'+                '<div style="font-size:0.8rem;color:#8b5a2b;font-style:italic;margin:8px 0 12px;padding:0 10px;line-height:1.7;">'+slogan+'</div>'+                qrHtml+                '<div style="border-top:1px solid #e8d5c0;padding-top:10px;margin-top:10px;font-size:0.6rem;color:#bbb;letter-spacing:3px;">\u5929\u547d\u9451\u5b9a \u00b7 \u5b97\u5e08\u5217\u4f20</div>'+                '</div>';            document.body.appendChild(card);            var canvas = await html2canvas(card,{scale:2,backgroundColor:'#fdf8f0',logging:false});            document.body.removeChild(card);            var a = document.createElement('a');            a.download='share_'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'.png';            a.href=canvas.toDataURL('image/png',0.95);            a.click();            showError('\u2705 \u5206\u4eab\u5361\u7247\u5df2\u4fdd\u5b58');        }catch(e){showError('\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u622a\u56fe');}        finally{btn.disabled=false;btn.innerHTML=orig;}    }
+    window.exportCard = async function() {
+        var btn = document.querySelector('.export-btn');
+        var orig = btn.innerHTML;
+        try {
+            btn.disabled = true; btn.innerHTML = '\u23f3';
+            var d = window._lastScanData;
+            if (!d || !d.pillars) { showError('\u8bf7\u5148\u8fdb\u884c\u9451\u5b9a'); return; }
+            var patternKey = d.pattern || '';
+            var gameData = typeof GAME_DB !== "undefined" && GAME_DB[patternKey];
+            var displayName = (gameData && gameData.name) || patternKey;
+            var slogan = (gameData && gameData.male && gameData.male.c && gameData.male.c.replace(/<[^>]+>/g,'')) || document.getElementById('role-sub').textContent || '';
+            var dm = d.dm || '';
+            var tags = document.getElementById('role-tags').textContent || '';
+            var qrImg = new Image();
+            qrImg.crossOrigin = 'Anonymous';
+            await new Promise(function(resolve) {
+                qrImg.onload = resolve;
+                qrImg.onerror = resolve;
+                qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=70x70&data=http://8.137.196.149/&margin=6';
+            });
+            var qrDataUrl = '';
+            if (qrImg.src && qrImg.naturalWidth > 0) {
+                var qrc = document.createElement('canvas');
+                qrc.width = 70; qrc.height = 70;
+                qrc.getContext('2d').drawImage(qrImg, 0, 0);
+                qrDataUrl = qrc.toDataURL();
+            }
+            var card = document.createElement('div');
+            card.style.cssText = 'width:380px;padding:28px 20px;text-align:center;background:linear-gradient(135deg,#fdf8f0,#faf3e6);border:2px solid #cfa972;border-radius:14px;position:fixed;left:-9999px;top:0;z-index:-1;';
+            var qrHtml = '';
+            if (qrDataUrl) {
+                qrHtml = '<div style="margin-top:14px;"><img src="'+qrDataUrl+'" style="width:60px;height:60px;display:block;margin:0 auto;"><div style="font-size:0.5rem;color:#aaa;margin-top:4px;letter-spacing:2px;">\u626b\u4e00\u626b \u00b7 \u6d4b\u4f60\u7684\u5929\u547d</div></div>';
+            }
+            card.innerHTML = 
+                '<div style="position:relative;padding:36px 20px;text-align:center;">'+
+                '<div style="position:absolute;top:10px;left:10px;width:24px;height:24px;border-top:2px solid #cfa972;border-left:2px solid #cfa972;border-radius:2px;"></div>'+
+                '<div style="position:absolute;top:10px;right:10px;width:24px;height:24px;border-top:2px solid #cfa972;border-right:2px solid #cfa972;border-radius:2px;"></div>'+
+                '<div style="position:absolute;bottom:10px;left:10px;width:24px;height:24px;border-bottom:2px solid #cfa972;border-left:2px solid #cfa972;border-radius:2px;"></div>'+
+                '<div style="position:absolute;bottom:10px;right:10px;width:24px;height:24px;border-bottom:2px solid #cfa972;border-right:2px solid #cfa972;border-radius:2px;"></div>'+
+                '<div style="font-size:1.5rem;font-weight:900;color:#8b2500;letter-spacing:2px;margin-bottom:4px;">'+displayName+'</div>'+
+                '<div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#cfa972,transparent);margin:8px auto;"></div>'+
+                '<div style="font-size:0.8rem;color:#8b5a2b;font-style:italic;margin:8px 0 12px;padding:0 10px;line-height:1.7;">'+slogan+'</div>'+
+                qrHtml+
+                '<div style="border-top:1px solid #e8d5c0;padding-top:10px;margin-top:10px;font-size:0.6rem;color:#bbb;letter-spacing:3px;">\u5929\u547d\u9451\u5b9a \u00b7 \u5b97\u5e08\u5217\u4f20</div>'+
+                '</div>';
+            document.body.appendChild(card);
+            var canvas = await html2canvas(card,{scale:2,backgroundColor:'#fdf8f0',logging:false});
+            document.body.removeChild(card);
+            var a = document.createElement('a');
+            a.download='share_'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'.png';
+            a.href=canvas.toDataURL('image/png',0.95);
+            a.click();
+            showError('\u2705 \u5206\u4eab\u5361\u7247\u5df2\u4fdd\u5b58');
+        }catch(e){showError('\u751f\u6210\u5931\u8d25\uff0c\u8bf7\u622a\u56fe');}
+        finally{btn.disabled=false;btn.innerHTML=orig;}
+    }
 
     /**
      * 显示用户友好的错误提示
