@@ -927,6 +927,43 @@ button, [onclick], input, select {
 </head>
 <body>
 <script>
+    // ===== 防盗：仅允许官方域名运行 =====
+    (function(){
+        var allowed = ['qq6783689.github.io','localhost','127.0.0.1'];
+        var host = window.location.hostname;
+        var ok = allowed.some(function(a){return host===a||host.endsWith('.'+a);});
+        if (!ok) {
+            document.body.innerHTML = '<div style="text-align:center;padding:100px 20px;font-family:sans-serif;"><h1 style="color:#c0392b;">⚠️ 非官方站点</h1><p>本项目仅授权在官方域名运行。</p><p>当前域名：<b>'+host+'</b></p><p>请访问 <a href="https://qq6783689.github.io/Fate/">官方站点</a></p></div>';
+            throw new Error('未授权域名: '+host);
+
+    // ===== 开发者工具提醒 =====
+    (function(){
+        var _console = console.log;
+        console.log = function(){
+            var args = Array.prototype.slice.call(arguments);
+            if (args.length===1 && typeof args[0]==='string' && args[0].indexOf('\u2705')===0) return;
+            _console.apply(console, args);
+        };
+        document.addEventListener('contextmenu', function(e){
+            var t = e.target;
+            if (t.closest && t.closest('#result-area')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        document.addEventListener('keydown', function(e){
+            if ((e.ctrlKey && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) || e.key==='F12'){
+                e.preventDefault();
+                return false;
+            }
+        });
+    })();
+
+        }
+    })();
+
+</script>
+<script>
 // 🚀 移动端事件强制绑定（100%兼容方案）
 document.addEventListener('DOMContentLoaded', function() {
     // 1. 开始按钮双重事件绑定
