@@ -195,7 +195,7 @@ L7 病药检测   ±1.5 (大运是否解原局之病)
 
 ```
 Fate/
-├── index.html            # 主程序（~3800 行，V3.5 算法）
+├── index.html            # 主程序（~3800 行，V3.6 算法）
 ├── lunar.js              # Lunar-JavaScript 日历库 (435 KB)
 ├── html2canvas.min.js    # 截图导出库 (199 KB)
 ├── DESIGN.md             # 设计系统规范
