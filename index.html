@@ -2989,12 +2989,30 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             let trendText = '', trendIcon = '';
             const firstHalf = dayunScores.slice(0,4).reduce((a,b)=>a+b,0);
             const secondHalf = dayunScores.slice(4,8).reduce((a,b)=>a+b,0);
-            if (jiCount>=6) { trendText='好运占多数，哪怕原局普通，大运来修破车也能修好一阵'; trendIcon='🚀'; }
-            else if (xiongCount>=6) { trendText='大运多逆风，但原局好就是好车，偶尔进修理厂出来还是好车'; trendIcon='⚠️'; }
-            else if (firstHalf>secondHalf+4) { trendText='前半程发力猛，后半程需守成。已打下底子，不贪就是赢'; trendIcon='📉'; }
-            else if (secondHalf>firstHalf+4) { trendText='早期韬光养晦，中晚年才是你的主场。年轻时吃的苦都是存本钱'; trendIcon='📈'; }
-            else if (jiCount>=4&&xiongCount<=2) { trendText='稳中有升，波折不大，总体向好。该吃吃该喝喝，啥事不往心里搁'; trendIcon='✅'; }
-            else if (jiCount<=2&&xiongCount>=4) { trendText='逆风多于顺风，但没到绝望的时候。抓住那两三步好运，照样翻身'; trendIcon='🔄'; }
+            var mids = dayunScores.slice(2,6).reduce((a,b)=>a+b,0);
+            var edges = dayunScores[0]+dayunScores[1]+dayunScores[6]+dayunScores[7];
+            var up = 0, down = 0;
+            for (var si=1; si<8; si++) {
+                if (dayunScores[si] > dayunScores[si-1]) up++;
+                else if (dayunScores[si] < dayunScores[si-1]) down++;
+            }
+            var allPositive = jiCount == 8;
+            var allNegative = xiongCount == 8;
+            var middleDip = mids < 2 && edges > mids + 3;
+            var middlePeak = mids > 4 && edges < mids - 2;
+            var rising = up >= 5 && down <= 2;
+            var falling = down >= 5 && up <= 2;
+            
+            if (allPositive) { trendText='全程高能，天选之子。这辈子不是在开挂，就是在准备开挂的路上'; trendIcon='⭐'; }
+            else if (allNegative) { trendText='全程逆风，但原局足够强就能穿过风暴。你的艰难都是踩脚石'; trendIcon='⚠️'; }
+            else if (middleDip) { trendText='两头好中间折腾，像用高铁走山路。后阶段的运势是前半辈子积的德'; trendIcon='🏄'; }
+            else if (middlePeak) { trendText='两端平淡中间爆发，中年是你的黄金期。轻车简装，一路开挂到底'; trendIcon='🏆'; }
+            else if (rising) { trendText='先苦后甜，越活越开。年轻时吃的苦都是在存本钱，晚年笑到最后'; trendIcon='📈'; }
+            else if (falling) { trendText='先甜后苦，前半生是幸运儿，后半生靠智商。打下的底子不会白费，守住就是赢'; trendIcon='📉'; }
+            else if (jiCount>=5) { trendText='稳中有升，波折不大。该吃吃该喝喝，啥事不住心里搁'; trendIcon='✅'; }
+            else if (xiongCount>=5) { trendText='逆风多于顺风，但还没到绝望的时候。抓住那两三步好运，照样翻身'; trendIcon='🔄'; }
+            else if (up>down) { trendText='趋势向好，皮球似的越拍越高。别在低谷放弃，因为后面都是上坡路'; trendIcon='⚡'; }
+            else if (down>up) { trendText='趋势回落，要知足常乐。有的人用一生在登顶，有的人用半生在守城'; trendIcon='🌇'; }
             else { trendText='吉凶参半，平平稳稳。人生本就是修修补补，流水线断了再接上'; trendIcon='🌊'; }
             const trendHtml = '<div class="dayun-trend" style="margin-top:16px;padding:12px 16px;background:rgba(207,169,114,0.1);border-radius:8px;font-size:0.88rem;text-align:center;line-height:1.8;">' +
                 '<b>'+trendIcon+' 走势总览：</b>'+trendText+'</div>';
