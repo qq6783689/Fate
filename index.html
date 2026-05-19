@@ -2987,8 +2987,9 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             if (zhiKw.some(k=>joyText.includes(k))) { score+=0.3; reasons.push('支气得喜'); }
             else if (zhiKw.some(k=>tabooText.includes(k))) { score-=0.3; reasons.push('支气犯忌'); }
             dayunScores.push(score); // 收集走势数据
-            // V3.7: 专家校准案例大运覆盖
-            if (window._knownDayun && window._knownDayun[i]) {
+            // V3.7: 专家校准案例大运覆盖（命中则跳过L7，避免校准分数被改写）
+            const isKnownCase = window._knownDayun && window._knownDayun[i];
+            if (isKnownCase) {
                 const knownLabel = window._knownDayun[i];
                 const knownMap = {"大吉":4,"吉":2.5,"偏吉":1.5,"小吉":1,"平":0,"平偏吉":0.5,"平偏凶":-0.5,"小凶":-1,"偏凶":-1.5,"凶":-2.5,"大凶":-4};
                 if (knownLabel in knownMap) {
@@ -2997,15 +2998,17 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 }
             }
             
-            // 第七层：病药检测（大运是否解原局之病）
-            const by = window._lastBingYao;
-            if (by && by.bing.length>0) {
+            // 第七层：病药检测（大运是否解原局之病）——仅通用模式
+            if (!isKnownCase) {
+                const by = window._lastBingYao;
+                if (by && by.bing.length>0) {
                 const bingText = by.bing.join('');
                 const yaoText = by.yao.join('');
                 const dyWx2 = WUXING_MAP[dayunGan];
                 // 大运带来的是药还是加重了病？
                 if (yaoText.includes(dyWx2)||yaoText.includes(dayunGan)||yaoText.includes(shishen)) { score+=1.5; reasons.push('解原局之病'); }
                 if (bingText.includes(dyWx2)||bingText.includes(dayunGan)||bingText.includes(shishen)) { score-=1.5; reasons.push('加重原局之病'); }
+                }
             }
             
             // 综合判定 V3.3：五档制（喜忌是动态的，没有绝对的吉凶）
