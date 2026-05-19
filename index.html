@@ -2814,10 +2814,22 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             else if (zhiHeScore>=0.5) score+=1;
             
             
-            // 第三层：制化关系（+1）
+            // 第三层：制化关系（±1~1.5）
             if (shishen==='七杀' && pillars.some(p=>SHISHEN_MAP[dm][p.g]==='食神')) { score+=1; reasons.push('杀有食制'); }
             else if (shishen==='七杀' && pillars.some(p=>['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { score+=1; reasons.push('杀有印化'); }
             if (shishen==='伤官' && pillars.some(p=>['正印','偏印'].includes(SHISHEN_MAP[dm][p.g]))) { score+=1; reasons.push('伤官配印'); }
+            // V3.7: 枭印夺食检测 —— 大运偏印夺原局透干食神，才华受压
+            const dyGod = SHISHEN_MAP[dm][dayunGan];
+            if (dyGod==='偏印' && pillars.some(p=>SHISHEN_MAP[dm][p.g]==='食神')) { score-=1; reasons.push('枭印夺食'); }
+            // V3.7: 比劫夺财检测 —— 大运比劫见原局透干财星，破财信号
+            if (['比肩','劫财'].includes(dyGod) && pillars.some(p=>['正财','偏财'].includes(SHISHEN_MAP[dm][p.g]))) { score-=0.5; reasons.push('比劫夺财'); }
+            // V3.7: 天干五合绊检测 —— 正财合日主或杀合劫财，被牵住走不动
+            const GAN_HE = {'甲':'己','己':'甲','乙':'庚','庚':'乙','丙':'辛','辛':'丙','丁':'壬','壬':'丁','戊':'癸','癸':'戊'};
+            const heTarget = GAN_HE[dayunGan];
+            if (heTarget) {
+                if (heTarget===dm) { score-=0.5; reasons.push('合绊日主'); }
+                else if (pillars.some(p=>p.g===heTarget)) { score-=0.3; reasons.push('合绊原局'); }
+            }
             
             // 第四层：十二长生（天干在支的状态）
             const dyCS = CHANGSHENG_TABLE[dayunGan][dayunZhi];
