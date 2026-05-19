@@ -2271,9 +2271,16 @@ console.log("✅ 业务脚本开始执行");
         const dayCS = CHANGSHENG_TABLE[dm][pillars[2].z];
         const dmSelfStrong = ['帝旺','临官','长生'].includes(dayCS);
         if (!dmRooted && !dmSelfStrong) {
-            if (mzMainGod.includes("财")) { if (totalSupportScore < 0.5) return "真从财格"; if (totalSupportScore <= 1.0) return "假从财格"; }
-            if (mzMainGod==="七杀"||mzMainGod==="正官") { if (totalSupportScore < 0.5) return "真从杀格"; if (totalSupportScore <= 1.0) return "假从杀格"; }
-            if (mzMainGod==="食神"||mzMainGod==="伤官") { const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s])); if (!hasSeal && totalSupportScore < 0.5) return "真从儿格"; if (totalSupportScore <= 1.5) return "假从儿格"; }
+            // V3.7: 阳干从气不从势，收紧阈值（星露：一口气/一个比劫就不从）
+            const isYangGan = ['甲','丙','戊','庚','壬'].includes(dm);
+            const yangForceStrict = isYangGan && stemsSupportCount >= 1;  // 阳干天干有帮身 → 不从
+            if (!yangForceStrict) {
+                const tsThreshold = isYangGan ? 0.3 : 0.5;  // 阳干更难从（天干无帮身才走从格）
+                const fsThreshold = isYangGan ? 0.7 : 1.0;  // 阳干假从阈值更严
+                if (mzMainGod.includes("财")) { if (totalSupportScore < tsThreshold) return "真从财格"; if (totalSupportScore <= fsThreshold) return "假从财格"; }
+                if (mzMainGod==="七杀"||mzMainGod==="正官") { if (totalSupportScore < tsThreshold) return "真从杀格"; if (totalSupportScore <= fsThreshold) return "假从杀格"; }
+                if (mzMainGod==="食神"||mzMainGod==="伤官") { const hasSeal = stems.some(s => ["正印","偏印"].includes(SHISHEN_MAP[dm][s])); if (!hasSeal && totalSupportScore < tsThreshold) return "真从儿格"; if (totalSupportScore <= fsThreshold+0.5) return "假从儿格"; }
+            }
         }
         // === 2.5 干支作用检测 ===
         const clashes = detectGanClash(stems); let keyGodClashed = false;
@@ -2295,12 +2302,13 @@ console.log("✅ 业务脚本开始执行");
         const hqPair = [dm,hqPartner].sort().join('');
         const hqWx = hqTarget[hqPair];
         if (hqWx && stems.includes(hqPartner)) {
+            // V3.7: 月令本气 + 人元司令 双重验证
             const mzWx = WUXING_MAP[ZHI_MAIN_QI[mz]];
-            if (mzWx === hqWx) return "化气格";
-        }
-        if (hqWx && stems.includes(hqPartner)) {
-            const hqSupport = pillars.some(p => WUXING_MAP[ZHI_MAIN_QI[p.z]] === hqWx);
-            if (hqSupport) return "化气格";
+            const cmdWx = WUXING_MAP[cmd.commander] || '';  // 人元司令
+            // 月令本气支持化神 或 人元司令支持化神（星露：司令对了才能化）
+            const hqConfirmed = (mzWx === hqWx) || (cmdWx === hqWx) || 
+                (['辰','戌','丑','未'].includes(mz) && cmdWx === hqWx);  // 杂气月重司令
+            if (hqConfirmed && pillars.some(p => WUXING_MAP[ZHI_MAIN_QI[p.z]] === hqWx)) return "化气格";
         }
 
         const kuiGangGZ = ["壬辰","庚辰","庚戌","戊戌"];
@@ -2447,7 +2455,7 @@ console.log("✅ 业务脚本开始执行");
 
                 const dm = pillars[2].g; // 日主天干
                 const mz = pillars[1].z; // 月支
-                const cmd = calcCommander(lunar, mz);
+                const cmd = calcCommander(lunar, mz); window._lastCommander = cmd.commander;
 
                 // 调候激活判断 V3.0 基于穷通宝鉴
                 const isWinter = ['亥', '子', '丑'].includes(mz);
@@ -2476,7 +2484,13 @@ console.log("✅ 业务脚本开始执行");
                 const climate = { special: null };
                 if (WUXING_MAP[dm]==='金' && isWinter) { climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官') ? '金水伤官' : '金水食神'; }
                 if (WUXING_MAP[dm]==='木' && ['寅','卯','辰'].includes(mz)) { const hf = pillars.some(p => WUXING_MAP[p.g]==='火'); if (hf) climate.special = '木火通明'; }
-                if (WUXING_MAP[dm]==='水' && isSummer) { climate.special = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官') ? '水火既济' : null; }
+                // V3.7: 水火既济须水火力量相当，水日主夏天+伤官+火有根才成立
+                if (WUXING_MAP[dm]==='水' && isSummer) {
+                    const hasHurt = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官');
+                    const fireCount = pillars.filter(p => WUXING_MAP[p.g]==='火').length + 
+                                      pillars.filter(p => WUXING_MAP[ZHI_MAIN_QI[p.z]]==='火').length;
+                    if (hasHurt && fireCount >= 2) climate.special = '水火既济';
+                }
                 if (WUXING_MAP[dm]==='土' && isSummer) { if (pillars.some(p => p.g==='壬')) climate.special = '土金伤官'; }
                 if (WUXING_MAP[dm]==='木' && (isSummer||mz==='巳')) { const hw = pillars.some(p => WUXING_MAP[p.g]==='水'); const hr = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官' && hasRoot(p.g, pillars)); if (hw && hr) climate.special = '伤官配印'; }
 
@@ -2768,12 +2782,23 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const dyZhi = dayunZhi;
             const zhiList = pillars.map(p=>p.z);
             const sanheCombo = [['申','子','辰'],['亥','卯','未'],['寅','午','戌'],['巳','酉','丑']];
+            const sanheYinZhi = {'申':['子','辰'], '亥':['卯','未'], '寅':['午','戌'], '巳':['酉','丑']};  // V3.7: 引化物地支
+            const sanheWxMap2 = {'申':'水','亥':'木','寅':'火','巳':'金'};
             let zhiHeScore = 0;
             for (let sh of sanheCombo) {
                 const cnt = sh.filter(z=>zhiList.includes(z)||z===dyZhi).length;
                 if (cnt>=2 && (zhiList.includes(dyZhi)||sh.includes(dyZhi))) {
-                    if (cnt===3) { zhiHeScore=2; reasons.push('地支三合局·气势大变'); break; }
-                    else { zhiHeScore=1; reasons.push('地支半合'); }
+                    if (cnt===3) {
+                        // V3.7: 验证引化条件
+                        const heWx2 = sanheWxMap2[sh[0]];
+                        const yinZhis = sanheYinZhi[sh[0]];  // 引化物
+                        // 月支是引化物 或 人元司令五行匹配化神
+                        const cmdWx3 = (window._lastCommander && WUXING_MAP[window._lastCommander]) || '';
+                        const supported = yinZhis.includes(mz) || (cmdWx3 && cmdWx3 === heWx2);
+                        zhiHeScore = supported ? 2 : 1;
+                        reasons.push(supported ? '地支三合(成化)' : '地支三合(未化)');
+                        break;
+                    } else { zhiHeScore=1; reasons.push('地支半合'); }
                 }
             }
             if (zhiHeScore===0 && ZHI_LIUHE[dyZhi]) {
