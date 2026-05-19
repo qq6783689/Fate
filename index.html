@@ -2948,20 +2948,24 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             else if (seasonWx==='死') { score-=0.3; reasons.push('失时无力'); }
             
             // 第五层：调候贡献（+1 / 调候根损-1）
-            // V3.7: 检测大运地支是否合/冲了调候干支的根
+            // V3.7: 检测大运地支是否合/冲了调候干支的藏干根（非坐支）
             const thRootDamaged = tiaoHouGans.some(function(th){
                 return pillars.some(function(p){
-                    if (p.g!==th) return false;
-                    // 该调候干支的根是否被冲
-                    if (oppZhi && p.z===oppZhi) return true;
-                    // 该调候干支的根是否被六合
-                    if (ZHI_LIUHE[dyZhi] && p.z===ZHI_LIUHE[dyZhi]) return true;
-                    // 该调候干支的根是否被三合/半合拉走
+                    // 找调候天干th在地支中的藏干根（哪些地支的藏干包含th）
+                    const rootZhis = pillars.filter(function(pp){
+                        var h = HIDDEN_STEMS[pp.z] || [];
+                        return h.includes(th);
+                    }).map(function(pp){return pp.z;});
+                    // 这些根是否被冲
+                    if (oppZhi && rootZhis.includes(oppZhi)) return true;
+                    // 这些根是否被六合
+                    if (ZHI_LIUHE[dyZhi] && rootZhis.includes(ZHI_LIUHE[dyZhi])) return true;
+                    // 这些根是否被三合/半合拉走
                     const sanheRootTest = [['申','子','辰'],['亥','卯','未'],['寅','午','戌'],['巳','酉','丑']];
                     for (var si=0;si<sanheRootTest.length;si++){
                         var sh=sanheRootTest[si];
                         var cnt=sh.filter(function(z){return zhiList.includes(z)||z===dyZhi}).length;
-                        if(cnt>=2 && sh.includes(p.z)) return true;
+                        if(cnt>=2 && rootZhis.some(function(rz){return sh.includes(rz)})) return true;
                     }
                     return false;
                 });
