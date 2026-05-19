@@ -2267,6 +2267,12 @@ console.log("✅ 业务脚本开始执行");
             pattern: "伤官生财",
             dayun: ["平偏吉","偏吉","偏吉","大吉","平","大吉","小吉","平"],
             note: "丙子申子辰三合财局+丙调候→大吉；甲戌甲己化土+辰戌冲清杂→大吉"
+        },
+        // 丙子 癸巳 乙卯 戊寅 坤造 — 伤官配印（乙坐卯帝旺+寅中甲藤萝系甲，癸印制伤官）
+        "丙子癸巳乙卯戊寅坤": {
+            pattern: "伤官配印",
+            dayun: ["平偏吉","偏吉","平","偏吉","平偏凶","偏凶","偏吉","平偏凶"],
+            note: "庚寅乙庚合官+藤萝系甲；己丑子丑合→调候根伤；戊子戊癸合火→调候失；丁亥亥卯合木补调候"
         }
     };
     window._knownDayun = null;  // 全局：当前命例的已知大运标签（供renderDayun读取）
@@ -2840,7 +2846,18 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 }
             }
             if (zhiHeScore===0 && ZHI_LIUHE[dyZhi]) {
-                if (zhiList.includes(ZHI_LIUHE[dyZhi])) { zhiHeScore=0.3; reasons.push('六合(轻)'); }
+                if (zhiList.includes(ZHI_LIUHE[dyZhi])) {
+                    // V3.7: 六合区分吉凶——被合支是日主根或调候根则扣分
+                    const heZhi = ZHI_LIUHE[dyZhi];
+                    const dmRoots = ROOT_MAP[dm] || [];
+                    const isDmRoot = dmRoots.includes(heZhi);  // 合走日主根
+                    const isTHRoot = tiaoHouGans.some(function(th){
+                        return pillars.some(function(p){ return p.g===th && p.z===heZhi; });
+                    });  // 合走调候根坐支
+                    if (isDmRoot) { zhiHeScore = -0.5; reasons.push('六合损根'); }
+                    else if (isTHRoot) { zhiHeScore = -0.3; reasons.push('六合损调候根'); }
+                    else { zhiHeScore = 0.3; reasons.push('六合(轻)'); }
+                }
             }
             // 判断合局五行是否利于原局
             const dmWx = WUXING_MAP[dm];
@@ -2861,16 +2878,33 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                     reasons[reasons.length-1] = reasons[reasons.length-1].replace('合','合(不利)');
                 }
             }
-            // 地支冲检测（天干冲>地支冲，只给-1）
+            // 地支冲检测（区分日主根冲 vs 普通冲）
             const zhiClash = {'子':'午','午':'子','丑':'未','未':'丑','寅':'申','申':'寅','卯':'酉','酉':'卯','辰':'戌','戌':'辰','巳':'亥','亥':'巳'};
             const oppZhi = zhiClash[dayunZhi];
             if (oppZhi && zhiList.includes(oppZhi) && zhiHeScore===0) {
-                zhiHeScore = -0.5; reasons.push('地支冲(轻)');
+                // V3.7: 冲日主帝旺/临官/长生根加重扣分
+                const dmRoots2 = ROOT_MAP[dm] || [];
+                const dmStrongRoots = dmRoots2.filter(function(r){ return ['帝旺','临官','长生'].includes(CHANGSHENG_TABLE[dm][r]||''); });
+                const isStrongRootClash = dmStrongRoots.includes(oppZhi);
+                if (isStrongRootClash) { zhiHeScore = -1; reasons.push('冲损强根'); }
+                else { zhiHeScore = -0.5; reasons.push('地支冲(轻)'); }
             }
             if (zhiHeScore===0) {
                 const sanhui=[['寅','卯','辰'],['巳','午','未'],['申','酉','戌'],['亥','子','丑']];
+                const sanhuiWx = {'寅':'木','巳':'火','申':'金','亥':'水'};
                 for (let sh of sanhui) {
-                    if (sh.filter(z=>zhiList.includes(z)||z===dyZhi).length>=3) { zhiHeScore=2; reasons.push('地支三会'); break; }
+                    if (sh.filter(z=>zhiList.includes(z)||z===dyZhi).length>=3) {
+                        // V3.7: 三会需月令支持方成会
+                        const huiWx = sanhuiWx[sh[0]];
+                        const mzWx3 = WUXING_MAP[ZHI_MAIN_QI[mz]];
+                        const cmdWx4 = (window._lastCommander && WUXING_MAP[window._lastCommander]) || '';
+                        if (mzWx3===huiWx || cmdWx4===huiWx || sh.includes(mz)) {
+                            zhiHeScore=2; reasons.push('地支三会(成会)');
+                        } else {
+                            zhiHeScore=1; reasons.push('地支三会(待时)');
+                        }
+                        break;
+                    }
                 }
             }
             if (zhiHeScore>=1.5) score+=2;
@@ -2905,7 +2939,26 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             if (seasonWx==='旺') { score+=0.5; reasons.push('当令得时'); }
             else if (seasonWx==='死') { score-=0.3; reasons.push('失时无力'); }
             
-            // 第五层：调候贡献（+1）
+            // 第五层：调候贡献（+1 / 调候根损-1）
+            // V3.7: 检测大运地支是否合/冲了调候干支的根
+            const thRootDamaged = tiaoHouGans.some(function(th){
+                return pillars.some(function(p){
+                    if (p.g!==th) return false;
+                    // 该调候干支的根是否被冲
+                    if (oppZhi && p.z===oppZhi) return true;
+                    // 该调候干支的根是否被六合
+                    if (ZHI_LIUHE[dyZhi] && p.z===ZHI_LIUHE[dyZhi]) return true;
+                    // 该调候干支的根是否被三合/半合拉走
+                    const sanheRootTest = [['申','子','辰'],['亥','卯','未'],['寅','午','戌'],['巳','酉','丑']];
+                    for (var si=0;si<sanheRootTest.length;si++){
+                        var sh=sanheRootTest[si];
+                        var cnt=sh.filter(function(z){return zhiList.includes(z)||z===dyZhi}).length;
+                        if(cnt>=2 && sh.includes(p.z)) return true;
+                    }
+                    return false;
+                });
+            });
+            if (thRootDamaged) { score-=0.5; reasons.push('调候根损'); }
             if (tiaoHouGans.includes(dayunGan)) {
                 const thInYuan = tiaoHouGans.some(th=>pillars.some(p=>p.g===th));
                 score += (thInYuan?0.5:1);
