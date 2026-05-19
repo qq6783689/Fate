@@ -3253,48 +3253,46 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             var ss = SHISHEN_MAP[newDM][dyG] || '未知';
             var age = startAge + i*10;
             var yr = birthYearVal + age;
-            // 幼胎大运评分（L1十神+L5调候+L6扶抑）
+// 幼胎大运评分 V3.7（对齐主大运：L1-L6全层）
             var tScore = 0; var tReasons = [];
-            // L1: 十神本性（弱日主则比劫印星为善）
-            var tDmCS = CHANGSHENG_TABLE[newDM][d.mz];  // 新日主在月令的状态
-            var tDmWeak = ['死','墓','绝'].includes(tDmCS);
-            var goodGods = tDmWeak ? ['正印','偏印','比肩','劫财'] : ['正财','偏财','正官','正印','偏印','食神','比肩'];
-            var badGods = tDmWeak ? ['七杀','正官','正财','偏财','伤官','食神'] : ['七杀','伤官','劫财','羊刃'];
-            if (goodGods.includes(ss)) { tScore += 1; tReasons.push(tDmWeak?'扶身':'吉神'); }
-            else if (badGods.includes(ss)) { tScore -= 1; tReasons.push(tDmWeak?'耗身':'忌神'); }
+            // L1: 十神本性（用calcDMStrength替代简化十二长生）
+            var tDmScore = calcDMStrength(newDM, d.pillars);
+            var tDmStrong = tDmScore >= 14;
+            var tGoodGods = tDmStrong ? ['正财','偏财','正官','七杀','食神','伤官'] : ['正印','偏印','比肩','劫财'];
+            var tBadGods = tDmStrong ? ['正印','偏印','比肩','劫财','羊刃'] : ['正官','七杀','伤官'];
+            if (tGoodGods.includes(ss)) { tScore += 1; tReasons.push(tDmStrong?'克泄为吉':'扶身为吉'); }
+            else if (tBadGods.includes(ss)) { tScore -= 1; tReasons.push(tDmStrong?'生扶为忌':'克泄为忌'); }
+            // L2: 天干冲合（简化版：只检测大运天干与原局冲合）
+            var tClashes = detectGanClash([].concat(d.pillars.map(function(p){return p.g}),[dyG])).filter(function(c){return c.a===dyG||c.b===dyG});
+            var tCombines = []; var tAllG = [].concat(d.pillars.map(function(p){return p.g}),[dyG]);
+            for (var x=0;x<tAllG.length;x++) { if(tAllG[x]!==dyG && GAN_COMBINE[tAllG[x]]===dyG) tCombines.push(tAllG[x]); }
+            if (tClashes.length>0) { var tOg=tClashes[0].a===dyG?tClashes[0].b:tClashes[0].a; var tOgGod=SHISHEN_MAP[newDM][tOg]; if(['正印','偏印','正官','正财'].includes(tOgGod)){tScore-=1;tReasons.push('冲克用神');} else{tScore+=1;tReasons.push('冲去忌神');} }
+            else if (tCombines.length>0) { var tOg2=tCombines[0]; var tOgGod2=SHISHEN_MAP[newDM][tOg2]; if(['正印','偏印','正官','正财'].includes(tOgGod2)){tScore-=0.5;tReasons.push('合绊用神');} else{tScore+=0.5;tReasons.push('合绊忌神');} }
+            // L3: 制化关系（枭印夺食/比劫夺财/合绊日主）
+            var tDyGod = SHISHEN_MAP[newDM][dyG];
+            if (tDyGod==='偏印' && d.pillars.some(function(p){return SHISHEN_MAP[newDM][p.g]==='食神'})) { tScore-=1; tReasons.push('枭印夺食'); }
+            if (['比肩','劫财'].includes(tDyGod) && d.pillars.some(function(p){return ['正财','偏财'].includes(SHISHEN_MAP[newDM][p.g])})) { tScore-=0.5; tReasons.push('比劫夺财'); }
+            var tGAN_HE = {'甲':'己','己':'甲','乙':'庚','庚':'乙','丙':'辛','辛':'丙','丁':'壬','壬':'丁','戊':'癸','癸':'戊'};
+            var tHeTgt = tGAN_HE[dyG]; if (tHeTgt && tHeTgt===newDM) { tScore-=0.5; tReasons.push('合绊日主'); }
+            // L4: 十二长生 + 旺相休囚死
+            var tCS = CHANGSHENG_TABLE[dyG][dyZ]; var tCsScore = (typeof CS_STRENGTH!=='undefined'?CS_STRENGTH:{'长生':3,'沐浴':2,'冠带':2.5,'临官':4,'帝旺':5,'衰':1.5,'病':0.8,'死':0.3,'墓':0.5,'绝':0.1,'胎':0.4,'养':1})[tCS]||1;
+            if (tCsScore>=4) { tScore+=1; tReasons.push('临旺地'); }
+            var tWxState = getWxState(WUXING_MAP[dyG]||'', d.mz);
+            if (tWxState==='旺') { tScore+=0.5; tReasons.push('当令'); }
+            else if (tWxState==='死') { tScore-=0.3; tReasons.push('失时'); }
             // L5: 调候
             var tTiaoHou = getTiaoHouGans(newDM, d.mz);
             if (tTiaoHou.includes(dyG)) { tScore += 1; tReasons.push('调候'); }
-            else { var dyHid = HIDDEN_STEMS[dyZ] || []; if (dyHid.some(h=>tTiaoHou.includes(h))) { tScore += 0.5; tReasons.push('支调候'); } }
-            // L6: 扶抑（弱喜生扶/强喜克泄）+ 旺相休囚死
-            var dyWx = WUXING_MAP[dyG] || '';
-            var dmWx2 = WUXING_MAP[newDM] || '';
+            else { var dyHid = HIDDEN_STEMS[dyZ] || []; if (dyHid.some(function(h){return tTiaoHou.includes(h)})) { tScore += 0.5; tReasons.push('支调候'); } }
+            // L6: 扶抑 + 地支合局
+            var dyWx = WUXING_MAP[dyG] || ''; var dmWx2 = WUXING_MAP[newDM] || '';
             var wxSheng = {'木':'水','火':'木','土':'火','金':'土','水':'金'};
-            if (tDmWeak && (dyWx===dmWx2 || wxSheng[dmWx2]===dyWx)) { tScore += 0.5; tReasons.push('扶抑得宜'); }
-            else if (!tDmWeak && (dyWx===dmWx2 || wxSheng[dyWx]===dmWx2)) { tScore -= 0.5; tReasons.push('扶抑不宜'); }
-            // 地支本气扶抑
+            if (!tDmStrong && (dyWx===dmWx2 || wxSheng[dmWx2]===dyWx)) { tScore += 0.5; tReasons.push('扶抑得宜'); }
+            else if (tDmStrong && (dyWx===dmWx2 || wxSheng[dyWx]===dmWx2)) { tScore -= 0.5; tReasons.push('扶抑不宜'); }
             var zhiQiWx = WUXING_MAP[ZHI_MAIN_QI[dyZ]] || '';
-            if (tDmWeak && (zhiQiWx===dmWx2 || wxSheng[dmWx2]===zhiQiWx)) { tScore += 0.3; }
-            else if (!tDmWeak && (zhiQiWx===dmWx2 || wxSheng[zhiQiWx]===dmWx2)) { tScore -= 0.3; }
-            // 旺相休囚死
-            var wxState = getWxState(dyWx, d.mz);
-            if (wxState==='旺') { tScore += 0.5; tReasons.push('当令'); }
-            else if (wxState==='死') { tScore -= 0.3; tReasons.push('失时'); }
-            // 地支合局（简化版：只检测三合半合是否帮身）
-            var zhiList2 = d.pillars.map(p=>p.z);
-            var sanhe = [['申','子','辰'],['亥','卯','未'],['寅','午','戌'],['巳','酉','丑']];
-            for (var s=0; s<sanhe.length; s++) {
-                var sh = sanhe[s];
-                var cnt = sh.filter(z=>zhiList2.includes(z)||z===dyZ).length;
-                if (cnt>=2 && (zhiList2.includes(dyZ)||sh.includes(dyZ))) {
-                    var heWx = ['水','木','火','金'][s];
-                    var heBonus = cnt===3 ? 2 : 1; // 全合+2, 半合+1
-                    if (heWx===dmWx2 || wxSheng[dmWx2]===heWx) { tScore += heBonus; tReasons.push(cnt===3?'三合帮身':'半合帮身'); }
-                    else { tScore -= 0.5; tReasons.push('合局泄身'); }
-                    break;
-                }
-            }
-            // 判定
+            if (!tDmStrong && (zhiQiWx===dmWx2 || wxSheng[dmWx2]===zhiQiWx)) { tScore += 0.3; }
+            else if (tDmStrong && (zhiQiWx===dmWx2 || wxSheng[zhiQiWx]===dmWx2)) { tScore -= 0.3; }
+            // 地支合局// 判定
             var label = tScore >= 1 ? '吉' : (tScore <= -1 ? '凶' : '平');
             var tTip = tReasons.slice(-2).join('·');
             var labelColor = label==='吉'?'#2e7d32':(label==='凶'?'#c62828':'#888');
