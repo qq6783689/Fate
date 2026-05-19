@@ -2463,7 +2463,7 @@ console.log("✅ 业务脚本开始执行");
                 const tiaoHouGans = getTiaoHouGans(dm, mz);
                 const tiaoHouPresent = tiaoHouGans.filter(th => pillars.some(p => p.g === th));
                 const tiaoHouRooted = tiaoHouGans.some(th => pillars.some(p => { const h = HIDDEN_STEMS[p.z] || []; return h.includes(th); }));
-                const dmScore = calcDMStrength(dm, pillars);
+                const dmScore = calcDMStrength(dm, pillars); window._dmScore = dmScore;
                 const dmExtreme = dmScore < 5 || dmScore > 20;
                 // 星露：特别弱或特别强时调候用不了，只有40%-60%均衡时调候才有效
                 const tiaoHouSkipped = dmExtreme;
@@ -2491,7 +2491,7 @@ console.log("✅ 业务脚本开始执行");
                                       pillars.filter(p => WUXING_MAP[ZHI_MAIN_QI[p.z]]==='火').length;
                     if (hasHurt && fireCount >= 2) climate.special = '水火既济';
                 }
-                if (WUXING_MAP[dm]==='土' && isSummer) { if (pillars.some(p => p.g==='壬')) climate.special = '土金伤官'; }
+                if (WUXING_MAP[dm]==='土' && isSummer) { const hasJin = pillars.some(p => WUXING_MAP[p.g]==='金'); const hasShui = pillars.some(p => p.g==='壬'||p.g==='癸'); if (hasJin && hasShui) climate.special = '土金伤官'; }
                 if (WUXING_MAP[dm]==='木' && (isSummer||mz==='巳')) { const hw = pillars.some(p => WUXING_MAP[p.g]==='水'); const hr = pillars.some(p => SHISHEN_MAP[dm][p.g]==='伤官' && hasRoot(p.g, pillars)); if (hw && hr) climate.special = '伤官配印'; }
 
                 const pattern = determinePattern(climate, pillars, dm, mz, cmd);
@@ -2725,8 +2725,15 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             // ========== 吉凶判断 V3.2 积分制 ==========
             // 各层独立投票，累加分数定吉凶平
             // 基础：善神+1 凶神-1 | 冲合：±2 | 制化：+1 | 长生：±1 | 调候：+1 | 格局：±1
-            const goodGods = ['正财','偏财','正官','正印','偏印','食神','比肩'];
-            const badGods = ['七杀','伤官','劫财','羊刃'];
+            // V3.7: 身强则克泄耗为善，身弱则印比为善
+            const dmScore2 = window._dmScore || 10;
+            const dmIsStrong = dmScore2 >= 14;
+            const strongGood = ['正财','偏财','正官','七杀','食神','伤官'];
+            const strongBad = ['正印','偏印','比肩','劫财','羊刃'];
+            const weakGood = ['正印','偏印','比肩','劫财'];
+            const weakBad = ['正官','七杀','伤官'];
+            const goodGods = dmIsStrong ? strongGood : weakGood;
+            const badGods = dmIsStrong ? strongBad : weakBad;
             let score = 0;
             let reasons = [];
             const tiaoHouGans = getTiaoHouGans(dm, mz); // 提前声明，供冲合层使用
