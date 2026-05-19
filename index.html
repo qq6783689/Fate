@@ -2339,13 +2339,16 @@ console.log("✅ 业务脚本开始执行");
         const hqPair = [dm,hqPartner].sort().join('');
         const hqWx = hqTarget[hqPair];
         if (hqWx && stems.includes(hqPartner)) {
-            // V3.7: 月令本气 + 人元司令 双重验证
+            // V3.7: 月令本气 + 人元司令 + 被合天干无根（三重验证）
             const mzWx = WUXING_MAP[ZHI_MAIN_QI[mz]];
-            const cmdWx = WUXING_MAP[cmd.commander] || '';  // 人元司令
-            // 月令本气支持化神 或 人元司令支持化神（星露：司令对了才能化）
+            const cmdWx = WUXING_MAP[cmd.commander] || '';
             const hqConfirmed = (mzWx === hqWx) || (cmdWx === hqWx) || 
-                (['辰','戌','丑','未'].includes(mz) && cmdWx === hqWx);  // 杂气月重司令
-            if (hqConfirmed && pillars.some(p => WUXING_MAP[ZHI_MAIN_QI[p.z]] === hqWx)) return "化气格";
+                (['辰','戌','丑','未'].includes(mz) && cmdWx === hqWx);
+            // 星露：阳干从气不从势，有根则不化。被合天干在地支无根才可能真化
+            const dmHasRoot = hasRoot(dm, pillars);
+            const partnerHasRoot = hasRoot(hqPartner, pillars);
+            const noRootBlock = !dmHasRoot && !partnerHasRoot;
+            if (hqConfirmed && noRootBlock && pillars.some(p => WUXING_MAP[ZHI_MAIN_QI[p.z]] === hqWx)) return "化气格";
         }
 
         const kuiGangGZ = ["壬辰","庚辰","庚戌","戊戌"];
@@ -2796,14 +2799,17 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
                 else if (['正印','偏印','正官','正财'].includes(ogGod)) { score-=(ogRoot?1:2); reasons.push(ogRoot?'冲克用神(有根)':'冲克用神'); }
             } else if (dyCombines.length>0) {
                 const og=dyCombines[0].yuanJu; const ogGod=SHISHEN_MAP[dm][og];
-                // 判断是否真化：月令支持化神才化，否则只是合绊
+                // 判断是否真化：月令+人元司令支持化神才化，否则只是合绊
                 const hqTest = {'甲己':'土','乙庚':'金','丙辛':'水','丁壬':'木','戊癸':'火'};
                 const pair = [og,dayunGan].sort().join('');
                 const hqWx2 = hqTest[pair];
                 const mzWx2 = WUXING_MAP[ZHI_MAIN_QI[mz]];
-                // 真化需：月令支持化神 + 被合天干在支无根（有根则合而不化）
+                // V3.7: 加人元司令验证（星露：司令对了才能化）
+                const cmdWx5 = (window._lastCommander && WUXING_MAP[window._lastCommander]) || '';
+                const hqMomentSupported = mzWx2===hqWx2 || cmdWx5===hqWx2;
+                // 真化需：月令/司令支持化神 + 被合天干无根
                 const ogHasRoot = hasRoot(og, pillars);
-                const isHua = hqWx2 && mzWx2===hqWx2 && !ogHasRoot;
+                const isHua = hqWx2 && hqMomentSupported && !ogHasRoot;
                 // 争合检测：原局是否有另一个天干也能合 dayunGan
                 const zhengHe = dyCombines.length>=2;
                 if (zhengHe) {
@@ -2920,10 +2926,12 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             if (dyGod==='偏印' && pillars.some(p=>SHISHEN_MAP[dm][p.g]==='食神')) { score-=1; reasons.push('枭印夺食'); }
             // V3.7: 比劫夺财检测 —— 大运比劫见原局透干财星，破财信号
             if (['比肩','劫财'].includes(dyGod) && pillars.some(p=>['正财','偏财'].includes(SHISHEN_MAP[dm][p.g]))) { score-=0.5; reasons.push('比劫夺财'); }
-            // V3.7: 天干五合绊检测 —— 正财合日主或杀合劫财，被牵住走不动
+            // V3.7: 天干五合绊检测（仅当L2未处理此合时才生效，避免双重计数）
             const GAN_HE = {'甲':'己','己':'甲','乙':'庚','庚':'乙','丙':'辛','辛':'丙','丁':'壬','壬':'丁','戊':'癸','癸':'戊'};
             const heTarget = GAN_HE[dayunGan];
-            if (heTarget) {
+            // dyCombines在L2已定义，若已处理则跳过
+            const alreadyCombined = typeof dyCombines !== 'undefined' && dyCombines.length > 0;
+            if (heTarget && !alreadyCombined) {
                 if (heTarget===dm) { score-=0.5; reasons.push('合绊日主'); }
                 else if (pillars.some(p=>p.g===heTarget)) { score-=0.3; reasons.push('合绊原局'); }
             }
