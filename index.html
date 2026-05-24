@@ -2356,9 +2356,24 @@ console.log("✅ 业务脚本开始执行");
         if (YANG_REN_MAP[dm]===mz) return "阳刃格";
         if (WUXING_MAP[dm]===WUXING_MAP[mz] && mz!==YANG_REN_MAP[dm]) return "建禄格";
         if (mzMainGod==="劫财") return "月劫格";
+        // V3.7: 司令透干 → 取格（星露：月令之气透干方可成格）
         if (stems.includes(cmd.commander)) { const god = SHISHEN_MAP[dm][cmd.commander]; const map = {"正财":"正财格","偏财":"偏财格","正官":"正官格","七杀":"七杀格","正印":"正印格","偏印":"偏印格","食神":"食神格","伤官":"伤官格"}; if (map[god]) return map[god]; }
-        const fallback = {"正财":"正财格","偏财":"偏财格","正官":"正官格","七杀":"七杀格","正印":"正印格","偏印":"偏印格","食神":"食神格","伤官":"伤官格","比肩":"建禄格","劫财":"月劫格"};
-        return fallback[mzMainGod] || "杂格";
+        // V3.7: 月支本气透干兜底 — 未透干则不直接取格（星露：地支主静，天干主动）
+        const mzQi = ZHI_MAIN_QI[mz];  // 月支本气
+        if (stems.includes(mzQi)) {
+            const fallback = {"正财":"正财格","偏财":"偏财格","正官":"正官格","七杀":"七杀格","正印":"正印格","偏印":"偏印格","食神":"食神格","伤官":"伤官格","比肩":"建禄格","劫财":"月劫格"};
+            return fallback[mzMainGod] || "杂格";
+        }
+        // 月支本气不透，则从天干透出者中取（取能成格的最优先十神）
+        const godPriority = ["正官","七杀","正财","偏财","正印","偏印","食神","伤官"];
+        for (let g of godPriority) {
+            const hit = stemsExclDM.find(s => SHISHEN_MAP[dm][s] === g);
+            if (hit) {
+                const tianMap = {"正财":"正财格","偏财":"偏财格","正官":"正官格","七杀":"七杀格","正印":"正印格","偏印":"偏印格","食神":"食神格","伤官":"伤官格"};
+                return tianMap[g];
+            }
+        }
+        return "杂格";
     }
 
         // 病药分析：识别原局核心矛盾与解药
