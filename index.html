@@ -3335,6 +3335,20 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
             const seasonWx = getWxState(dyWx, mz);
             if (seasonWx==='旺') { score+=0.5; reasons.push('当令得时'); }
             else if (seasonWx==='死') { score-=0.3; reasons.push('失时无力'); }
+            // V3.7: 旺相休囚死补正 — 参考病药全局。生病的五行加重扣分，是药的五行减轻
+            const byObj = window._lastBingYao;
+            if (byObj && byObj.bing.length>0) {
+                const bingText = byObj.bing.join('');
+                const yaoText = byObj.yao.join('');
+                const wxShengCycle = {'木':'火','火':'土','土':'金','金':'水','水':'木'};
+                // 大运五行是病的源头（生bing）→ 再扣
+                if (bingText.includes(dyWx+'过旺') || bingText.includes(dyWx+'过')) { score-=0.5; reasons.push('助长原病'); }
+                // 大运五行生病的五行 → 间接助病
+                const dyFeedsBing = wxShengCycle[dyWx];
+                if (dyFeedsBing && (bingText.includes(dyFeedsBing+'过旺')||bingText.includes(dyFeedsBing+'过'))) { score-=0.3; reasons.push('间接助病'); }
+                // 大运五行是药 → 减轻
+                if (yaoText.includes(dyWx)||yaoText.includes(dayunGan)) { score+=0.5; reasons.push('药到病所'); }
+            }
             
             // 第五层：调候贡献（+1 / 调候根损-1）
             // V3.7: 检测大运地支是否合/冲了调候干支的藏干根（非坐支）
