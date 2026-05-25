@@ -827,7 +827,65 @@
             align-items: center;
             margin-bottom: 8px;
         }
-        .solar-time-select {
+        .city-autocomplete {
+    position: relative;
+    width: 100%;
+}
+.city-autocomplete input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d4a574;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    background: #faf6f0;
+    color: #5d3a1a;
+    box-sizing: border-box;
+}
+.city-autocomplete input:focus {
+    outline: none;
+    border-color: #b8860b;
+    box-shadow: 0 0 0 2px rgba(184,134,11,0.15);
+}
+.city-dropdown {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #fffef9;
+    border: 1px solid #d4a574;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.city-dropdown.show { display: block; }
+.city-dropdown li {
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: #5d3a1a;
+    border-bottom: 1px solid #f0e6d2;
+}
+.city-dropdown li:hover, .city-dropdown li.active {
+    background: #f5ecd7;
+}
+.city-dropdown li .province {
+    font-size: 0.7rem;
+    color: #b8a07a;
+    margin-left: 8px;
+}
+.city-dropdown li.no-match {
+    cursor: default;
+    color: #999;
+    font-style: italic;
+}
+.city-dropdown li.no-match:hover { background: #fffef9; }
+
+.solar-time-select {
             flex: 1;
             padding: 8px 10px;
             border: 1px solid #ddd;
@@ -1033,412 +1091,11 @@ document.addEventListener('touchend', function (e) {
         </div>
         <div class="form-group">
             <span class="label">出生城市</span>
-            <select id="city-select" class="solar-time-select" onchange="updateSolarTime()">
-                <optgroup label="直辖市">
-                    <option value="116.46">北京</option>
-                    <option value="121.48">上海</option>
-                    <option value="117.20">天津</option>
-                    <option value="106.54">重庆</option>
-                </optgroup>
-                <optgroup label="河北">
-                    <option value="114.48">石家庄</option>
-                    <option value="118.18">唐山</option>
-                    <option value="119.60">秦皇岛</option>
-                    <option value="114.47">邯郸</option>
-                    <option value="114.50">邢台</option>
-                    <option value="115.48">保定</option>
-                    <option value="114.88">张家口</option>
-                    <option value="117.93">承德</option>
-                    <option value="116.83">沧州</option>
-                    <option value="116.70">廊坊</option>
-                    <option value="115.67">衡水</option>
-                </optgroup>
-                <optgroup label="山西">
-                    <option value="112.53">太原</option>
-                    <option value="113.30">大同</option>
-                    <option value="113.58">阳泉</option>
-                    <option value="113.12">长治</option>
-                    <option value="112.85">晋城</option>
-                    <option value="112.43">朔州</option>
-                    <option value="112.75">晋中</option>
-                    <option value="111.00">运城</option>
-                    <option value="112.73">忻州</option>
-                    <option value="111.52">临汾</option>
-                    <option value="111.13">吕梁</option>
-                </optgroup>
-                <optgroup label="内蒙古">
-                    <option value="111.65">呼和浩特</option>
-                    <option value="109.84">包头</option>
-                    <option value="106.82">乌海</option>
-                    <option value="118.87">赤峰</option>
-                    <option value="122.27">通辽</option>
-                    <option value="109.78">鄂尔多斯</option>
-                    <option value="119.77">呼伦贝尔</option>
-                    <option value="107.42">巴彦淖尔</option>
-                    <option value="113.13">乌兰察布</option>
-                    <option value="122.00">兴安盟</option>
-                    <option value="116.00">锡林郭勒</option>
-                    <option value="105.70">阿拉善</option>
-                </optgroup>
-                <optgroup label="辽宁">
-                    <option value="123.38">沈阳</option>
-                    <option value="121.62">大连</option>
-                    <option value="122.98">鞍山</option>
-                    <option value="123.91">抚顺</option>
-                    <option value="123.77">本溪</option>
-                    <option value="124.38">丹东</option>
-                    <option value="121.13">锦州</option>
-                    <option value="122.23">营口</option>
-                    <option value="121.65">阜新</option>
-                    <option value="123.17">辽阳</option>
-                    <option value="122.05">盘锦</option>
-                    <option value="123.84">铁岭</option>
-                    <option value="120.45">朝阳</option>
-                    <option value="120.86">葫芦岛</option>
-                </optgroup>
-                <optgroup label="吉林">
-                    <option value="125.35">长春</option>
-                    <option value="126.55">吉林</option>
-                    <option value="124.37">四平</option>
-                    <option value="125.13">辽源</option>
-                    <option value="125.92">通化</option>
-                    <option value="126.42">白山</option>
-                    <option value="124.82">松原</option>
-                    <option value="122.84">白城</option>
-                    <option value="129.51">延吉</option>
-                </optgroup>
-                <optgroup label="黑龙江">
-                    <option value="126.63">哈尔滨</option>
-                    <option value="123.97">齐齐哈尔</option>
-                    <option value="130.97">鸡西</option>
-                    <option value="130.30">鹤岗</option>
-                    <option value="131.15">双鸭山</option>
-                    <option value="125.03">大庆</option>
-                    <option value="128.92">伊春</option>
-                    <option value="130.33">佳木斯</option>
-                    <option value="131.02">七台河</option>
-                    <option value="129.62">牡丹江</option>
-                    <option value="127.53">黑河</option>
-                    <option value="126.98">绥化</option>
-                </optgroup>
-                <optgroup label="江苏">
-                    <option value="118.78">南京</option>
-                    <option value="120.31">无锡</option>
-                    <option value="117.18">徐州</option>
-                    <option value="119.95">常州</option>
-                    <option value="120.62">苏州</option>
-                    <option value="120.86">南通</option>
-                    <option value="119.22">连云港</option>
-                    <option value="119.02">淮安</option>
-                    <option value="120.15">盐城</option>
-                    <option value="119.42">扬州</option>
-                    <option value="119.42">镇江</option>
-                    <option value="119.92">泰州</option>
-                    <option value="118.28">宿迁</option>
-                </optgroup>
-                <optgroup label="浙江">
-                    <option value="120.19">杭州</option>
-                    <option value="121.54">宁波</option>
-                    <option value="120.65">温州</option>
-                    <option value="120.76">嘉兴</option>
-                    <option value="120.09">湖州</option>
-                    <option value="120.58">绍兴</option>
-                    <option value="119.64">金华</option>
-                    <option value="118.88">衢州</option>
-                    <option value="122.21">舟山</option>
-                    <option value="121.42">台州</option>
-                    <option value="119.92">丽水</option>
-                </optgroup>
-                <optgroup label="安徽">
-                    <option value="117.27">合肥</option>
-                    <option value="118.37">芜湖</option>
-                    <option value="117.36">蚌埠</option>
-                    <option value="116.99">淮南</option>
-                    <option value="118.50">马鞍山</option>
-                    <option value="116.79">淮北</option>
-                    <option value="117.81">铜陵</option>
-                    <option value="117.06">安庆</option>
-                    <option value="118.33">黄山</option>
-                    <option value="118.32">滁州</option>
-                    <option value="115.81">阜阳</option>
-                    <option value="116.97">宿州</option>
-                    <option value="116.52">六安</option>
-                    <option value="115.78">亳州</option>
-                    <option value="117.49">池州</option>
-                    <option value="118.75">宣城</option>
-                </optgroup>
-                <optgroup label="福建">
-                    <option value="119.30">福州</option>
-                    <option value="118.10">厦门</option>
-                    <option value="119.01">莆田</option>
-                    <option value="117.64">三明</option>
-                    <option value="118.58">泉州</option>
-                    <option value="117.65">漳州</option>
-                    <option value="118.17">南平</option>
-                    <option value="117.02">龙岩</option>
-                    <option value="119.52">宁德</option>
-                </optgroup>
-                <optgroup label="江西">
-                    <option value="115.89">南昌</option>
-                    <option value="117.18">景德镇</option>
-                    <option value="113.85">萍乡</option>
-                    <option value="115.99">九江</option>
-                    <option value="114.92">新余</option>
-                    <option value="117.07">鹰潭</option>
-                    <option value="114.93">赣州</option>
-                    <option value="114.99">吉安</option>
-                    <option value="114.38">宜春</option>
-                    <option value="116.36">抚州</option>
-                    <option value="117.94">上饶</option>
-                </optgroup>
-                <optgroup label="山东">
-                    <option value="117.00">济南</option>
-                    <option value="120.33">青岛</option>
-                    <option value="118.05">淄博</option>
-                    <option value="117.32">枣庄</option>
-                    <option value="118.50">东营</option>
-                    <option value="121.45">烟台</option>
-                    <option value="119.16">潍坊</option>
-                    <option value="116.58">济宁</option>
-                    <option value="117.08">泰安</option>
-                    <option value="122.12">威海</option>
-                    <option value="119.52">日照</option>
-                    <option value="118.35">临沂</option>
-                    <option value="116.30">德州</option>
-                    <option value="116.00">聊城</option>
-                    <option value="117.97">滨州</option>
-                    <option value="115.48">菏泽</option>
-                </optgroup>
-                <optgroup label="河南">
-                    <option value="113.65">郑州</option>
-                    <option value="114.31">开封</option>
-                    <option value="112.43">洛阳</option>
-                    <option value="113.19">平顶山</option>
-                    <option value="114.37">安阳</option>
-                    <option value="114.17">鹤壁</option>
-                    <option value="113.85">新乡</option>
-                    <option value="113.23">焦作</option>
-                    <option value="115.03">濮阳</option>
-                    <option value="113.85">许昌</option>
-                    <option value="114.02">漯河</option>
-                    <option value="111.20">三门峡</option>
-                    <option value="112.53">南阳</option>
-                    <option value="115.65">商丘</option>
-                    <option value="114.07">信阳</option>
-                    <option value="114.65">周口</option>
-                    <option value="114.02">驻马店</option>
-                </optgroup>
-                <optgroup label="湖北">
-                    <option value="114.31">武汉</option>
-                    <option value="115.07">黄石</option>
-                    <option value="110.80">十堰</option>
-                    <option value="111.29">宜昌</option>
-                    <option value="112.13">襄阳</option>
-                    <option value="114.87">鄂州</option>
-                    <option value="112.20">荆门</option>
-                    <option value="113.93">孝感</option>
-                    <option value="112.24">荆州</option>
-                    <option value="114.88">黄冈</option>
-                    <option value="114.33">咸宁</option>
-                    <option value="113.38">随州</option>
-                    <option value="109.48">恩施</option>
-                </optgroup>
-                <optgroup label="湖南">
-                    <option value="113.00">长沙</option>
-                    <option value="113.13">株洲</option>
-                    <option value="112.93">湘潭</option>
-                    <option value="112.57">衡阳</option>
-                    <option value="111.47">邵阳</option>
-                    <option value="113.10">岳阳</option>
-                    <option value="111.69">常德</option>
-                    <option value="110.48">张家界</option>
-                    <option value="112.36">益阳</option>
-                    <option value="113.02">郴州</option>
-                    <option value="111.61">永州</option>
-                    <option value="109.95">怀化</option>
-                    <option value="111.99">娄底</option>
-                    <option value="109.73">湘西</option>
-                </optgroup>
-                <optgroup label="广东">
-                    <option value="113.23">广州</option>
-                    <option value="114.07">深圳</option>
-                    <option value="113.55">珠海</option>
-                    <option value="116.68">汕头</option>
-                    <option value="113.12">佛山</option>
-                    <option value="113.60">韶关</option>
-                    <option value="110.36">湛江</option>
-                    <option value="112.44">肇庆</option>
-                    <option value="113.08">江门</option>
-                    <option value="110.93">茂名</option>
-                    <option value="114.42">惠州</option>
-                    <option value="116.12">梅州</option>
-                    <option value="115.36">汕尾</option>
-                    <option value="114.70">河源</option>
-                    <option value="111.97">阳江</option>
-                    <option value="113.03">清远</option>
-                    <option value="113.75">东莞</option>
-                    <option value="113.38">中山</option>
-                    <option value="116.63">潮州</option>
-                    <option value="116.37">揭阳</option>
-                    <option value="112.04">云浮</option>
-                </optgroup>
-                <optgroup label="广西">
-                    <option value="108.33">南宁</option>
-                    <option value="109.40">柳州</option>
-                    <option value="110.28">桂林</option>
-                    <option value="111.31">梧州</option>
-                    <option value="109.12">北海</option>
-                    <option value="108.35">防城港</option>
-                    <option value="108.65">钦州</option>
-                    <option value="109.60">贵港</option>
-                    <option value="110.16">玉林</option>
-                    <option value="106.62">百色</option>
-                    <option value="111.55">贺州</option>
-                    <option value="108.06">河池</option>
-                    <option value="109.22">来宾</option>
-                    <option value="107.37">崇左</option>
-                </optgroup>
-                <optgroup label="海南">
-                    <option value="110.35">海口</option>
-                    <option value="109.51">三亚</option>
-                    <option value="112.34">三沙</option>
-                    <option value="109.58">儋州</option>
-                </optgroup>
-                <optgroup label="四川">
-                    <option value="104.06">成都</option>
-                    <option value="104.73">绵阳</option>
-                    <option value="104.78">自贡</option>
-                    <option value="101.72">攀枝花</option>
-                    <option value="105.43">泸州</option>
-                    <option value="104.38">德阳</option>
-                    <option value="105.84">广元</option>
-                    <option value="105.57">遂宁</option>
-                    <option value="105.05">内江</option>
-                    <option value="103.76">乐山</option>
-                    <option value="106.08">南充</option>
-                    <option value="103.83">眉山</option>
-                    <option value="104.62">宜宾</option>
-                    <option value="106.63">广安</option>
-                    <option value="107.47">达州</option>
-                    <option value="103.00">雅安</option>
-                    <option value="106.77">巴中</option>
-                    <option value="104.63">资阳</option>
-                    <option value="102.26">西昌</option>
-                </optgroup>
-                <optgroup label="贵州">
-                    <option value="106.71">贵阳</option>
-                    <option value="104.83">六盘水</option>
-                    <option value="106.92">遵义</option>
-                    <option value="105.95">安顺</option>
-                    <option value="105.30">毕节</option>
-                    <option value="109.19">铜仁</option>
-                    <option value="104.90">兴义</option>
-                    <option value="107.97">凯里</option>
-                    <option value="107.52">都匀</option>
-                </optgroup>
-                <optgroup label="云南">
-                    <option value="102.73">昆明</option>
-                    <option value="103.80">曲靖</option>
-                    <option value="102.55">玉溪</option>
-                    <option value="99.17">保山</option>
-                    <option value="103.72">昭通</option>
-                    <option value="100.23">丽江</option>
-                    <option value="100.97">普洱</option>
-                    <option value="100.08">临沧</option>
-                    <option value="101.55">楚雄</option>
-                    <option value="103.37">红河</option>
-                    <option value="104.24">文山</option>
-                    <option value="100.80">西双版纳</option>
-                    <option value="100.23">大理</option>
-                    <option value="98.58">德宏</option>
-                    <option value="98.85">怒江</option>
-                    <option value="99.70">迪庆</option>
-                </optgroup>
-                <optgroup label="西藏">
-                    <option value="91.11">拉萨</option>
-                    <option value="88.88">日喀则</option>
-                    <option value="97.17">昌都</option>
-                    <option value="94.36">林芝</option>
-                    <option value="91.77">山南</option>
-                    <option value="92.06">那曲</option>
-                    <option value="80.10">阿里</option>
-                </optgroup>
-                <optgroup label="陕西">
-                    <option value="108.95">西安</option>
-                    <option value="109.07">铜川</option>
-                    <option value="107.15">宝鸡</option>
-                    <option value="108.70">咸阳</option>
-                    <option value="109.50">渭南</option>
-                    <option value="109.47">延安</option>
-                    <option value="107.03">汉中</option>
-                    <option value="109.73">榆林</option>
-                    <option value="109.02">安康</option>
-                    <option value="109.93">商洛</option>
-                </optgroup>
-                <optgroup label="甘肃">
-                    <option value="103.73">兰州</option>
-                    <option value="98.27">嘉峪关</option>
-                    <option value="102.18">金昌</option>
-                    <option value="104.18">白银</option>
-                    <option value="105.72">天水</option>
-                    <option value="102.63">武威</option>
-                    <option value="100.45">张掖</option>
-                    <option value="106.68">平凉</option>
-                    <option value="98.52">酒泉</option>
-                    <option value="107.63">庆阳</option>
-                    <option value="104.62">定西</option>
-                    <option value="104.96">陇南</option>
-                </optgroup>
-                <optgroup label="青海">
-                    <option value="101.74">西宁</option>
-                    <option value="102.12">海东</option>
-                    <option value="100.90">海北</option>
-                    <option value="102.02">黄南</option>
-                    <option value="100.62">海南</option>
-                    <option value="100.23">果洛</option>
-                    <option value="97.00">玉树</option>
-                    <option value="97.37">海西</option>
-                </optgroup>
-                <optgroup label="宁夏">
-                    <option value="106.27">银川</option>
-                    <option value="106.38">石嘴山</option>
-                    <option value="106.20">吴忠</option>
-                    <option value="106.28">固原</option>
-                    <option value="105.18">中卫</option>
-                </optgroup>
-                <optgroup label="新疆">
-                    <option value="87.68">乌鲁木齐</option>
-                    <option value="84.87">克拉玛依</option>
-                    <option value="89.17">吐鲁番</option>
-                    <option value="93.51">哈密</option>
-                    <option value="87.30">昌吉</option>
-                    <option value="82.07">博尔塔拉</option>
-                    <option value="86.15">巴音郭楞</option>
-                    <option value="80.26">阿克苏</option>
-                    <option value="76.17">克孜勒苏</option>
-                    <option value="75.99">喀什</option>
-                    <option value="79.92">和田</option>
-                    <option value="81.32">伊犁</option>
-                    <option value="82.98">塔城</option>
-                    <option value="88.14">阿勒泰</option>
-                    <option value="86.04">石河子</option>
-                </optgroup>
-                <optgroup label="台湾">
-                    <option value="121.50">台北</option>
-                    <option value="120.30">高雄</option>
-                    <option value="120.67">台中</option>
-                    <option value="120.20">台南</option>
-                    <option value="121.73">基隆</option>
-                    <option value="120.97">新竹</option>
-                    <option value="120.45">嘉义</option>
-                </optgroup>
-                <optgroup label="香港">
-                    <option value="114.17">香港</option>
-                </optgroup>
-                <optgroup label="澳门">
-                    <option value="113.55">澳门</option>
-                </optgroup>
-            </select>
+            <div class="city-autocomplete">
+                <input type="text" id="city-input" class="city-input" placeholder="输入城市名搜索..." autocomplete="off">
+                <ul id="city-dropdown" class="city-dropdown"></ul>
+                <input type="hidden" id="city-lng" value="116.46">
+            </div>
         </div>
 
         <div class="solar-time-section">
@@ -1583,7 +1240,7 @@ document.addEventListener('touchend', function (e) {
 // 真太阳时校正函数
 function updateSolarTime() {
     const birthInput = document.getElementById('birth-input');
-    const citySelect = document.getElementById('city-select');
+    const cityLng = document.getElementById('city-lng');
     const resultEl = document.getElementById('solar-time-result');
     const birthStr = birthInput.value;
     
@@ -1591,8 +1248,16 @@ function updateSolarTime() {
         if (resultEl) resultEl.innerHTML = '请先选择出生时间';
         return;
     }
-    
-    const lng = parseFloat(citySelect.value);
+    const lng = parseFloat(cityLng.value);
+
+    // 同步城市名到输入框
+    const cityInput = document.getElementById('city-input');
+    if (cityInput && !cityInput.value) {
+        // 默认北京
+        cityInput.value = '北京';
+        cityLng.value = '116.46';
+    }
+
     const date = new Date(birthStr);
     
     // 1. 经度差校正：(经度 - 120) * 4分钟
@@ -1638,6 +1303,70 @@ function updateSolarTime() {
     
     // 保存真太阳时到全局，供排盘使用
     window.solarDateTime = solarDate;
+
+    // V3.7: 城市搜索自动补全
+    (function(){
+                var input = document.getElementById('city-input');
+        var dropdown = document.getElementById('city-dropdown');
+        var lngInput = document.getElementById('city-lng');
+        if (!input || !dropdown || !lngInput) return;
+        
+        // 从内嵌数据构建城市列表
+        var cityData = (window._CITY_DATA || []).map(function(c){
+            return {name: c[0], lng: c[1], prov: c[2]};
+        });
+        window._cityData = cityData; 
+        function filterCities(query) {
+            if (!query) return cityData.slice(0, 8);
+            return cityData.filter(function(c){
+                return c.name.indexOf(query) >= 0;
+            }).slice(0, 10);
+        }
+        
+        function showDropdown(items) {
+            dropdown.innerHTML = '';
+            if (!input.value && items.length > 8) items = items.slice(0, 8);
+            items.forEach(function(c){
+                var li = document.createElement('li');
+                li.innerHTML = c.name + '<span class="province">' + c.prov + '</span>';
+                li.addEventListener('mousedown', function(e){
+                    e.preventDefault();
+                    input.value = c.name;
+                    lngInput.value = c.lng;
+                    dropdown.classList.remove('show');
+                    if (window.updateSolarTime) window.updateSolarTime();
+                });
+                dropdown.appendChild(li);
+            });
+            if (items.length === 0 && input.value) {
+                var li = document.createElement('li');
+                li.className = 'no-match';
+                li.textContent = '无匹配城市';
+                dropdown.appendChild(li);
+            }
+            dropdown.classList.add('show');
+        }
+        
+        input.addEventListener('input', function(){
+            showDropdown(filterCities(this.value));
+        });
+        input.addEventListener('focus', function(){
+            showDropdown(filterCities(this.value));
+        });
+        input.addEventListener('keydown', function(e){
+            if (e.key === 'Escape') { dropdown.classList.remove('show'); return; }
+        });
+        document.addEventListener('click', function(e){
+            if (e.target !== input) dropdown.classList.remove('show');
+        });
+        
+        // 恢复默认值
+        if (lngInput.value && lngInput.value !== '116.46') {
+            var found = cityData.filter(function(c){ return c.lng === lngInput.value; })[0];
+            if (found) input.value = found.name;
+        }
+        if (!input.value) { input.value = '北京'; lngInput.value = '116.46'; }
+    })();
 }
 
 
@@ -2458,7 +2187,7 @@ console.log("✅ 业务脚本开始执行");
             const historyItem = {
                 id: Date.now(),
                 timeStr: document.getElementById('birth-input').value,
-                cityValue: document.getElementById('city-select').value, // 保存城市选择
+                cityValue: document.getElementById('city-lng').value, // 保存城市经度
                 gender: currentGender,
                 pattern: baziData.pattern,
                 name: baziData.name,
@@ -2567,7 +2296,7 @@ console.log("✅ 业务脚本开始执行");
             
             // 恢复城市选择（向后兼容：如果没有保存城市则不改变）
             if (item.cityValue) {
-                document.getElementById('city-select').value = item.cityValue;
+                var cl = document.getElementById('city-lng'); if(cl) cl.value = item.cityValue; var ci2 = document.getElementById('city-input'); if(ci2 && item.cityValue && window._cityData){ var fd = window._cityData.filter(function(c){return c.lng===item.cityValue})[0]; if(fd) ci2.value = fd.name; }
                 updateSolarTime(); // 重新计算真太阳时
             }
             
@@ -3019,7 +2748,40 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
         const zhiList2 = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
         const tyGan = ganList[(ganList.indexOf(pillars[1].g)+1)%10];
         const tyZhi = zhiList2[(zhiList2.indexOf(pillars[1].z)+3)%12];
-        document.getElementById('pillars-box').innerHTML += (function(){
+        document.getElementById('pillars-box').innerHTML += window._CITY_DATA = [
+["北京",116.46,"直辖市"],["上海",121.48,"直辖市"],["天津",117.2,"直辖市"],["重庆",106.54,"直辖市"],
+["石家庄",114.48,"河北"],["唐山",118.18,"河北"],["秦皇岛",119.6,"河北"],["邯郸",114.47,"河北"],["邢台",114.5,"河北"],["保定",115.48,"河北"],["张家口",114.88,"河北"],["承德",117.93,"河北"],["沧州",116.83,"河北"],["廊坊",116.7,"河北"],["衡水",115.67,"河北"],
+["太原",112.53,"山西"],["大同",113.3,"山西"],["阳泉",113.58,"山西"],["长治",113.12,"山西"],["晋城",112.85,"山西"],["朔州",112.43,"山西"],["晋中",112.75,"山西"],["运城",111.0,"山西"],["忻州",112.73,"山西"],["临汾",111.52,"山西"],["吕梁",111.13,"山西"],
+["呼和浩特",111.65,"内蒙古"],["包头",109.84,"内蒙古"],["乌海",106.82,"内蒙古"],["赤峰",118.87,"内蒙古"],["通辽",122.27,"内蒙古"],["鄂尔多斯",109.78,"内蒙古"],["呼伦贝尔",119.77,"内蒙古"],["巴彦淖尔",107.42,"内蒙古"],["乌兰察布",113.13,"内蒙古"],["兴安盟",122.0,"内蒙古"],["锡林郭勒",116.0,"内蒙古"],["阿拉善",105.7,"内蒙古"],
+["沈阳",123.38,"辽宁"],["大连",121.62,"辽宁"],["鞍山",122.98,"辽宁"],["抚顺",123.91,"辽宁"],["本溪",123.77,"辽宁"],["丹东",124.38,"辽宁"],["锦州",121.13,"辽宁"],["营口",122.23,"辽宁"],["阜新",121.65,"辽宁"],["辽阳",123.17,"辽宁"],["盘锦",122.05,"辽宁"],["铁岭",123.84,"辽宁"],["朝阳",120.45,"辽宁"],["葫芦岛",120.86,"辽宁"],
+["长春",125.35,"吉林"],["吉林",126.55,"吉林"],["四平",124.37,"吉林"],["辽源",125.13,"吉林"],["通化",125.92,"吉林"],["白山",126.42,"吉林"],["松原",124.82,"吉林"],["白城",122.84,"吉林"],["延吉",129.51,"吉林"],
+["哈尔滨",126.63,"黑龙江"],["齐齐哈尔",123.97,"黑龙江"],["鸡西",130.97,"黑龙江"],["鹤岗",130.3,"黑龙江"],["双鸭山",131.15,"黑龙江"],["大庆",125.03,"黑龙江"],["伊春",128.92,"黑龙江"],["佳木斯",130.33,"黑龙江"],["七台河",131.02,"黑龙江"],["牡丹江",129.62,"黑龙江"],["黑河",127.53,"黑龙江"],["绥化",126.98,"黑龙江"],
+["南京",118.78,"江苏"],["无锡",120.31,"江苏"],["徐州",117.18,"江苏"],["常州",119.95,"江苏"],["苏州",120.62,"江苏"],["南通",120.86,"江苏"],["连云港",119.22,"江苏"],["淮安",119.02,"江苏"],["盐城",120.15,"江苏"],["扬州",119.42,"江苏"],["镇江",119.42,"江苏"],["泰州",119.92,"江苏"],["宿迁",118.28,"江苏"],
+["杭州",120.19,"浙江"],["宁波",121.54,"浙江"],["温州",120.65,"浙江"],["嘉兴",120.76,"浙江"],["湖州",120.09,"浙江"],["绍兴",120.58,"浙江"],["金华",119.64,"浙江"],["衢州",118.88,"浙江"],["舟山",122.21,"浙江"],["台州",121.42,"浙江"],["丽水",119.92,"浙江"],
+["合肥",117.27,"安徽"],["芜湖",118.37,"安徽"],["蚌埠",117.36,"安徽"],["淮南",116.99,"安徽"],["马鞍山",118.5,"安徽"],["淮北",116.79,"安徽"],["铜陵",117.81,"安徽"],["安庆",117.06,"安徽"],["黄山",118.33,"安徽"],["滁州",118.32,"安徽"],["阜阳",115.81,"安徽"],["宿州",116.97,"安徽"],["六安",116.52,"安徽"],["亳州",115.78,"安徽"],["池州",117.49,"安徽"],["宣城",118.75,"安徽"],
+["福州",119.3,"福建"],["厦门",118.1,"福建"],["莆田",119.01,"福建"],["三明",117.64,"福建"],["泉州",118.58,"福建"],["漳州",117.65,"福建"],["南平",118.17,"福建"],["龙岩",117.02,"福建"],["宁德",119.52,"福建"],
+["南昌",115.89,"江西"],["景德镇",117.18,"江西"],["萍乡",113.85,"江西"],["九江",115.99,"江西"],["新余",114.92,"江西"],["鹰潭",117.07,"江西"],["赣州",114.93,"江西"],["吉安",114.99,"江西"],["宜春",114.38,"江西"],["抚州",116.36,"江西"],["上饶",117.94,"江西"],
+["济南",117.0,"山东"],["青岛",120.33,"山东"],["淄博",118.05,"山东"],["枣庄",117.32,"山东"],["东营",118.5,"山东"],["烟台",121.45,"山东"],["潍坊",119.16,"山东"],["济宁",116.58,"山东"],["泰安",117.08,"山东"],["威海",122.12,"山东"],["日照",119.52,"山东"],["临沂",118.35,"山东"],["德州",116.3,"山东"],["聊城",116.0,"山东"],["滨州",117.97,"山东"],["菏泽",115.48,"山东"],
+["郑州",113.65,"河南"],["开封",114.31,"河南"],["洛阳",112.43,"河南"],["平顶山",113.19,"河南"],["安阳",114.37,"河南"],["鹤壁",114.17,"河南"],["新乡",113.85,"河南"],["焦作",113.23,"河南"],["濮阳",115.03,"河南"],["许昌",113.85,"河南"],["漯河",114.02,"河南"],["三门峡",111.2,"河南"],["南阳",112.53,"河南"],["商丘",115.65,"河南"],["信阳",114.07,"河南"],["周口",114.65,"河南"],["驻马店",114.02,"河南"],
+["武汉",114.31,"湖北"],["黄石",115.07,"湖北"],["十堰",110.8,"湖北"],["宜昌",111.29,"湖北"],["襄阳",112.13,"湖北"],["鄂州",114.87,"湖北"],["荆门",112.2,"湖北"],["孝感",113.93,"湖北"],["荆州",112.24,"湖北"],["黄冈",114.88,"湖北"],["咸宁",114.33,"湖北"],["随州",113.38,"湖北"],["恩施",109.48,"湖北"],
+["长沙",113.0,"湖南"],["株洲",113.13,"湖南"],["湘潭",112.93,"湖南"],["衡阳",112.57,"湖南"],["邵阳",111.47,"湖南"],["岳阳",113.1,"湖南"],["常德",111.69,"湖南"],["张家界",110.48,"湖南"],["益阳",112.36,"湖南"],["郴州",113.02,"湖南"],["永州",111.61,"湖南"],["怀化",109.95,"湖南"],["娄底",111.99,"湖南"],["湘西",109.73,"湖南"],
+["广州",113.23,"广东"],["深圳",114.07,"广东"],["珠海",113.55,"广东"],["汕头",116.68,"广东"],["佛山",113.12,"广东"],["韶关",113.6,"广东"],["湛江",110.36,"广东"],["肇庆",112.44,"广东"],["江门",113.08,"广东"],["茂名",110.93,"广东"],["惠州",114.42,"广东"],["梅州",116.12,"广东"],["汕尾",115.36,"广东"],["河源",114.7,"广东"],["阳江",111.97,"广东"],["清远",113.03,"广东"],["东莞",113.75,"广东"],["中山",113.38,"广东"],["潮州",116.63,"广东"],["揭阳",116.37,"广东"],["云浮",112.04,"广东"],
+["南宁",108.33,"广西"],["柳州",109.4,"广西"],["桂林",110.28,"广西"],["梧州",111.31,"广西"],["北海",109.12,"广西"],["防城港",108.35,"广西"],["钦州",108.65,"广西"],["贵港",109.6,"广西"],["玉林",110.16,"广西"],["百色",106.62,"广西"],["贺州",111.55,"广西"],["河池",108.06,"广西"],["来宾",109.22,"广西"],["崇左",107.37,"广西"],
+["海口",110.35,"海南"],["三亚",109.51,"海南"],["三沙",112.34,"海南"],["儋州",109.58,"海南"],
+["成都",104.06,"四川"],["绵阳",104.73,"四川"],["自贡",104.78,"四川"],["攀枝花",101.72,"四川"],["泸州",105.43,"四川"],["德阳",104.38,"四川"],["广元",105.84,"四川"],["遂宁",105.57,"四川"],["内江",105.05,"四川"],["乐山",103.76,"四川"],["南充",106.08,"四川"],["眉山",103.83,"四川"],["宜宾",104.62,"四川"],["广安",106.63,"四川"],["达州",107.47,"四川"],["雅安",103.0,"四川"],["巴中",106.77,"四川"],["资阳",104.63,"四川"],["西昌",102.26,"四川"],
+["贵阳",106.71,"贵州"],["六盘水",104.83,"贵州"],["遵义",106.92,"贵州"],["安顺",105.95,"贵州"],["毕节",105.3,"贵州"],["铜仁",109.19,"贵州"],["兴义",104.9,"贵州"],["凯里",107.97,"贵州"],["都匀",107.52,"贵州"],
+["昆明",102.73,"云南"],["曲靖",103.8,"云南"],["玉溪",102.55,"云南"],["保山",99.17,"云南"],["昭通",103.72,"云南"],["丽江",100.23,"云南"],["普洱",100.97,"云南"],["临沧",100.08,"云南"],["楚雄",101.55,"云南"],["红河",103.37,"云南"],["文山",104.24,"云南"],["西双版纳",100.8,"云南"],["大理",100.23,"云南"],["德宏",98.58,"云南"],["怒江",98.85,"云南"],["迪庆",99.7,"云南"],
+["拉萨",91.11,"西藏"],["日喀则",88.88,"西藏"],["昌都",97.17,"西藏"],["林芝",94.36,"西藏"],["山南",91.77,"西藏"],["那曲",92.06,"西藏"],["阿里",80.1,"西藏"],
+["西安",108.95,"陕西"],["铜川",109.07,"陕西"],["宝鸡",107.15,"陕西"],["咸阳",108.7,"陕西"],["渭南",109.5,"陕西"],["延安",109.47,"陕西"],["汉中",107.03,"陕西"],["榆林",109.73,"陕西"],["安康",109.02,"陕西"],["商洛",109.93,"陕西"],
+["兰州",103.73,"甘肃"],["嘉峪关",98.27,"甘肃"],["金昌",102.18,"甘肃"],["白银",104.18,"甘肃"],["天水",105.72,"甘肃"],["武威",102.63,"甘肃"],["张掖",100.45,"甘肃"],["平凉",106.68,"甘肃"],["酒泉",98.52,"甘肃"],["庆阳",107.63,"甘肃"],["定西",104.62,"甘肃"],["陇南",104.96,"甘肃"],
+["西宁",101.74,"青海"],["海东",102.12,"青海"],["海北",100.9,"青海"],["黄南",102.02,"青海"],["海南",100.62,"青海"],["果洛",100.23,"青海"],["玉树",97.0,"青海"],["海西",97.37,"青海"],
+["银川",106.27,"宁夏"],["石嘴山",106.38,"宁夏"],["吴忠",106.2,"宁夏"],["固原",106.28,"宁夏"],["中卫",105.18,"宁夏"],
+["乌鲁木齐",87.68,"新疆"],["克拉玛依",84.87,"新疆"],["吐鲁番",89.17,"新疆"],["哈密",93.51,"新疆"],["昌吉",87.3,"新疆"],["博尔塔拉",82.07,"新疆"],["巴音郭楞",86.15,"新疆"],["阿克苏",80.26,"新疆"],["克孜勒苏",76.17,"新疆"],["喀什",75.99,"新疆"],["和田",79.92,"新疆"],["伊犁",81.32,"新疆"],["塔城",82.98,"新疆"],["阿勒泰",88.14,"新疆"],["石河子",86.04,"新疆"],
+["台北",121.5,"台湾"],["高雄",120.3,"台湾"],["台中",120.67,"台湾"],["台南",120.2,"台湾"],["基隆",121.73,"台湾"],["新竹",120.97,"台湾"],["嘉义",120.45,"台湾"],
+["香港",114.17,"香港"],["澳门",113.55,"澳门"]
+];
+
+(function(){
             var tyGod = SHISHEN_MAP[dm][tyGan] || '';
             var tyWx = WUXING_MAP[tyGan] || '';
             var dmWx = WUXING_MAP[dm] || '';
