@@ -1311,14 +1311,19 @@ function updateSolarTime() {
         var lngInput = document.getElementById('city-lng');
         if (!input || !dropdown || !lngInput) return;
         
-        // 从内嵌数据构建城市列表
-        var cityData = (window._CITY_DATA || []).map(function(c){
-            return {name: c[0], lng: c[1], prov: c[2]};
-        });
-        window._cityData = cityData; 
+        // 惰性加载城市数据（_CITY_DATA 在后面定义）
+        function getCityData() {
+            if (!window._cityData || !window._cityData.length) {
+                window._cityData = (window._CITY_DATA || []).map(function(c){
+                    return {name: c[0], lng: c[1], prov: c[2]};
+                });
+            }
+            return window._cityData;
+        }
         function filterCities(query) {
-            if (!query) return cityData.slice(0, 8);
-            return cityData.filter(function(c){
+            var cd = getCityData();
+            if (!query) return cd.slice(0, 8);
+            return cd.filter(function(c){
                 return c.name.indexOf(query) >= 0;
             }).slice(0, 10);
         }
@@ -2296,7 +2301,7 @@ console.log("✅ 业务脚本开始执行");
             
             // 恢复城市选择（向后兼容：如果没有保存城市则不改变）
             if (item.cityValue) {
-                var cl = document.getElementById('city-lng'); if(cl) cl.value = item.cityValue; var ci2 = document.getElementById('city-input'); if(ci2 && item.cityValue && window._cityData){ var fd = window._cityData.filter(function(c){return c.lng===item.cityValue})[0]; if(fd) ci2.value = fd.name; }
+                var cl = document.getElementById('city-lng'); if(cl) cl.value = item.cityValue; var ci2 = document.getElementById('city-input'); if(ci2 && item.cityValue && window._cityData){ var fd = (window._cityData||[]).filter(function(c){return c.lng===item.cityValue})[0]; if(fd) ci2.value = fd.name; }
                 updateSolarTime(); // 重新计算真太阳时
             }
             
