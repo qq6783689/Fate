@@ -1,0 +1,86 @@
+[
+  {
+    "name": "丙午癸巳戊戌庚申乾",
+    "steps": [
+      {
+        "action": "fill",
+        "selector": "#birth-input",
+        "value": "2000-06-15T12:00"
+      },
+      {
+        "action": "fill",
+        "selector": "#city-input",
+        "value": "北京"
+      },
+      {
+        "action": "sleep",
+        "seconds": 0.5
+      },
+      {
+        "action": "click",
+        "selector": ".city-dropdown li:first-child"
+      },
+      {
+        "action": "sleep",
+        "seconds": 0.3
+      },
+      {
+        "action": "click",
+        "selector": ".btn-start"
+      },
+      {
+        "action": "wait",
+        "selector": "#role-title",
+        "timeout": 30000
+      }
+    ],
+    "assert": [
+      {
+        "selector": "#role-title",
+        "contains": "偏印格"
+      }
+    ]
+  },
+  {
+    "name": "辛未辛丑甲午癸酉乾",
+    "steps": [
+      {
+        "action": "fill",
+        "selector": "#birth-input",
+        "value": "1991-02-03T18:00"
+      },
+      {
+        "action": "fill",
+        "selector": "#city-input",
+        "value": "北京"
+      },
+      {
+        "action": "sleep",
+        "seconds": 0.5
+      },
+      {
+        "action": "click",
+        "selector": ".city-dropdown li:first-child"
+      },
+      {
+        "action": "sleep",
+        "seconds": 0.3
+      },
+      {
+        "action": "click",
+        "selector": ".btn-start"
+      },
+      {
+        "action": "wait",
+        "selector": "#role-title",
+        "timeout": 30000
+      }
+    ],
+    "assert": [
+      {
+        "selector": "#role-title",
+        "contains": "官印相生"
+      }
+    ]
+  }
+]

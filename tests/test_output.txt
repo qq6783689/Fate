@@ -1,0 +1,23 @@
+
+[1/2] ��������������Ǭ
+  fill: #birth-input
+  fill: #city-input
+  sleep: 
+  click: .city-dropdown li
+  ERROR: Page.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator("[onclick*=\"setGender(1)\"]")
+
+
+[2/2] ��δ����������Ǭ
+  fill: #birth-input
+  fill: #city-input
+  sleep: 
+  click: .city-dropdown li
+  ERROR: Page.click: Timeout 5000ms exceeded.
+Call log:
+  - waiting for locator("[onclick*=\"setGender(1)\"]")
+
+
+========================================
+Results: 0/2 passed, 2 failed
