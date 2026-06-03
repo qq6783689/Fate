@@ -2798,17 +2798,6 @@ const _xiji = XIJI_RULES[pattern] || XIJI_RULES["杂格"];
         const zhiList2 = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
         const tyGan = ganList[(ganList.indexOf(pillars[1].g)+1)%10];
         const tyZhi = zhiList2[(zhiList2.indexOf(pillars[1].z)+3)%12];
-        (function(){
-            var tyGod = SHISHEN_MAP[dm][tyGan] || '';
-            var tyWx = WUXING_MAP[tyGan] || '';
-            var dmWx = WUXING_MAP[dm] || '';
-            var tyEffect = '';
-            if (tyGod==='比肩'||tyGod==='劫财') tyEffect = '<span style="color:#2e7d32">✓ 胎元帮身，根基深厚</span>';
-            else if (tyGod==='正印'||tyGod==='偏印') tyEffect = '<span style="color:#2e7d32">✓ 胎元生扶，先天滋养</span>';
-            else if (tyGod==='七杀'||tyGod==='正官') tyEffect = '<span style="color:#c62828">✗ 胎元克身，先天承压</span>';
-            else if (tyGod==='伤官'||tyGod==='食神') tyEffect = '<span style="color:#e67e22">△ 胎元泄气，需后天补益</span>';
-            else tyEffect = '<span style="color:#888">○ 胎元不扰，先天平稳</span>';
-            return '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--gold-accent);">胎元：' + tyGan + tyZhi + '（' + tyGod + '）<small style="color:#999"> 月干进一·月支进三</small></div><div style="text-align:center;font-size:0.8rem;margin-top:3px;">' + tyEffect + '</div>';
         document.getElementById('pillars-box').innerHTML += '<div style="text-align:center;margin-top:8px;font-size:0.85rem;color:var(--gold-accent);">胎元：' + tyGan + tyZhi + '（' + (SHISHEN_MAP[dm][tyGan] || '') + '）<small style="color:#999"> 月干进一·月支进三</small></div>' + (function(){var e='';var g=SHISHEN_MAP[dm][tyGan]||'';if(g==='比肩'||g==='劫财')e='<span style="color:#2e7d32">✓ 胎元帮身，根基深厚</span>';else if(g==='正印'||g==='偏印')e='<span style="color:#2e7d32">✓ 胎元生扶，先天滋养</span>';else if(g==='七杀'||g==='正官')e='<span style="color:#c62828">✗ 胎元克身，先天承压</span>';else if(g==='伤官'||g==='食神')e='<span style="color:#e67e22">△ 胎元泄气，需后天补益</span>';else e='<span style="color:#888">○ 胎元不扰，先天平稳</span>';return '<div style="text-align:center;font-size:0.8rem;margin-top:3px;">'+e+'</div>';})();
         safeSetText('dm-desc', getDMDesc(dm, mz));
         const dims = [
